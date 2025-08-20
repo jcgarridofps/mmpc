@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  mmpc_psql:
+    container_name: mmpc_db
+    image: "postgres:14.1-alpine"
+    env_file:
+      - ./postgres/.env
+    ports:
+      - 5435:5432
+    volumes:
+      - mmpc_psql_data:/var/lib/postgresql/data/
+
+
+  mmpc_redis:
+    container_name: mmpc_redis
+    build:
+      context: ./redis
+      dockerfile: Dockerfile-redis
+    ports:
+      - 6380:6379
+    volumes:
+      - mmpc_redis_data:/data
+    env_file:
+      - ./redis/.env
+
+
+  mmpc_django:
+    container_name: mmpc_backend
+    build:
+      context: ./api
+      dockerfile: Dockerfile-api-dev
+    ports:
+      - 8001:8000
+      - 3002:3001
+    volumes:
+      - ./api:/api
+    env_file:
+      - ./api/.env
+    depends_on:
+      - mmpc_psql
+      - mmpc_redis
+
+  # mmpc_front_builder:
+  #   tty: true
+  #   container_name: mmpc_front_builder
+  #   build:
+  #     context: ./app
+  #     dockerfile: Dockerfile-app-dev
+  #   volumes:
+  #     - ./app:/app
+  #     - /app/node_modules
+
+  # mmpc_nginx:
+  #   container_name: mmpc_nginx
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile-nginx
+  #   ports:
+  #     - 8081:80
+  #   volumes:
+  #     - ./app/build:/app/build
+  #   depends_on:
+  #     - mmpc_front_builder
+
+volumes:
+  mmpc_psql_data:
+  mmpc_redis_data:
+
+networks:
+  mmpc_network:

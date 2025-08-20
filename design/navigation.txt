@@ -1,0 +1,17 @@
+DASHBOARD
+    (OVERVIEW) -> General data + history search + new history
+        [PATIENT]
+            STUDIES -> List of patient studies
+                CREATE -> View to create a new study (.vcf upload)
+                [STUDY]
+                    ANNOTATIONS -> List of annotations
+                        CREATE -> New annotation + redirect to analysis
+                        [ANNOTATION]
+                            ANALYSES -> List of analysis (drug queries, others)
+                                CREATE -> New analysis
+                                [ANALYSIS]
+                                    REVIEW -> Analysis results
+                                    REPORTS -> list of reports
+                                        CREATE -> New report
+                                        [REPORT]
+                                            REVIEW -> Final report visualization

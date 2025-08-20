@@ -1,0 +1,10 @@
+[
+    {
+        "model": "mmpc.entityGroup",
+        "pk": 1,
+        "fields": {
+          "label": "Junta de Andalucía",
+          "codename": "junta-de-andalucia"
+        }
+    }
+]

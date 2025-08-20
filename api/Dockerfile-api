@@ -1,0 +1,25 @@
+FROM python:3.10-slim-bullseye
+
+ENV PYTHONUNBUFFERED 1
+
+# Dependences SO
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        gcc \
+        python3-dev \
+        musl-dev \
+        postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy files to application
+WORKDIR /api
+COPY . .
+
+# Install dependences
+RUN pip install --upgrade pip pipenv \
+    && pipenv lock \
+    && pipenv install -v \
+    && chmod +x /api/entrypoint.sh \
+    && rm -rf /api/mmpc/migrations
+
+ENTRYPOINT ["/api/entrypoint.sh"]

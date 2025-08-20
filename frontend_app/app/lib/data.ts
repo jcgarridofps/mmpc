@@ -1,0 +1,485 @@
+import postgres from 'postgres';
+import { auth } from '@/auth';
+
+const ITEMS_PER_PAGE = 6;
+
+const LATEST_VARIANT_ANALYSIS_ITEMS = 5;
+export async function fetchLatestVariantAnalysis() {
+  /**
+   * Fetch latest 5 variant analysis for the user's entity group
+   */
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const session = await auth();
+
+  try {
+
+    const variant_analysis = await fetch(process.env.API_BASE_URL + 
+      "/api/variant_analysis/?" + 
+      "page=1&"+
+      "elements=" + LATEST_VARIANT_ANALYSIS_ITEMS,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await variant_analysis.json();
+
+    return res;
+  } catch (error) {
+    console.error('Failed to fetch latest variant analysis: ', error);
+    throw new Error('Failed to fetch latest variant analysis.');
+  }
+}
+
+const LATEST_DRUG_QUERY_ITEMS = 5;
+export async function fetchLatestDrugQueries() {
+  /**
+   * Fetch latest 5 variant analysis for the user's entity group
+   */
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const session = await auth();
+
+  try {
+
+    const drug_queries = await fetch(process.env.API_BASE_URL + 
+      "/api/drug_query/?" + 
+      "page=1&"+
+      "elements=" + LATEST_DRUG_QUERY_ITEMS,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await drug_queries.json();
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.error('Failed to fetch latest drug queries: ' + error);
+    throw new Error('Failed to fetch latest drug queries.');
+  }
+}
+
+export async function fetchCardData() {
+  try {
+
+    const numberOfVariantAnalysis = await fetchVariantAnalysisCount();
+    const numberOfDrugQueries = await fetchDrugQueryCount();
+    const numberOfPatients = await fetchPatientCount();
+    const totalReports = await fetchReportCount();
+    const totalPendingAnalysis = await fetchPendingAnalysisCount();
+
+    return {
+      numberOfPatients,
+      numberOfVariantAnalysis,
+      numberOfDrugQueries,
+      totalReports,
+      totalPendingAnalysis,
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch card data.');
+  }
+}
+
+export async function fetchFilteredVariantAnalysisPages(query: string) {
+  const session = await auth();
+  const safeQuery = encodeURIComponent(query);
+  try {
+    const data = await fetch(process.env.API_BASE_URL + 
+      "/api/variant_analysis/count?" + 
+      "query=" + safeQuery + "&",
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    const json_data = await data.json();
+
+    const totalPages = Math.ceil(Number(json_data? json_data['entry_count']:0) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of invoices.');
+  }
+}
+
+export async function fetchFilteredDrugQueryPages(query: string, variant_analysis_id: string) {
+  const session = await auth();
+  const safeQuery = encodeURIComponent(query);
+  try {
+    const data = await fetch(process.env.API_BASE_URL + 
+      "/api/drug_query/count?" + 
+      "query=" + safeQuery + "&variant_analysis_id=" + variant_analysis_id,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    const json_data = await data.json();
+
+    const totalPages = Math.ceil(Number(json_data? json_data['entry_count']:0) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of drug queries.');
+  }
+}
+
+export async function fetchFilteredReportPages(query: string, drug_query_id: string) {
+  const session = await auth();
+  const safeQuery = encodeURIComponent(query);
+  try {
+    const data = await fetch(process.env.API_BASE_URL + 
+      "/api/report/count?" + 
+      "query=" + safeQuery + "&drug_query=" + drug_query_id,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    const json_data = await data.json();
+
+    const totalPages = Math.ceil(Number(json_data? json_data['entry_count']:0) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch number of reports for a given drug query .');
+  }
+}
+
+export async function fetchFilteredVariantAnalysis(
+  query: string,
+  currentPage: number,
+) {
+  const session = await auth();
+  const safeQuery = encodeURIComponent(query);
+  try {
+    const variant_analysis = await fetch(process.env.API_BASE_URL + 
+      "/api/variant_analysis/?" + 
+      "page=" + currentPage + "&" +
+      "query=" + safeQuery + "&" +
+      "elements=" + ITEMS_PER_PAGE,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await variant_analysis.json();
+    return res;
+  } catch (error) {
+    console.error('Fetch filtered variant analysis error:', error);
+    throw new Error('Failed to fetch variant analysis.');
+  }
+}
+
+export async function fetchFilteredReports(
+  drug_query_id: string,
+  currentPage: number,
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const session = await auth();
+  try {
+    const uri:string = process.env.API_BASE_URL + 
+      "/api/report/?" + 
+      "page=" + currentPage + "&" +
+      "drug_query_id=" + drug_query_id + "&" +
+      "elements=" + ITEMS_PER_PAGE;
+
+    console.log("MACARENO ECHA EL FRENO:" + uri);
+
+    const reports = await fetch(process.env.API_BASE_URL + 
+      "/api/report/?" + 
+      "page=" + currentPage + "&" +
+      "drug_query_id=" + drug_query_id + "&" +
+      "elements=" + ITEMS_PER_PAGE,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await reports.json();
+    return res;
+  } catch (error) {
+    console.error('Fetch filtered reports error:', error);
+    throw new Error('Failed to fetch reports.');
+  }
+}
+
+export async function fetchVariantAnalysisCount() {
+  const session = await auth();
+  try {
+    const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
+      "/api/variant_analysis/count/",
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    try{
+      let res = await variant_analysis_count.json();
+      return res['entry_count'];
+    }
+    catch(error){
+      console.error("ERROR: " + error);
+    }
+    
+  } catch (error) {
+    console.error('Fetch variant analysis count error:', error);
+    throw new Error('Failed to fetch variant analysis count.');
+  }
+}
+
+export async function fetchDrugQueryCount() {
+  const session = await auth();
+  try {
+    const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
+      "/api/drug_query/count/",
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    try{
+      let res = await variant_analysis_count.json();
+      return res['entry_count'];
+    }
+    catch(error){
+      console.error("ERROR: " + error);
+    }
+    
+  } catch (error) {
+    console.error('Fetch variant analysis count error:', error);
+    throw new Error('Failed to fetch variant analysis count.');
+  }
+}
+
+export async function fetchReportCount() {
+  const session = await auth();
+  try {
+    const report_count = await fetch(process.env.API_BASE_URL + 
+      "/api/report/count/",
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    try{
+      let res = await report_count.json();
+      return res['entry_count'];
+    }
+    catch(error){
+      console.error("ERROR: " + error);
+    }
+    
+  } catch (error) {
+    console.error('Fetch report count error:', error);
+    throw new Error('Failed to fetch report count.');
+  }
+}
+
+export async function fetchDrugQueryResult(id:string) {
+  const session = await auth();
+  try {
+    const drug_query_result = await fetch(process.env.API_BASE_URL + 
+      `/api/drug_query/result/?id=${id}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    try{
+      let res = await drug_query_result.json();
+      return res;
+    }
+    catch(error){
+      console.error("ERROR: " + error);
+    }
+    
+  } catch (error) {
+    console.error('Error fetching variant analysis result:', error);
+    throw new Error('Failed to fetch variant analysis result.');
+  }
+}
+
+export async function fetchVariantAnalysisResult(analysis_id:string) {
+  const session = await auth();
+  try {
+    const variant_analysis_result = await fetch(process.env.API_BASE_URL + 
+      `/api/analysis/result/?id=${analysis_id}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    try{
+      let res = await variant_analysis_result.json();
+      return res;
+    }
+    catch(error){
+      console.error("ERROR: " + error);
+    }
+    
+  } catch (error) {
+    console.error('Error fetching variant analysis result:', error);
+    throw new Error('Failed to fetch variant analysis result.');
+  }
+}
+
+export async function fetchReportResult(id:string) {
+  const session = await auth();
+  try {
+    const report_result = await fetch(process.env.API_BASE_URL + 
+      `/api/report/result/?id=${id}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    try{
+      let res = await report_result.json();
+      return res;
+    }
+    catch(error){
+      console.error("ERROR: " + error);
+    }
+    
+  } catch (error) {
+    console.error('Error fetching report result:', error);
+    throw new Error('Failed to fetch variant analysis result.');
+  }
+}
+
+export async function fetchPendingAnalysisCount() {
+  const session = await auth();
+  try {
+    const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
+      "/api/variant_analysis/pending/count/",
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await variant_analysis_count.json();
+    return res['entry_count'];
+  } catch (error) {
+    console.error('Fetch pending variant analysis count error:', error);
+    throw new Error('Failed to fetch pending variant analysis count.');
+  }
+}
+
+export async function fetchFilteredDrugQueries(
+  query: string,
+  currentPage: number,
+  variant_analysis: string
+) {
+  const session = await auth();
+  const safeQuery = encodeURIComponent(query);
+  try {
+    const drug_queries = await fetch(process.env.API_BASE_URL + 
+      "/api/drug_query/?" + 
+      "page=" + currentPage + "&" +
+      "query=" + safeQuery + "&" +
+      "elements=" + ITEMS_PER_PAGE + "&" +
+      "variant_analysis=" + variant_analysis, 
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await drug_queries.json();
+    return res;
+  } catch (error) {
+    console.error('Fetch filtered drug queries error:', error);
+    throw new Error('Failed to fetch drug queries.');
+  }
+}
+
+export async function fetchPatientCount() {
+  const session = await auth();
+  try {
+    const patient_count = await fetch(process.env.API_BASE_URL + 
+      "/api/patient/count/",
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await patient_count.json();
+    return res['entry_count'];
+  } catch (error) {
+    console.error('Fetch patient count error:', error);
+    throw new Error('Failed to fetch patient count.');
+  }
+}
+
+export async function fetchPresence(gene_list: string[]) {
+  let params:string = "";
+  gene_list.forEach((gene)=> {
+    params += "gene=" + gene + '&';
+  });
+  params = params.substring(0,params.length - 1);
+
+  const session = await auth();
+  try {
+    const presence_result = await fetch(process.env.API_BASE_URL + 
+      "/api/analysis/presence/?" + params,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await presence_result.json();
+    return res;
+  } catch (error) {
+    console.error('Fetch presence error:', error);
+    throw new Error('Failed to fetch presence.');
+  }
+}

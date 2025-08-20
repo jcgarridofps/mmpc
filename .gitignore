@@ -1,0 +1,54 @@
+# GITIGNORE
+#   Delete all the files that you do not want to upload to GitLab and belong to each environment
+
+# API
+*.pyc
+/api/.env
+/api/mmpc/avatars/*.jpg
+!/api/mmpc/avatars/default.jpg
+/api/mmpc/functions/connectApi.py
+/api/mmpc/views/scripts.py
+/api/mmpc/internalDownload/*.nwk
+/api/mmpc/migrations
+/api/mmpc/upload_files
+/api/mmpc/tmp_fastq
+/api/Pipfile.lock
+/api/backups
+/api/geoip2
+/api/.vscode
+/api/api/settings.py
+/api/entrypoint.sh
+/api/entrypoint.dev.sh
+/api/api/maintenance_mode_state.txt
+/api/gunicorn.pid
+
+# APP
+/app/.env
+/app/node_modules
+/app/package-lock.json
+/app/.vscode
+/app/entrypoint.sh
+/app/entrypoint.dev.sh
+
+# BD
+/postgres/.env
+
+# MONGODB
+/mongodb/.env
+
+# REDIS
+/redis/.env
+/redis/redis.conf
+
+# SCHEMA_DB
+/schema_bd/scheme.dia.autosave
+
+#POS JOBS PANDRUGS
+/pos_jobs_pandrugs/.env
+
+# GENERAL
+.vscode/*
+/venv/*
+.dockerignore
+docker-compose.yml
+docker-compose.dev.yml

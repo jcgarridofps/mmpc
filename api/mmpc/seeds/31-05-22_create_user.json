@@ -1,0 +1,17 @@
+[
+    {
+        "model": "mmpc.customUser",
+        "pk": 1,
+        "fields": {
+          "password": "pbkdf2_sha256$320000$miFmPAUPGHpHd78VUN89tv$rNIAisRK7LWPrYwh42XawLIiZ/mNJVxGftPx+m/mCA8=",
+          "is_superuser": true,
+          "first_name": "Juan Carlos",
+          "last_name": "Garrido Mejías",
+          "is_staff": true,
+          "is_active": true,
+          "email": "juanc.garrido.mejia@juntadeandalucia.es",
+          "entityGroup": 1,
+          "groups": [1]
+        }
+    }
+]

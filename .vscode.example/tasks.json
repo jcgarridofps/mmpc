@@ -1,0 +1,110 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "run-build-docker-backend",
+            "command": "docker",
+            "args": [
+                "compose",
+                "-f",
+                "docker-compose.dev.yml",
+                "up",
+                "-d",
+                "--build"
+            ],
+            "isBackground": true,
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "run-docker-backend",
+            "command": "docker",
+            "args": [
+                "compose",
+                "-f",
+                "docker-compose.dev.yml",
+                "up",
+                "-d"
+            ],
+            "isBackground": true,
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "reload-docker-backend",
+            "command": "docker",
+            "args": [
+                "exec",
+                "-it",
+                "api",
+                "/bin/bash",
+                "-c",
+                "./reload_gunicorn.sh"
+            ],
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "delete-docker-backend",
+            "command": "docker",
+            "args": [
+                "compose",
+                "-f",
+                "docker-compose.dev.yml",
+                "down"
+            ],
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "run-frontend-app",
+            "command": "npm start",
+            "isBackground": true,
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/frontend_app"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build-frontend-app",
+            "command": "docker compose up -d dev --build",
+            "args": [
+                "compose",
+                "-f",
+                "docker-compose.dev.yml",
+                "up",
+                "-d",
+                "dev",
+                "--build"
+            ],
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "START_ALL_DEVELOPMENT_SERVICES",
+            "dependsOn": [
+                "run-docker-backend",
+                "run-frontend-app"
+            ]
+        },
+        {
+            "label": "START_REBUILD_ALL_DEVELOPMENT_SERVICES",
+            "dependsOn": [
+                "run-build-docker-backend",
+                "run-frontend-app"
+            ]
+        }
+    ]
+}

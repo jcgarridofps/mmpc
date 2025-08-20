@@ -1,0 +1,48 @@
+{
+    "configurations": [
+        {      
+            // ATTACH VSCODE DEBUGGER TO API DOCKER CONTAINER
+            // run -> docker compose up -d --build -> then connect vsdebugger
+            "name": "debug-api-docker",
+            "type": "debugpy",                              // We need to connect to debugpy service
+            "request": "attach",                            // We want to attach vscode debugger to debugpy service
+            "pathMappings": [                               // For mapping local files to the remote ones, in order to see the running code
+                {
+                    "localRoot": "${workspaceFolder}/api" , // Local root directory for api service
+                    "remoteRoot": "/api"                    // Remote root for api service
+                }
+            ],
+            "connect": {
+                "host": "127.0.0.1",                        // for localhost and docker service
+                "port": 3002                                // debugpy configured listening port
+            },
+            "presentation": {
+                "hidden": false,                            // Configuration visibility over 'Run and Debug' section
+            }
+        },
+        {            
+            // ATTACH VSCODE DEBUGGER TO A CHROME BROWSER INSTANCE RUNNING THE APPLICATION FRONT-END
+            // REQUIRES: APPLICATION RUNNING LOCALLY FROM VSCODE AND NPM                               
+            "name": "debug-app-chrome",                        
+            "type": "chrome",                               // We need to connect to a Chrome instance
+            "request": "launch",                            // A Chrome instance will be launched for debugging
+            "url": "http://localhost:3000",                 // Service uri to open for debugging
+            "webRoot": "${workspaceFolder}/frontend_app/app",        // Local files for the web app
+            "sourceMapPathOverrides": {
+                "webpack:///app/*": "${webRoot}/*"          // Browser source object to link to the local files
+            },    
+            "presentation": {
+                "hidden": false,                            // Configuration visibility over 'Run and Debug' section
+            },
+        },
+    ],
+        "compounds": [
+        {
+            // START DEBUGGING ALL SERVICES AS ONE
+            // NOTE: IF ANY OF THE DEBUGGER CONNECTION IS FINISHED, THEN BOTH ARE FINISHED
+            "name": "START_DEBUGGING_ALL_SERVICES",
+            "configurations": ["debug-api-docker", "debug-app-chrome"],
+            "stopAll": true
+        }
+  ]
+}

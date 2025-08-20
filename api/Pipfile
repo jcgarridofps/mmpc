@@ -1,0 +1,44 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "5.1"
+djangorestframework = "*"
+django-cors-headers = "*"
+psycopg2-binary = "*"
+msal = "*"
+debugpy = "*"
+numpy = "*"
+pyodbc = "*"
+sqlalchemy = "*"
+lxml = "*"
+secure-smtplib = "*"
+djangorestframework-simplejwt = "*"
+pysftp = "*"
+paramiko = "*"
+match = "*"
+drf-api-logger = "*"
+django_dia = "*"
+django_apscheduler = "*"
+django-dbbackup = "*"
+pandas = "*"
+ete3 = "*"
+gunicorn = "*"
+python-dotenv = "*"
+django-axes = "*"
+django-ipware = "*"
+geoip2 = "*"
+whitenoise = "*"
+django-channels = "*"
+channels-redis = "*"
+django-channels-jwt = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+django-maintenance-mode = "*"
+pymongo = {version = "*", extras = ["snappy", "srv", "tls"]}
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
