@@ -17,13 +17,10 @@ export default async function LatestVariantAnalysis(){
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Latest Variant Analysis
-      </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
-        {/* NOTE: Uncomment this code in Chapter 7 */}
-
-        <div className="bg-white px-6">
+        <h3 className="pb-4 ml-2 text-sm font-medium">Latest annotations</h3>
+        
+        <div className="bg-white px-6 rounded-xl">
           {latestVariantAnalysis.map((analysis, i) => {
             return (
               <div
@@ -38,7 +35,7 @@ export default async function LatestVariantAnalysis(){
                 <div className="flex items-center">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {analysis.description}
+                      {analysis.id}
                     </p>
                     <p className="hidden text-sm text-gray-500 sm:block">
                       {formatDateToLocal(analysis.date)}
