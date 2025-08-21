@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { auth } from '@/auth';
+import { signOut } from '@/auth';
 
 const CreateAnalysisSchema = z.object({
   id: z.string(),
@@ -291,4 +292,8 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export async function logoutAction() {
+  await signOut({ redirectTo: '/' });
 }

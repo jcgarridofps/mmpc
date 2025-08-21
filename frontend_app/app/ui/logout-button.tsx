@@ -1,7 +1,8 @@
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
 import { lusitana } from './fonts';
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/20/solid';
-import { signOut } from '@/auth';
+import { logoutAction } from '../lib/actions';
+
 
 export default function LogoutButton() {
   return (
@@ -9,10 +10,7 @@ export default function LogoutButton() {
       className={`${lusitana.className} w-full h-full flex flex-col items-center justify-center leading-none text-white`}
     >
       <form className="w-full h-full"
-          action={async () => {
-            'use server';
-            await signOut({ redirectTo: '/' });
-          }}
+          action={logoutAction}
         >
           <button
         className="bg-blue-600 w-full h-full text-sm text-white transition-colors hover:bg-blue-400 flex flex-col items-center justify-center"
