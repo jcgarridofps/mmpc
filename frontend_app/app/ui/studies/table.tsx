@@ -1,6 +1,6 @@
 import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredVariantAnalysis } from '@/app/lib/data';
-import { ReviewAnalysis } from './buttons';
+// import { ReviewAnalysis } from './buttons';
 
 export type VariantAnalysis = {
   id: string;
@@ -30,13 +30,10 @@ export default async function DataTable({
                   ID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
+                  Description
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
                   Date
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Version
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -52,18 +49,17 @@ export default async function DataTable({
                   <td className="whitespace-nowrap px-3 py-3 pl-6">
                     {analysis.id}
                   </td>
+                  <td className="whitespace-nowrap px-3 py-3 pl-6"
+                  title={analysis.description}
+                  >
+                    {analysis.description}
+                  </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(analysis.date)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3 text-red-700">
-                    OUTDATED
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {analysis.status}
-                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <ReviewAnalysis id={analysis.id} />
+                      {/* <ReviewAnalysis id={analysis.id} /> */}
                     </div>
                   </td>
                 </tr>

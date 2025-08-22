@@ -1,6 +1,6 @@
 import Pagination from '@/app/ui/aux/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/variant-analysis/table';
+import Table from '@/app/ui/studies/table';
 import { CreateInvoice } from '@/app/ui/variant-analysis/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
@@ -8,7 +8,7 @@ import { Suspense } from 'react';
 import { fetchFilteredVariantAnalysisPages } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
-import { InformationCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
 
 export const metadata: Metadata = {
@@ -34,12 +34,8 @@ export default async function Page(props: {
         breadcrumbs={[
           { label: 'Patient: ENXXXXXXXXX', href: '/dashboard1/' },
           {
-            label: 'Study: SXXXXXXXXX',
+            label: 'Studies',
             href: `/dashboard2/`,
-          },
-          {
-            label: 'Annotations',
-            href: `/dashboard3/`,
             active: true,
           },
         ]}
@@ -47,18 +43,13 @@ export default async function Page(props: {
 
       <div className="p-4 pl-4 w-full h-14 bg-gray-50 rounded-xl mb-4 flex justify-between items-center">
         <InformationCircleIcon className="h-[30] w-[30] text-gray-500"/>
-        <p className="text-left w-full ml-4">Select one variant annotation or request a new one.</p>
+        <p className="text-left w-full ml-4">Select one study or create a new study for the patient.</p>
         <div className="h-full inline-block flex items-center ">
           <CreateInvoice />
         </div>
       </div>
 
-      <div className="p-4 pl-4 w-full h-14 bg-yellow-100 rounded-xl mb-4 flex justify-between items-center">
-        <ExclamationTriangleIcon className="h-[30] w-[30] text-gray-500"/>
-        <p className="text-left w-full ml-4">Current variant annotations are outdated. Requesting a new one is recommended</p>
-      </div>
-
-      <Search placeholder="Search variant annotation by ID, date or state. Separate filters by comma." />
+      <Search placeholder="Search study by ID, description or date. Separate filters by comma." />
 
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
