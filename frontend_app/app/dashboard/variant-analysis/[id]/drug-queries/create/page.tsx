@@ -8,25 +8,35 @@ export const metadata: Metadata = {
 
 export default async function PagePage(props: {
     params: Promise<{ id: string }>;
-  }) {
-    const {params} = await props
-    const {id} = await params
+}) {
+    const { params } = await props
+    const { id } = await params
     return (
         <main>
             <Breadcrumbs
                 breadcrumbs={[
-                    { label: 'Variant analysis', href: '/dashboard/variant-analysis' },
+                    { label: 'Patient: ENXXXXXXXXX', href: '/dashboard1/' },
                     {
-                        label: 'Drug queries', href: `/dashboard/variant-analysis/${id}/drug-queries`
+                        label: 'Study: SXXXXXXXXX',
+                        href: `/dashboard2/`,
                     },
                     {
-                        label: 'Create drug query',
-                        href: `/dashboard/variant-analysis/${id}/drug-queries/create`,
+                        label: 'Annotation: AXXXXXXXXX',
+                        href: `/dashboard3/`,
+                    },
+                    {
+                        label: 'New analysis',
+                        href: `/dashboard4/`,
                         active: true,
                     },
                 ]}
             />
-            <Form id={id}/>
+
+            <div className="p-4 pl-6 w-full h-14 bg-gray-50 rounded-xl mb-4">
+                Request a new analysis overt the current annotation.
+            </div>
+
+            <Form id={id} />
         </main>
     );
 }
