@@ -30,10 +30,16 @@ export default async function DrugQueriesTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  ID
+                </th>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                   Cancer types
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
+                </th>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  Version
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
@@ -51,11 +57,19 @@ export default async function DrugQueriesTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
+                      <p>{drug_query.id}</p>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                    <div className="flex items-center gap-3">
                       <p>{drug_query.cancer_types}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(drug_query.date)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3 text-red-700">
+                    OUTDATED
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {drug_query.status}

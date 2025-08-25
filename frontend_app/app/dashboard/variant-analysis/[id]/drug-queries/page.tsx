@@ -8,6 +8,7 @@ import { Suspense } from 'react';
 import { fetchFilteredDrugQueryPages } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 
 export const metadata: Metadata = {
   title: 'Drug Queries',
@@ -29,20 +30,45 @@ export default async function Page(props: {
   const totalPages = await fetchFilteredDrugQueryPages(query, variantAnalysisId);
 
   return (
-    <main>
+    <div className="w-full">
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Variant analysis', href: '/dashboard/variant-analysis' },
+          { label: 'Patient: ENXXXXXXXXX', href: '/dashboard1/' },
           {
-            label: 'Drug queries', href: `/dashboard/variant-analysis/${variantAnalysisId}/drug-queries`, active: true
+            label: 'Study: SXXXXXXXXX',
+            href: `/dashboard2/`,
+          },
+          {
+            label: 'Annotation: AXXXXXXXXX',
+            href: `/dashboard3/`,
+          },
+          {
+            label: 'Analyses',
+            href: `/dashboard4/`,
+            active: true,
           },
         ]}
       />
-      <div className="w-full">
-        <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-          <Search placeholder="Search analysis by patient ID, description, cancer types or state. Separate filters by comma." />
+
+      <div className="p-4 pl-4 w-full h-14 bg-gray-50 rounded-xl mb-4 flex justify-between items-center">
+        <InformationCircleIcon className="h-[30] w-[30] text-gray-500" />
+        <p className="text-left w-full ml-4">Select one analysis to review or request a new one.</p>
+        <div className="h-full inline-block flex items-center ">
           <CreateDrugQuery variant_analysis_uuid={variantAnalysisId} />
         </div>
+      </div>
+
+      <div className=" pb-4 w-full bg-gray-50 rounded-xl mb-4 flex-col items-center">
+        <p
+          className={`px-4 py-8 text-left text-l font-medium `}
+        >
+          Drug queries
+        </p>
+
+        <div className="ml-2 mr-2">
+          <Search placeholder="Search analysis by patient ID, description, cancer types or state. Separate filters by comma." />
+        </div>
+
         <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
           <DrugQueriesTable query={query} currentPage={currentPage} variant_analysis={variantAnalysisId} />
         </Suspense>
@@ -50,7 +76,8 @@ export default async function Page(props: {
           <Pagination totalPages={totalPages} />
         </div>
       </div>
-    </main>
+    </div>
+
 
 
   );
