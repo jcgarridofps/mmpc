@@ -1,7 +1,11 @@
-import { PlusIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
+'use client'
 
-export function CreateDrugQuery({variant_analysis_uuid}:{variant_analysis_uuid:string}) {
+import { PlusIcon, TrashIcon, EyeIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
+
+export function CreateDrugQuery({ variant_analysis_uuid }: { variant_analysis_uuid: string }) {
   return (
     <Link
       href={`/dashboard/variant-analysis/${variant_analysis_uuid}/drug-queries/create`}
@@ -13,34 +17,53 @@ export function CreateDrugQuery({variant_analysis_uuid}:{variant_analysis_uuid:s
   );
 }
 
-export function CreateClinicalReport({variant_analysis_uuid, drug_query_uuid}:{variant_analysis_uuid:string, drug_query_uuid: string}) {
+export function CreateClinicalReport({ variant_analysis_uuid, drug_query_uuid }: { variant_analysis_uuid: string, drug_query_uuid: string }) {
+
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    router.push(`/dashboard/variant-analysis/${variant_analysis_uuid}/drug-queries/${drug_query_uuid}/clinical-reports/create`);
+  }
+
   return (
-    <Link
-      href={`/dashboard/variant-analysis/${variant_analysis_uuid}/drug-queries/${drug_query_uuid}/clinical-reports/create`}
-      className="flex inline-block h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    <button
+      type="button"
+      className="h-10 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex justify-between items-center"
+      title='New report'
+      onClick={handleRedirect}
     >
-      <PlusIcon className="h-5 md:mr-[8]" />
-      <span className="hidden md:inline whitespace-nowrap">New clinical report</span>{' '}
-    </Link>
+      <PlusIcon className="h-5 mr-2" />
+      <span className="inline whitespace-nowrap mr-2 flex block text-center">
+        New report
+      </span>
+    </button>
   );
 }
 
-export function ClinicalReports({variant_analysis_uuid, drug_query_uuid}:{variant_analysis_uuid:string, drug_query_uuid: string}) {
+export function ClinicalReports({ variant_analysis_uuid, drug_query_uuid }: { variant_analysis_uuid: string, drug_query_uuid: string }) {
+
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    router.push(`/dashboard/variant-analysis/${variant_analysis_uuid}/drug-queries/${drug_query_uuid}/clinical-reports`);
+  }
+
   return (
-    <Link
-      href={`/dashboard/variant-analysis/${variant_analysis_uuid}/drug-queries/${drug_query_uuid}/clinical-reports`}
-      className="flex inline-block h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    <button
+      type="button"
+      className="w-10 h-10 aspect-square bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center"
+      title='Clinical reports'
+      onClick={handleRedirect}
     >
-      <EyeIcon className="h-5 md:mr-[8]" />
-      <span className="hidden md:inline whitespace-nowrap">Clinical reports</span>{' '}
-    </Link>
+      <DocumentTextIcon className="h-5 w-5" />
+    </button>
   );
 }
 
 export function ReviewDrugQuery({ id, query_id }: { id: string, query_id: string }) {
   return (
     <Link
-      href={ `/dashboard/variant-analysis/${id}/drug-queries/${query_id}/review`}
+      href={`/dashboard/variant-analysis/${id}/drug-queries/${query_id}/review`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <EyeIcon className="w-5" />
