@@ -49,8 +49,8 @@ export default async function Page(props: {
       />
       <div className="w-full">
         <div>
-                <ReportResult report_id={reportId}/>
-                </div>
+          <ReportResult report_id={reportId} />
+        </div>
       </div>
     </main>
 

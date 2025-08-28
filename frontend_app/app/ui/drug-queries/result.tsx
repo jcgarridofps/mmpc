@@ -98,58 +98,636 @@ export default async function DrugQueryResult(
           </div>
 
           {/*DRUGS RESULT HEADER*/}
-          <div className="p-4 pt-0 pb-0 pl-4 w-full h-14 bg-gray-50 rounded-xl mb-4 flex items-center">
+          <div className="p-4 pt-0 pb-0 h-14 bg-gray-50 rounded-xl mb-4 ml-4 mr-4 flex items-center">
             <div className='w-[4rem] h-full justify-center flex items-center'>
               <input
-                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
                 type="checkbox"
                 id="chb1"
                 name="chb1"
                 value="chb1"
-                /*checked={false}*/
-                /*onChange={}*/
+              /*checked={false}*/
+              /*onChange={}*/
               />
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Drug (family)</p>
+              <p className="text-center">Drug (family)</p>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Drug status</p>
+              <p className="text-center">Drug status</p>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Type of therapy</p>
+              <p className="text-center">Type of therapy</p>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Gene(s)</p>
+              <p className="text-center">Gene(s)</p>
+            </div>
+            <div className='w-[24rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+              <p className="text-center">Variant(s)</p>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Variant(s)</p>
+              <p className="text-center">Consequence</p>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Consequence</p>
+              <p className="text-center">Sample variant frequency</p>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Sample variant frequency</p>
+              <p className="text-center">ClinVar</p>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">ClinVar</p>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-left ml-4">Evidence</p>
+              <p className="text-center">Evidence</p>
             </div>
           </div>
 
           {/*TODO: DO FILTERS HERE*/}
+          {/*END TODO FILTERS*/}
 
-          <p className="font-medium ml-4 mb-4 ">Drug response: Sensitivity</p>
 
-          <div className="rounded-lg bg-green-100 p-4 mb-4">
+          <div className="h-full w-full flex-row rounded-lg bg-green-100 p-4 mb-4">
+            <p className="font-medium ml-4 mb-4 ">Drug response: Sensitivity</p>
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-green-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+
+
+
+
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-green-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-green-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-green-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
 
           </div>
 
-          <p className="font-medium ml-4 mb-4 ">Drug response: Resistance</p>
+          
 
-          <div className="rounded-lg bg-orange-100 p-4 mb-4">
+          <div className="h-full w-full flex-row rounded-lg bg-orange-100 p-4 mb-4">
+            <p className="font-medium ml-4 mb-4 ">Drug response: Resistance</p>
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+
+
+
+
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+            <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
+              <div className='w-[4rem] h-full justify-center flex items-center'>
+                <input
+                  className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
+                  type="checkbox"
+                  id="chb1"
+                  name="chb1"
+                  value="chb1"
+                /*checked={false}*/
+                /*onChange={}*/
+                />
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>EVEROLIMUS</p>
+                  <p>(inhibitor mTo)</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>Approved for lung cancer</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex items-center'>
+                  <p>Targeted</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p>KRAS</p>
+                  <p>MTOR</p>
+                  <p>PTEN</p>
+                </div>
+              </div>
+              <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                  <p >c.34G{'>'}T / p.Gly12Cys</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">missense</p>
+                  <p className="flex items-center">stop_gained</p>
+                  <p className="flex items-center">splice_acceptor</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>
+                  <p className="flex items-center">0.1 (1/10)</p>  
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                  <p className="flex items-center">Pathogenic</p>
+                </div>
+              </div>
+              <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                <div className='flex-row items-center'>
+                  <p className="flex items-center">FDA</p>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
 
           </div>
 
