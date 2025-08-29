@@ -142,429 +142,216 @@ export default async function DrugQueryResult(
 
           {/*TODO: DO FILTERS HERE*/}
 
-          <div className="p-4 pt-[1rem] pb-[1rem] h-30 bg-gray-100 rounded-xl mb-4 ml-4 mr-4 flex items-center">
+          <div className="p-4 pt-[1rem] pb-[1rem] h-[20rem] bg-gray-50 rounded-xl mb-4 ml-4 mr-4 flex">
             <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-center">Drug (family)</p>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-center">Drug status</p>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-center">Type of therapy</p>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-center">Gene(s)</p>
-            </div>
-            <div className='w-[24rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-center">Variant(s)</p>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-center">Consequence</p>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <p className="text-center">Sample variant frequency</p>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
-                    <Search placeholder="" />
-                  </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate flex-1' title='Pathogenic'>Pathogenic</p>
-                      <div className='w-[2rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='h-full flex-row items-center justify-center flex-row'>
-                <div className="w-full pr-[1rem] pl-[1rem] mb-[1rem]">
-                  <Search placeholder="" />
-                </div>
-                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                  <div className='pl-[1rem] pr-[1rem] w-full flex justify-center items-center'>
-                      <p className='truncate flex-1' title='FDA'>FDA</p>
-                      <div className='w-[2rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-
-          <div className="p-4 pt-[1rem] pb-[1rem] h-[15rem] bg-gray-100 rounded-xl mb-4 ml-4 mr-4 flex items-center">
-            <div className='w-[4rem] h-full'>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
-                <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                  {/* <Search placeholder="" /> */}
+                <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
+                  <Search placeholder="" />
                 </div>
                 <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                  {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
                   <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
+                    <div className='w-[1rem] h-full flex justify-center items-center'>
                       <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
                         type="checkbox"
                         id="chb1"
                         name="chb1"
                         value="chb1"
                       />
                     </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='truncate' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                      <input
-                        className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div> */}
-                </div>
-              </div>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                    {/* <Search placeholder="" /> */}
-                  </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='Approved for lung cancer'>Approved for lung cancer</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div> */}
                   </div>
                 </div>
               </div>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                    {/* <Search placeholder="" /> */}
-                  </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='Targeted'>Targeted</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div> */}
+              <div className='h-full w-full flex-row items-center justify-center'>
+                <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
+                  <Search placeholder="" />
+                </div>
+                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
+                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='Approved for lung cancer'>Approved for lung cancer</p>
+                    <div className='w-[1rem] h-full flex justify-center items-center'>
+                      <input
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                        type="checkbox"
+                        id="chb1"
+                        name="chb1"
+                        value="chb1"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                    {/* <Search placeholder="" /> */}
+              <div className='h-full w-full flex-row items-center justify-center'>
+                <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
+                  <Search placeholder="" />
+                </div>
+                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
+                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='Targeted'>Targeted</p>
+                    <div className='w-[1rem] h-full flex justify-center items-center'>
+                      <input
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                        type="checkbox"
+                        id="chb1"
+                        name="chb1"
+                        value="chb1"
+                      />
+                    </div>
                   </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='KRAS'>KRAS</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div> */}
+                </div>
+              </div>
+            </div>
+            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+              <div className='h-full w-full flex-row items-center justify-center'>
+                <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
+                  <Search placeholder="" />
+                </div>
+                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
+                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='KRAS'>KRAS</p>
+                    <div className='w-[1rem] h-full flex justify-center items-center'>
+                      <input
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                        type="checkbox"
+                        id="chb1"
+                        name="chb1"
+                        value="chb1"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className='w-[24rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                    {/* <Search placeholder="" /> */}
-                  </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='c.34G>T/pGly12Cys'>c.34G{'>'}T/pGly12Cys</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div> */}
-                  </div>
+              <div className='w-full h-full flex-row items-center justify-center'>
+                <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
+                  <Search placeholder="" />
                 </div>
-              </div>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                    {/* <Search placeholder="" /> */}
-                  </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='missense'>missense</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div> */}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full w-full flex-row items-center justify-center flex-row'>
-                  <div className='flex justify-center items-center w-full pl-2 pr-2 mb-[1rem]' >
-                    {/* <div className="rounded-md">
-                      <select
-                          id="procedure"
-                          name="procedure"
-                          className="rounded-md border border-gray-200 text-sm outline-2 placeholder:text-gray-500"
-                          aria-describedby="sample-kind-error"
-                        >
-                          <option value="<" >{'<'}</option>
-                          <option value=">" >{'>'}</option>
-                          <option value="=" >{'='}</option>
-                          <option value="<=" >{'<='}</option>
-                          <option value=">=" >{'>='}</option>
-                        </select>
+                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
+                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='c.34G>T/pGly12Cys'>c.34G{'>'}T/pGly12Cys</p>
+                    <div className='w-[1rem] h-full flex justify-center items-center'>
+                      <input
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                        type="checkbox"
+                        id="chb1"
+                        name="chb1"
+                        value="chb1"
+                      />
                     </div>
-                    <div className='w-full'>
-                      <Search placeholder="" />
-                    </div> */}
-                  </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='missense'>missense</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div>*/}
                   </div>
                 </div>
               </div>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                    {/* <Search placeholder="" /> */}
-                  </div>
-                  <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='Pathogenic'>Pathogenic</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
-                        <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
-                          type="checkbox"
-                          id="chb1"
-                          name="chb1"
-                          value="chb1"
-                        />
-                      </div>
-                    </div> */}
+              <div className='h-full w-full flex-row items-center justify-center'>
+                <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
+                  <Search placeholder="" />
+                </div>
+                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
+                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='missense'>missense</p>
+                    <div className='w-[1rem] h-full flex justify-center items-center'>
+                      <input
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                        type="checkbox"
+                        id="chb1"
+                        name="chb1"
+                        value="chb1"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
-              <div className='w-[12rem] border-l-[2px] border-white h-full'>
-                <div className='h-full flex-row items-center justify-center flex-row'>
-                  <div className="w-[1rem] ml-2 mr-2 mb-[1rem]">
-                    {/* <Search placeholder="" /> */}
+              <div className='h-full w-full flex-row items-center justify-center'>
+                <div className='flex justify-center items-center w-full pl-[1rem] pr-[1rem] mb-[1rem]' >
+                  <div className="rounded-md">
+                    <select
+                      id="procedure"
+                      name="procedure"
+                      className="w-[4rem] h-[2.5rem] rounded-md border border-gray-200 text-sm outline-2 placeholder:text-gray-500"
+                      aria-describedby="sample-kind-error"
+                    >
+                      <option value="<" >{'<'}</option>
+                      <option value=">" >{'>'}</option>
+                      <option value="=" >{'='}</option>
+                      <option value="<=" >{'<='}</option>
+                      <option value=">=" >{'>='}</option>
+                    </select>
+                  </div>
+                  <div className='w-full'>
+                    <Search placeholder="" />
+                  </div>
+                </div>
+                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
+                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='missense'>missense</p>
+                    <div className='w-[1rem] h-full flex justify-center flex items-center'>
+                      <input
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                        type="checkbox"
+                        id="chb1"
+                        name="chb1"
+                        value="chb1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+              <div className='h-full w-full flex-row items-center justify-center'>
+                <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
+                  <Search placeholder="" />
+                </div>
+                <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
+                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                    <p className='w-[2rem] truncate flex-1' title='Pathogenic'>Pathogenic</p>
+                    <div className='w-[1rem] h-full flex justify-center items-center'>
+                      <input
+                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                        type="checkbox"
+                        id="chb1"
+                        name="chb1"
+                        value="chb1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='w-[12rem] border-l-[2px] border-white h-full'>
+              <div className='h-full flex-row'>
+                <div className='h-full w-full flex-row items-center justify-center'>
+                  <div className="w-full pr-[1rem] pl-[1rem] mb-[1rem]">
+                    <Search placeholder="" />
                   </div>
                   <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                    {/* <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                      <p className='truncate' title='FDA'>FDA</p>
-                      <div className='w-[4rem] h-full flex justify-center flex items-center'>
+                    <div className='pl-[1rem] pr-[1rem] w-full flex justify-center items-center'>
+                      <p className='w-[2rem] truncate flex-1' title='FDA'>FDA</p>
+                      <div className='w-[1rem] h-full flex justify-center flex items-center'>
                         <input
-                          className="rounded-sm w-5 h-5 aspect-square flex items-center justify-center"
+                          className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
                           type="checkbox"
                           id="chb1"
                           name="chb1"
                           value="chb1"
                         />
                       </div>
-                    </div> */}
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
           {/*END TODO FILTERS*/}
