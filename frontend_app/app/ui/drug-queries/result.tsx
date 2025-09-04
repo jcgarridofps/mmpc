@@ -8,9 +8,10 @@ import DrugQueryResultGenesPanel from './result-genes-panel';
 
 export default async function DrugQueryResult(
   { query_id, analysis_id }: { query_id: string, analysis_id: string }) {
-  const drug_query_result: JSON = await fetchDrugQueryResult(query_id);
-  const variant_analysis_result: JSON = await fetchVariantAnalysisResult(analysis_id);
-  const affected_genes: string[] = JSON.parse(JSON.stringify(variant_analysis_result)).affectedGenes;
+  const drug_query_result: any = await fetchDrugQueryResult(query_id);
+  const variant_analysis_result: any = await fetchVariantAnalysisResult(analysis_id);
+  const affected_genes: string[] = variant_analysis_result.affectedGenes;
+  const n_variants: Number = variant_analysis_result.variantsInInput;
   const presence = await fetchPresence(affected_genes);
   const cancer_types: string = "Breast, Colon";
 
@@ -20,21 +21,21 @@ export default async function DrugQueryResult(
 
     <div className="mt-6 flow-root">
 
-      <DrugQueryResultGenesPanel affected_genes={affected_genes} presence={presence}/>      
+      <DrugQueryResultGenesPanel affected_genes={affected_genes} presence={presence} n_variants={n_variants} />
 
       <div className="p-4 pl-4 w-full h-14 bg-gray-50 rounded-xl mb-4 flex justify-between items-center">
         <p className="text-left w-full">{`Selected cancer types: ${cancer_types}`}.</p>
       </div>
 
-      <DrugQueryResultTable query_result={JSON.stringify({ "drug_query_result": drug_query_result, "variant_analysis_result": variant_analysis_result, "presence": presence }, null, 2)}/>
+      <DrugQueryResultTable query_result={{ "drug_query_result": drug_query_result, "variant_analysis_result": variant_analysis_result, "presence": presence }} />
 
-      <div className='mt-16'>
-            <pre>
-              <code>
-                {JSON.stringify({ "drug_query_result": drug_query_result, "variant_analysis_result": variant_analysis_result, "presence": presence }, null, 2)}
-              </code>
-            </pre>
-          </div>
+{/*       <div className='mt-16'>
+        <pre>
+          <code>
+            {JSON.stringify({ "drug_query_result": drug_query_result, "variant_analysis_result": variant_analysis_result, "presence": presence }, null, 2)}
+          </code>
+        </pre>
+      </div> */}
 
 
     </div>

@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 
 export default function DrugQueryResultGenesPanel(
-  { affected_genes, presence }: { affected_genes: string[], presence: any }) {
+  { affected_genes, presence, n_variants }: { affected_genes: string[], presence: any, n_variants: Number }) {
 
   const [enableGenesExcluded, setEnableGenesExcluded] = useState<boolean>(false);
   const [enableGenesAnalyzed, setEnableGenesAnalyzed] = useState<boolean>(false);
@@ -28,7 +28,7 @@ export default function DrugQueryResultGenesPanel(
           </button>
         </div>
         <div className='flex-1 border-l-[2px] border-white h-full justify-center flex items-center'>
-          <p className="text-left ml-4">Variants:.</p>
+          <p className="text-left ml-4">Variants: {n_variants.toString()}</p>
           <button
             type="button"
             className="ml-4 w-7 h-7 aspect-square border-2 border-gray-300 bg-gray-50 text-black rounded-lg hover:bg-gray-300 flex items-center justify-center"

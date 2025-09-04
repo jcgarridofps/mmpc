@@ -4,20 +4,37 @@ import { EyeIcon, InformationCircleIcon, FunnelIcon } from '@heroicons/react/24/
 import Search from '../search';
 import { useState } from 'react';
 
-
+{/**
+  
+  DRUG FAMILY-> drug_query_result.geneDrugGroup.standardDrugName
+  DRUG STATUS-> drug_query_result.geneDrugGroup.statusDescription
+  TYPE OF THERAPY-> drug_query_result.geneDrugGroup.therapy
+  GENES-> drug_query_result.geneDrugGroup.gene[].geneSymbol
+  VARIANTS-> variant_analysis_result.affectedGenesInfo[GENE].HGVS_cDNA+'/'+ HGVS_protein
+  CONSEQUENCE-> variant_analysis_result.affectedGenesInfo[GEN].consequence
+  SAMPLE VARIANT FREQUENCY-> ¿?
+  CLINVAR-> variant_analysis_result.affectedGenesInfo[GEN].cosmic_id.split':'[1]? ("cosmic_id":"COSV67420943:PATHOGENIC",)
+  EVIDENCE-> drug_query_result.geneDrugGroup.geneDrugInfo.drugStatusInfo
+  
+  */}
 
 export default function DrugQueryResultTable(
-  { query_result }: { query_result: string }) {
+  { query_result }: { query_result: any }) {
 
   const [enableFiltersView, setEnableFiltersView] = useState<boolean>(false);
+
+  if (!query_result.drug_query_result || !query_result.drug_query_result.geneDrugGroup) {
+    return <p>No drug data available.</p>;
+  }
 
   return (
 
 
 
     <div className="inline-block w-full align-middle">
+      
       <div className="rounded-lg bg-gray-50 p-4 w-full">
-
+    {/* <p>{JSON.stringify(query_result)}</p> */}
         {/*DRUGS RESULT TOP*/}
         <div className='flex text-left mb-4 '>
           <p className="font-medium ml-4">
@@ -26,9 +43,9 @@ export default function DrugQueryResultTable(
           <button
             type="button"
             className={`ml-4 w-7 h-7 aspect-square border-2 border-gray-300 text-black rounded-lg hover:bg-gray-300 flex items-center justify-center
-              ${enableFiltersView ? 'bg-gray-300':'bg-gray-50'}`}
+              ${enableFiltersView ? 'bg-gray-300' : 'bg-gray-50'}`}
             title='Clinical reports'
-            onClick={()=>{setEnableFiltersView(!enableFiltersView)}}
+            onClick={() => { setEnableFiltersView(!enableFiltersView) }}
           >
             <FunnelIcon className="h-5 w-5" />
           </button>
@@ -303,286 +320,138 @@ export default function DrugQueryResultTable(
 
         <div className="h-full w-full flex-row rounded-lg bg-green-100 p-4 mb-4">
           <p className="font-medium ml-4 mb-4 ">Drug response: Sensitivity</p>
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-green-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
+
+
+
+          {
+            query_result.drug_query_result.geneDrugGroup
+              .filter((drug: any) => drug.geneDrugInfo.every((info: any) => info.sensitivity.includes("SENSITIVITY")))
+              .map((drug: any, index: number) => (
+
+                <div key={drug.standardDrugName} className={`pl-4 pr-4 w-full h-[9rem] 
+              ${index % 2 === 1 ? "bg-green-100" : "bg-green-50"} 
+              flex items-center pt-[1rem] pb-[1rem] justify-center`}> {/* (h-3*nlines) */}
+
+
+                  <div className='w-[4rem] h-full justify-center flex items-center'>
+                    <input
+                      className="rounded-sm w-7 h-7 aspect-square"
+                      type="checkbox"
+                      id="chb1"
+                      name="chb1"
+                      value="chb1"
+                    /*checked={false}*/
+                    /*onChange={}*/
+                    />
+                  </div>
+
+                  <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      <p>{drug.standardDrugName}</p>
+                    </div>
+                  </div>
+
+                  <div className='w-[11rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      <p>{drug.statusDescription ? drug.statusDescription : 'no data'}</p>
+                    </div>
+                  </div>
+
+                  <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex items-center break-all'>
+                      <p>{
+                        drug.therapy?.includes('TARGETED') ? 'Targeted' :
+                          drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                            drug.therapy ? drug.therapy :
+                              'no data'}</p>
+                    </div>
+                  </div>
+                  <div className='w-[6rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      {drug.gene.map((gene: any) => (
+                        <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
+                      ))}
+                    </div>
+                  </div>
+                  <div className='w-[22rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+
+                      {drug.gene.map((gene: any) => (
+                        <p key={'HGVS' + gene.geneSymbol}>{
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
+                          ' / ' +
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
+                        }</p>
+                      ))}
+
+                    </div>
+                  </div>
+
+                  <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      {drug.gene.map((gene: any) => (
+                        <p key={'consequence_' + gene.geneSymbol}>{
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence
+                        }</p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className='w-[8rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center'>
+
+                      {drug.gene.map((gene: any) => (
+                        <p key={'frequency_' + gene.geneSymbol}>{
+                          '0.1 (1/10)'
+                        }</p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center'>
+
+                      {drug.gene.map((gene: any) => (
+                        <p key={'CLINVAR_' + gene.geneSymbol}>{
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
+                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
+                              : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
+                            : 'No data'
+                        }</p>
+                      ))}
+
+                    </div>
+                  </div>
+                  <div className='w-[9rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center'>
+
+
+                      {drug.geneDrugInfo.map((info: any, index: number) => (
+
+                        < p key={'info_' + index} >
+                          {info.drugStatusInfo?.includes('FDA') ? 'FDA'
+                            : info.drugStatusInfo?.includes('Clinical Trials') ? 'Clinical Trials'
+                              : info.drugStatusInfo ? info.drugStatusInfo : 'no data'}
+                        </p>
+
+
+                      ))}
+
+
+
+                    </div>
+                  </div>
+                </div>
+
+              ))
+          }
 
 
 
 
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-green-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-green-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-green-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
+
+
 
 
 
@@ -598,298 +467,140 @@ export default function DrugQueryResultTable(
 
         <div className="h-full w-full flex-row rounded-lg bg-orange-100 p-4 mb-4">
           <p className="font-medium ml-4 mb-4 ">Drug response: Resistance</p>
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
 
 
 
+          {
+            query_result.drug_query_result.geneDrugGroup
+              .filter((drug: any) => drug.geneDrugInfo.some((info: any) => info.sensitivity.includes("SENSITIVITY")))
+              .map((drug: any, index: number) => (
 
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-100 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
-          <div className="pl-4 pr-4 w-full h-[9rem] bg-orange-50 flex items-center pt-[1rem] pb-[1rem] justify-center"> {/* (h-3*nlines) */}
-            <div className='w-[4rem] h-full justify-center flex items-center'>
-              <input
-                className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
-                type="checkbox"
-                id="chb1"
-                name="chb1"
-                value="chb1"
-              /*checked={false}*/
-              /*onChange={}*/
-              />
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>EVEROLIMUS</p>
-                <p>(inhibitor mTo)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>Approved for lung cancer</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex items-center'>
-                <p>Targeted</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p>KRAS</p>
-                <p>MTOR</p>
-                <p>PTEN</p>
-              </div>
-            </div>
-            <div className='w-[24rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-                <p >c.34G{'>'}T / p.Gly12Cys</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">missense</p>
-                <p className="flex items-center">stop_gained</p>
-                <p className="flex items-center">splice_acceptor</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-                <p className="flex items-center">0.1 (1/10)</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-                <p className="flex items-center">Pathogenic</p>
-              </div>
-            </div>
-            <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-              <div className='flex-row items-center'>
-                <p className="flex items-center">FDA</p>
-              </div>
-            </div>
-          </div>
+                <div key={drug.standardDrugName} className={`pl-4 pr-4 w-full h-[9rem] 
+              ${index % 2 === 1 ? "bg-orange-100" : "bg-orange-50"} 
+              flex items-center pt-[1rem] pb-[1rem] justify-center`}> {/* (h-3*nlines) */}
+
+
+                  <div className='w-[4rem] h-full justify-center flex items-center'>
+                    <input
+                      className="rounded-sm w-7 h-7 aspect-square"
+                      type="checkbox"
+                      id="chb1"
+                      name="chb1"
+                      value="chb1"
+                    /*checked={false}*/
+                    /*onChange={}*/
+                    />
+                  </div>
+
+                  <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      <p>{drug.standardDrugName}</p>
+                    </div>
+                  </div>
+
+                  <div className='w-[11rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      <p>{drug.statusDescription ? drug.statusDescription : 'no data'}</p>
+                    </div>
+                  </div>
+
+                  <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex items-center break-all'>
+                      <p>{
+                        drug.therapy?.includes('TARGETED') ? 'Targeted' :
+                          drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                            drug.therapy ? drug.therapy :
+                              'no data'}</p>
+                    </div>
+                  </div>
+                  <div className='w-[6rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      {drug.gene.map((gene: any) => (
+                        <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
+                      ))}
+                    </div>
+                  </div>
+                  <div className='w-[22rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+
+                      {drug.gene.map((gene: any) => (
+                        <p key={'HGVS' + gene.geneSymbol}>{
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
+                          ' / ' +
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
+                        }</p>
+                      ))}
+
+                    </div>
+                  </div>
+
+                  <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center break-all'>
+                      {drug.gene.map((gene: any) => (
+                        <p key={'consequence_' + gene.geneSymbol}>{
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence
+                        }</p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className='w-[8rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center'>
+
+                      {drug.gene.map((gene: any) => (
+                        <p key={'frequency_' + gene.geneSymbol}>{
+                          '0.1 (1/10)'
+                        }</p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center'>
+
+                      {drug.gene.map((gene: any) => (
+                        <p key={'CLINVAR_' + gene.geneSymbol}>{
+                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
+                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
+                              : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
+                            : 'No data'
+                        }</p>
+                      ))}
+
+                    </div>
+                  </div>
+                  <div className='w-[9rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center'>
+
+
+                      {drug.geneDrugInfo.map((info: any, index: number) => (
+
+                        < p key={'info_' + index} >
+                          {info.drugStatusInfo?.includes('FDA') ? 'FDA'
+                            : info.drugStatusInfo?.includes('Clinical Trials') ? 'Clinical Trials'
+                              : info.drugStatusInfo ? info.drugStatusInfo : 'no data'}
+                        </p>
+
+
+                      ))}
 
 
 
+                    </div>
+                  </div>
+                </div>
 
-
-
-
-
+              ))
+          }
 
         </div>
 
+          
+
       </div>
-    </div>
+
+
+    </div >
   );
 }
