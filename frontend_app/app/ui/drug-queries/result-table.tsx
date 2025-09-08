@@ -3,6 +3,7 @@
 import { EyeIcon, InformationCircleIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import Search from '../search';
 import { useState } from 'react';
+import { title } from 'process';
 
 {/**
   
@@ -32,9 +33,9 @@ export default function DrugQueryResultTable(
 
 
     <div className="inline-block w-full align-middle">
-      
+
       <div className="rounded-lg bg-gray-50 p-4 w-full">
-    {/* <p>{JSON.stringify(query_result)}</p> */}
+        {/* <p>{JSON.stringify(query_result)}</p> */}
         {/*DRUGS RESULT TOP*/}
         <div className='flex text-left mb-4 '>
           <p className="font-medium ml-4">
@@ -67,28 +68,28 @@ export default function DrugQueryResultTable(
           <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Drug (family)</p>
           </div>
-          <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+          <div className='w-[11rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Drug status</p>
           </div>
-          <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+          <div className='w-[10rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Type of therapy</p>
           </div>
-          <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+          <div className='w-[6rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Gene(s)</p>
           </div>
-          <div className='w-[24rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+          <div className='w-[18rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Variant(s)</p>
           </div>
           <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Consequence</p>
           </div>
-          <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+          <div className='w-[13rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Sample variant frequency</p>
           </div>
-          <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+          <div className='w-[10rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">ClinVar</p>
           </div>
-          <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+          <div className='w-[9rem] border-l-[2px] border-white h-full justify-center flex items-center'>
             <p className="text-center">Evidence</p>
           </div>
         </div>
@@ -120,7 +121,7 @@ export default function DrugQueryResultTable(
                 </div>
               </div>
             </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[11rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
                   <Search placeholder="" />
@@ -141,7 +142,7 @@ export default function DrugQueryResultTable(
                 </div>
               </div>
             </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[10rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
                   <Search placeholder="" />
@@ -162,7 +163,7 @@ export default function DrugQueryResultTable(
                 </div>
               </div>
             </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[6rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
                   <Search placeholder="" />
@@ -183,7 +184,7 @@ export default function DrugQueryResultTable(
                 </div>
               </div>
             </div>
-            <div className='w-[24rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[18rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='w-full h-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
                   <Search placeholder="" />
@@ -225,14 +226,14 @@ export default function DrugQueryResultTable(
                 </div>
               </div>
             </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[13rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className='flex justify-center items-center w-full pl-[1rem] pr-[1rem] mb-[1rem]' >
                   <div className="rounded-md">
                     <select
                       id="procedure"
                       name="procedure"
-                      className="w-[4rem] h-[2.5rem] rounded-md border border-gray-200 text-sm outline-2 placeholder:text-gray-500"
+                      className="w-[5rem] h-[2.5rem] rounded-md border border-gray-200 text-sm outline-2 placeholder:text-gray-500"
                       aria-describedby="sample-kind-error"
                     >
                       <option value="<" >{'<'}</option>
@@ -262,7 +263,7 @@ export default function DrugQueryResultTable(
                 </div>
               </div>
             </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[10rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
                   <Search placeholder="" />
@@ -283,7 +284,7 @@ export default function DrugQueryResultTable(
                 </div>
               </div>
             </div>
-            <div className='w-[12rem] border-l-[2px] border-white h-full'>
+            <div className='w-[9rem] border-l-[2px] border-white h-full'>
               <div className='h-full flex-row'>
                 <div className='h-full w-full flex-row items-center justify-center'>
                   <div className="w-full pr-[1rem] pl-[1rem] mb-[1rem]">
@@ -309,11 +310,6 @@ export default function DrugQueryResultTable(
             </div>
           </div>
         }
-
-
-
-
-
 
         {/*END TODO FILTERS*/}
 
@@ -346,58 +342,77 @@ export default function DrugQueryResultTable(
                   </div>
 
                   <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
-                      <p>{drug.standardDrugName}</p>
+                    <div className='flex-row items-center break-all line-clamp-3 text-center'>
+                      <p title={drug.standardDrugName}>{drug.standardDrugName}</p>
                     </div>
                   </div>
 
                   <div className='w-[11rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
-                      <p>{drug.statusDescription ? drug.statusDescription : 'no data'}</p>
+                    <div className='flex-row items-center line-clamp-3 text-center'>
+                      <p title={drug.statusDescription ? drug.statusDescription : 'no data'}>{drug.statusDescription ? drug.statusDescription : 'no data'}</p>
                     </div>
                   </div>
 
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex items-center break-all'>
-                      <p>{
-                        drug.therapy?.includes('TARGETED') ? 'Targeted' :
-                          drug.therapy?.includes('COMBINATION') ? 'Combination' :
-                            drug.therapy ? drug.therapy :
-                              'no data'}</p>
+                    <div className='flex items-center break-all line-clamp-3 text-center'>
+                      <p
+                        title={
+                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
+                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                              drug.therapy ? drug.therapy :
+                                'no data'
+                        }
+                      >{
+                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
+                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                              drug.therapy ? drug.therapy :
+                                'no data'}</p>
                     </div>
                   </div>
                   <div className='w-[6rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
+                    <div className='flex-row items-center break-all text-center'>
                       {drug.gene.map((gene: any) => (
                         <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
                       ))}
                     </div>
                   </div>
-                  <div className='w-[22rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
+                  <div className='w-[18rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
-                        <p key={'HGVS' + gene.geneSymbol}>{
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
-                          ' / ' +
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
-                        }</p>
+                        <p
+                          className='truncate'
+                          key={'HGVS' + gene.geneSymbol}
+                          title={
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
+                            ' / ' +
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
+                          }
+                        >{
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
+                            ' / ' +
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
+                          }</p>
                       ))}
 
                     </div>
                   </div>
 
                   <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
+                    <div className='flex-row items-center truncate text-center'>
                       {drug.gene.map((gene: any) => (
-                        <p key={'consequence_' + gene.geneSymbol}>{
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence
-                        }</p>
+                        <p
+                          className='truncate'
+                          key={'consequence_' + gene.geneSymbol}
+                          title={query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence}
+                        >{
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence
+                          }</p>
                       ))}
                     </div>
                   </div>
 
-                  <div className='w-[8rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                  <div className='w-[13rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center'>
 
                       {drug.gene.map((gene: any) => (
@@ -409,27 +424,36 @@ export default function DrugQueryResultTable(
                   </div>
 
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center'>
+                    <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
-                        <p key={'CLINVAR_' + gene.geneSymbol}>{
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
-                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
-                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
-                              : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
-                            : 'No data'
-                        }</p>
+                        <p
+                          className='truncate'
+                          title={
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
+                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
+                                query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
+                                : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
+                              : 'No data'
+                          }
+                          key={'CLINVAR_' + gene.geneSymbol}>{
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
+                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
+                                query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
+                                : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
+                              : 'No data'
+                          }</p>
                       ))}
 
                     </div>
                   </div>
                   <div className='w-[9rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center'>
+                    <div className='flex-row items-center truncate text-center'>
 
 
                       {drug.geneDrugInfo.map((info: any, index: number) => (
 
-                        < p key={'info_' + index} >
+                        < p className='truncate' key={'info_' + index} >
                           {info.drugStatusInfo?.includes('FDA') ? 'FDA'
                             : info.drugStatusInfo?.includes('Clinical Trials') ? 'Clinical Trials'
                               : info.drugStatusInfo ? info.drugStatusInfo : 'no data'}
@@ -466,13 +490,13 @@ export default function DrugQueryResultTable(
 
 
         <div className="h-full w-full flex-row rounded-lg bg-orange-100 p-4 mb-4">
-          <p className="font-medium ml-4 mb-4 ">Drug response: Resistance</p>
+          <p className="font-medium ml-4 mb-4 ">Drug response: Resistance / mixed</p>
 
 
 
           {
             query_result.drug_query_result.geneDrugGroup
-              .filter((drug: any) => drug.geneDrugInfo.some((info: any) => info.sensitivity.includes("SENSITIVITY")))
+              .filter((drug: any) => drug.geneDrugInfo.some((info: any) => info.sensitivity.includes("RESISTANCE")))
               .map((drug: any, index: number) => (
 
                 <div key={drug.standardDrugName} className={`pl-4 pr-4 w-full h-[9rem] 
@@ -493,58 +517,77 @@ export default function DrugQueryResultTable(
                   </div>
 
                   <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
-                      <p>{drug.standardDrugName}</p>
+                    <div className='flex-row items-center break-all line-clamp-3 text-center'>
+                      <p title={drug.standardDrugName}>{drug.standardDrugName}</p>
                     </div>
                   </div>
 
                   <div className='w-[11rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
-                      <p>{drug.statusDescription ? drug.statusDescription : 'no data'}</p>
+                    <div className='flex-row items-center line-clamp-3 text-center'>
+                      <p title={drug.statusDescription ? drug.statusDescription : 'no data'}>{drug.statusDescription ? drug.statusDescription : 'no data'}</p>
                     </div>
                   </div>
 
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex items-center break-all'>
-                      <p>{
-                        drug.therapy?.includes('TARGETED') ? 'Targeted' :
-                          drug.therapy?.includes('COMBINATION') ? 'Combination' :
-                            drug.therapy ? drug.therapy :
-                              'no data'}</p>
+                    <div className='flex items-center break-all line-clamp-3 text-center'>
+                      <p
+                        title={
+                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
+                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                              drug.therapy ? drug.therapy :
+                                'no data'
+                        }
+                      >{
+                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
+                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                              drug.therapy ? drug.therapy :
+                                'no data'}</p>
                     </div>
                   </div>
                   <div className='w-[6rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
+                    <div className='flex-row items-center break-all text-center'>
                       {drug.gene.map((gene: any) => (
                         <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
                       ))}
                     </div>
                   </div>
-                  <div className='w-[22rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
+                  <div className='w-[18rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                    <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
-                        <p key={'HGVS' + gene.geneSymbol}>{
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
-                          ' / ' +
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
-                        }</p>
+                        <p
+                          className='truncate'
+                          key={'HGVS' + gene.geneSymbol}
+                          title={
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
+                            ' / ' +
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
+                          }
+                        >{
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_cDNA +
+                            ' / ' +
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.HGVS_protein
+                          }</p>
                       ))}
 
                     </div>
                   </div>
 
                   <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center break-all'>
+                    <div className='flex-row items-center truncate text-center'>
                       {drug.gene.map((gene: any) => (
-                        <p key={'consequence_' + gene.geneSymbol}>{
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence
-                        }</p>
+                        <p
+                          className='truncate'
+                          key={'consequence_' + gene.geneSymbol}
+                          title={query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence}
+                        >{
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.consequence
+                          }</p>
                       ))}
                     </div>
                   </div>
 
-                  <div className='w-[8rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                  <div className='w-[13rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center'>
 
                       {drug.gene.map((gene: any) => (
@@ -556,27 +599,36 @@ export default function DrugQueryResultTable(
                   </div>
 
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center'>
+                    <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
-                        <p key={'CLINVAR_' + gene.geneSymbol}>{
-                          query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
-                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
-                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
-                              : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
-                            : 'No data'
-                        }</p>
+                        <p
+                          className='truncate'
+                          title={
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
+                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
+                                query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
+                                : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
+                              : 'No data'
+                          }
+                          key={'CLINVAR_' + gene.geneSymbol}>{
+                            query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id ?
+                              query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1] ?
+                                query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id?.split(':')[1]
+                                : query_result.variant_analysis_result?.affectedGenesInfo?.[gene.geneSymbol]?.cosmic_id
+                              : 'No data'
+                          }</p>
                       ))}
 
                     </div>
                   </div>
                   <div className='w-[9rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex-row items-center'>
+                    <div className='flex-row items-center truncate text-center'>
 
 
                       {drug.geneDrugInfo.map((info: any, index: number) => (
 
-                        < p key={'info_' + index} >
+                        < p className='truncate' key={'info_' + index} >
                           {info.drugStatusInfo?.includes('FDA') ? 'FDA'
                             : info.drugStatusInfo?.includes('Clinical Trials') ? 'Clinical Trials'
                               : info.drugStatusInfo ? info.drugStatusInfo : 'no data'}
@@ -596,7 +648,7 @@ export default function DrugQueryResultTable(
 
         </div>
 
-          
+
 
       </div>
 

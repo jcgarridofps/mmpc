@@ -97,12 +97,14 @@ async function connectToDatabases() {
       'nonCancerDrugStatus=CLINICAL_TRIALS&' +
       'nonCancerDrugStatus=APPROVED&' +
       'directTarget=true&' +
-      'geneDependency=true&';
+      'geneDependency=true&' +
+      'biomarker=true&' +
+      'pathwayMember=false&';
       JSON.parse(cancer_types).forEach(cancer_type => {
         request_url += 'cancer=' + cancer_type + '&';
       });
 
-      //console.log(request_url);
+      console.log(request_url);
     
     
       const pandrugs_answer = await axios.get(request_url, {
@@ -111,7 +113,7 @@ async function connectToDatabases() {
         }
       });
 
-      console.log(pandrugs_answer.data);
+      //console.log(pandrugs_answer.data);
       return pandrugs_answer.data;
     }
     catch(error) {
