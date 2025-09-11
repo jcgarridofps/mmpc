@@ -1,0 +1,16 @@
+[
+  {
+    "model": "mmpc.computationStatus",
+    "pk": 1,
+    "fields": {
+      "state": "PENDING"
+    }
+  },
+  {
+    "model": "mmpc.computationVersion",
+    "pk": 2,
+    "fields": {
+      "state": "PROCESSED"
+    }
+  }
+]

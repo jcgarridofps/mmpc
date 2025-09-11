@@ -1,0 +1,23 @@
+[
+  {
+    "model": "mmpc.computationVersion",
+    "pk": 1,
+    "fields": {
+      "state": "N/A"
+    }
+  },
+  {
+    "model": "mmpc.computationVersion",
+    "pk": 2,
+    "fields": {
+      "state": "UPDATED"
+    }
+  },
+  {
+    "model": "mmpc.computationVersion",
+    "pk": 3,
+    "fields": {
+      "state": "OUTDATED"
+    }
+  }
+]

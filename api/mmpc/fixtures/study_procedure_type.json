@@ -1,0 +1,30 @@
+[
+  {
+    "model": "mmpc.studyProcedureType",
+    "pk": 1,
+    "fields": {
+      "state": "GENOME"
+    }
+  },
+  {
+    "model": "mmpc.studyProcedureType",
+    "pk": 2,
+    "fields": {
+      "state": "WHOLE_EXOME"
+    }
+  },
+  {
+    "model": "mmpc.studyProcedureType",
+    "pk": 3,
+    "fields": {
+      "state": "CLINICAL_EXOME"
+    }
+  },
+  {
+    "model": "mmpc.studyProcedureType",
+    "pk": 3,
+    "fields": {
+      "state": "PANEL"
+    }
+  }
+]
