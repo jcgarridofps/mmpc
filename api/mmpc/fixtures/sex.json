@@ -1,0 +1,16 @@
+[
+  {
+    "model": "mmpc.sex",
+    "pk": 1,
+    "fields": {
+      "sex": "MALE"
+    }
+  },
+  {
+    "model": "mmpc.sex",
+    "pk": 2,
+    "fields": {
+      "sex": "FEMALE"
+    }
+  }
+]

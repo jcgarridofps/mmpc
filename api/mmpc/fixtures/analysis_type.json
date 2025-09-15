@@ -3,7 +3,7 @@
     "model": "mmpc.analysisType",
     "pk": 1,
     "fields": {
-      "state": "DRUG_QUERY"
+      "analysis_type": "DRUG_QUERY"
     }
   }
 ]

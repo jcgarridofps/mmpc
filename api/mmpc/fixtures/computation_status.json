@@ -3,14 +3,14 @@
     "model": "mmpc.computationStatus",
     "pk": 1,
     "fields": {
-      "state": "PENDING"
+      "computationStatus": "PENDING"
     }
   },
   {
-    "model": "mmpc.computationVersion",
+    "model": "mmpc.computationStatus",
     "pk": 2,
     "fields": {
-      "state": "PROCESSED"
+      "computationStatus": "PROCESSED"
     }
   }
 ]

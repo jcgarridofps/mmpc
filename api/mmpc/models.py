@@ -16,22 +16,22 @@ def generate_default_patient_id():
 
 def generate_history_id():
     # Generate a random 12-character alphanumeric string
-    return 'PH'.join(random.choices(string.digits, k=10))
+    return 'PH' + ''.join(random.choices(string.digits, k=10))
 def generate_report_id():
     # Generate a random 12-character alphanumeric string
-    return 'AR'.join(random.choices(string.digits, k=10))
+    return 'AR' + ''.join(random.choices(string.digits, k=10))
 
 def generate_annotation_id():
     # Generate a random 12-character alphanumeric string
-    return 'SA'.join(random.choices(string.digits, k=10))
+    return 'SA' + ''.join(random.choices(string.digits, k=10))
 
 def generate_analysis_id():
     # Generate a random 12-character alphanumeric string
-    return 'AA'.join(random.choices(string.digits, k=10))
+    return 'AA' + ''.join(random.choices(string.digits, k=10))
 
 def generate_study_id():
     # Generate a random 12-character alphanumeric string
-    return 'HS'.join(random.choices(string.digits, k=10))
+    return 'HS' + ''.join(random.choices(string.digits, k=10))
 
 # Create your models here.
 
@@ -46,7 +46,7 @@ class entityGroup(models.Model):
     class Meta:
         verbose_name_plural = "group Entity"
 
-Group.add_to_class('entityGroup', models.ForeignKey(entityGroup, null=False, default=1, on_delete=models.DO_NOTHING))
+#Group.add_to_class('entityGroup', models.ForeignKey(entityGroup, null=False, default=1, on_delete=models.DO_NOTHING))
 
 class customUser(AbstractUser):
     entityGroup = models.ForeignKey(entityGroup, null=False, on_delete=models.DO_NOTHING)
@@ -98,8 +98,8 @@ class analysisType(models.Model):
 class computationStatus(models.Model):
     computationStatus = models.CharField(max_length=20, unique=True)
 
-class studyProdedureType(models.Model):
-    type = models.CharField(max_length=20, unique=True)
+class studyProcedureType(models.Model):
+    type = models.CharField(max_length=25, unique=True)
 
 class studySample(models.Model):
     sample = models.CharField(max_length=20, unique=True)
@@ -110,23 +110,25 @@ class studyPanelVersion(models.Model):
 class studyExomeCapture(models.Model):
     exomeCapture = models.CharField(max_length=20, unique=True)
 
-
+class sex(models.Model):
+    sex = models.CharField(max_length=20, unique=True)
 
 class patient(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_default_patient_id(), max_length=12, editable=False)
+    appId = models.CharField(unique=False, default=generate_default_patient_id, max_length=12) # USER STRING, NUHSA
+    sex = models.ForeignKey(sex, on_delete=models.DO_NOTHING, null=True)
     dateOfBirth = models.DateField(default=datetime.date(1900,1,1))
 
 class history(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_history_id(), max_length=12, editable=False)
+    appId = models.CharField(unique=True, default=generate_history_id, max_length=12, editable=False)
     patient = models.ForeignKey(patient, on_delete=models.CASCADE)
 
 
 
 class studyProcedure(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    procedureType = models.ForeignKey(studyProdedureType, on_delete=models.CASCADE)
+    procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
     sample = models.ForeignKey(studySample, on_delete=models.CASCADE)
     panelVersion = models.ForeignKey(studyPanelVersion, on_delete=models.CASCADE)
     exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE)
@@ -134,7 +136,7 @@ class studyProcedure(models.Model):
 
 class study(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_study_id(), max_length=12, editable=False)
+    appId = models.CharField(unique=True, default=generate_study_id, max_length=12, editable=False)
     description = models.CharField(max_length=200)
     studyProcedure = models.ForeignKey(studyProcedure, on_delete=models.CASCADE)
     date = models.DateField(auto_now=True)
@@ -144,7 +146,7 @@ class study(models.Model):
 
 class annotation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_annotation_id(), max_length=12, editable=False)
+    appId = models.CharField(unique=True, default=generate_annotation_id, max_length=12, editable=False)
     study = models.ForeignKey(study, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now=True)
     status = models.ForeignKey(computationStatus, on_delete=models.DO_NOTHING)
@@ -153,7 +155,7 @@ class annotation(models.Model):
 
 class analysis(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_analysis_id(), max_length=12, editable=False)
+    appId = models.CharField(unique=True, default=generate_analysis_id, max_length=12, editable=False)
     type = models.ForeignKey(analysisType, on_delete=models.CASCADE)
     annotation = models.ForeignKey(annotation, on_delete=models.CASCADE)
     version = models.ForeignKey(computationVersion, on_delete=models.DO_NOTHING)
@@ -164,11 +166,11 @@ class analysis(models.Model):
 
 class report(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_history_id(), max_length=12, editable=False)
-    analysis = models.ForeignKey(analysis, on_delete=models.CASCADE)
+    appId = models.CharField(unique=True, default=generate_history_id, max_length=12, editable=False)
+    analysis = models.ForeignKey(analysis, on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now=True)
     document_id = models.CharField(max_length=60, default="")
-    author = models.ForeignKey(customUser, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(customUser, on_delete=models.DO_NOTHING, null=True)
 
 
 class variantAnalysis(models.Model):
