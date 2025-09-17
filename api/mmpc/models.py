@@ -46,7 +46,7 @@ class entityGroup(models.Model):
     class Meta:
         verbose_name_plural = "group Entity"
 
-#Group.add_to_class('entityGroup', models.ForeignKey(entityGroup, null=False, default=1, on_delete=models.DO_NOTHING))
+Group.add_to_class('entityGroup', models.ForeignKey(entityGroup, null=False, default=1, on_delete=models.DO_NOTHING))
 
 class customUser(AbstractUser):
     entityGroup = models.ForeignKey(entityGroup, null=False, on_delete=models.DO_NOTHING)
@@ -142,6 +142,7 @@ class study(models.Model):
     date = models.DateField(auto_now=True)
     variantsFileRoute = models.CharField(max_length=200)
     history = models.ForeignKey(history, on_delete=models.CASCADE)
+    uploader = models.ForeignKey(customUser, null=True, on_delete=models.DO_NOTHING)
     #sampleId = models.CharField(max_length=60)
 
 class annotation(models.Model):

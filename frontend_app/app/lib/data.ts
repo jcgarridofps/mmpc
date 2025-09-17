@@ -14,7 +14,7 @@ export async function fetchLatestVariantAnalysis() {
   try {
 
     const variant_analysis = await fetch(process.env.API_BASE_URL + 
-      "/api/variant_analysis/?" + 
+      "/api/annotations/?" + 
       "page=1&"+
       "elements=" + LATEST_VARIANT_ANALYSIS_ITEMS,
     {
@@ -68,11 +68,11 @@ export async function fetchLatestDrugQueries() {
 export async function fetchCardData() {
   try {
 
-    const numberOfVariantAnalysis = await fetchVariantAnalysisCount();
-    const numberOfDrugQueries = await fetchDrugQueryCount();
+    const numberOfVariantAnalysis = await fetchAnnotationCount();
+    const numberOfDrugQueries = await fetchAnalysisCount();
     const numberOfPatients = await fetchPatientCount();
     const totalReports = await fetchReportCount();
-    const totalPendingAnalysis = await fetchPendingAnalysisCount();
+    const totalPendingAnalysis = await fetchPendingAnnotationCount();
 
     return {
       numberOfPatients,
@@ -223,11 +223,11 @@ export async function fetchFilteredReports(
   }
 }
 
-export async function fetchVariantAnalysisCount() {
+export async function fetchAnnotationCount() {
   const session = await auth();
   try {
     const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
-      "/api/variant_analysis/count/",
+      "/api/annotations/count/",
     {
         method: "GET",
         headers: {
@@ -250,11 +250,11 @@ export async function fetchVariantAnalysisCount() {
   }
 }
 
-export async function fetchDrugQueryCount() {
+export async function fetchAnalysisCount() {
   const session = await auth();
   try {
     const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
-      "/api/drug_query/count/",
+      "/api/analysis/count/",
     {
         method: "GET",
         headers: {
@@ -272,8 +272,8 @@ export async function fetchDrugQueryCount() {
     }
     
   } catch (error) {
-    console.error('Fetch variant analysis count error:', error);
-    throw new Error('Failed to fetch variant analysis count.');
+    console.error('Fetch analysis count error:', error);
+    throw new Error('Failed to fetch analysis count.');
   }
 }
 
@@ -385,11 +385,11 @@ export async function fetchReportResult(id:string) {
   }
 }
 
-export async function fetchPendingAnalysisCount() {
+export async function fetchPendingAnnotationCount() {
   const session = await auth();
   try {
     const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
-      "/api/variant_analysis/pending/count/",
+      "/api/annotations/pending/count/",
     {
         method: "GET",
         headers: {

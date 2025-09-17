@@ -21,10 +21,10 @@ class locationSerializer(serializers.ModelSerializer):
         model = location
         fields = ['id', 'name', 'latitude', 'longitude']
 
-class variantAnalysisSerializer(serializers.ModelSerializer):
+class annotationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = variantAnalysis
-        fields = ['id', 'description', 'date', 'status']
+        model = annotation
+        fields = ['id', 'appId', 'date', 'status', 'version']
 
 class drugQuerySerializer(serializers.ModelSerializer):
     class Meta:

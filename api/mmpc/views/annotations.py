@@ -2,7 +2,7 @@
 Bridge module to call pandrugs2 API
 """
 import urllib.parse
-from mmpc.models import variantAnalysis, customUser, drugQuery, entityGroup, patient
+from mmpc.models import annotation, customUser, analysis, entityGroup, patient
 from mmpc.serializers import variantAnalysisSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
@@ -15,7 +15,7 @@ from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 import json
 
-class VariantAnalysis(APIView):
+class Annotations(APIView):
     """
     Get variant analysis from DDBB uploaded by the user
     """
@@ -28,7 +28,6 @@ class VariantAnalysis(APIView):
         #region Incoming params checking
         page = int(request.GET.get('page', '1'))
         query = request.GET.get('query', '') # The user string filter
-        decodedVariantAnalysisName = urllib.parse.unquote(query)
         elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
         user = request.user.email
         #endregion
@@ -39,9 +38,8 @@ class VariantAnalysis(APIView):
         last_requested_element = first_requested_element + elements
         try:
             db_user = customUser.objects.get(email = user)
-            db_objects = variantAnalysis.objects\
-                .filter(uploader = db_user)\
-                .filter(description__icontains=decodedVariantAnalysisName)\
+            db_objects = annotation.objects\
+                .filter(study__uploader = db_user)\
                 .order_by('-date')\
                 .all()[first_requested_element : last_requested_element]
         except customUser.DoesNotExist:
@@ -100,7 +98,7 @@ class VariantAnalysis(APIView):
 
                 #Create the new DDBB entry for the new variant analysis
 
-                new_analysis_entry = variantAnalysis.objects.create(\
+                new_analysis_entry = annotation.objects.create(\
                     description=description,\
                     computation_id=new_analysis_id,\
                     uploader = uploader,\
@@ -109,12 +107,12 @@ class VariantAnalysis(APIView):
                     patient = patient_ref)
                 new_analysis_entry.save()
 
-                drug_query_create_result = CreateDrugQuery(\
+                analysis_create_result = CreateDrugQuery(\
                     cancer_types=cancer_types,\
                     parent_analysis_id=new_analysis_entry.id\
                 )
 
-                if drug_query_create_result:
+                if analysis_create_result:
                     return Response(None, status=status.HTTP_201_CREATED)
                 else:
                     return Response({"message":"Variant analysis registered, but couldn't create drug query"},\
@@ -128,7 +126,7 @@ class VariantAnalysis(APIView):
         return Response(new_analysis_response.data, status=new_analysis_response.status_code)
         #endregion
 
-class VariantAnalysisResult(APIView):
+class AnnotationResult(APIView):
     """
     Get result for the given variant analysis
     """
@@ -139,14 +137,14 @@ class VariantAnalysisResult(APIView):
         GET function to retrieve variant analysis result from mongoDB
         """
         #region Incoming params checking
-        analysis_id = request.GET.get('id', '1')
+        annotation_id = request.GET.get('id', '1')
         #endregion
 
         #region fetch document_id from postgres DDBB
 
         try:
-            analysis = variantAnalysis.objects.filter(id = analysis_id)[0]
-        except drugQuery.DoesNotExist:
+            analysis = annotation.objects.filter(id = annotation_id)[0]
+        except analysis.DoesNotExist:
             analysis = None
         #endregion
 
@@ -163,7 +161,7 @@ class VariantAnalysisResult(APIView):
         return Response(document, status = status.HTTP_200_OK)
         #endregion
 
-class VariantAnalysisCount(APIView):
+class AnnotationCount(APIView):
     """
     Get variant analysis entry count from DDBB uploaded by the user
     """
@@ -175,7 +173,6 @@ class VariantAnalysisCount(APIView):
         """
         #region Incoming params checking
         query = request.GET.get('query', '') # The user string filter
-        decodedVariantAnalysisName = urllib.parse.unquote(query)
         user = request.user.email
         #endregion
 
@@ -183,9 +180,8 @@ class VariantAnalysisCount(APIView):
         db_entry_count = 0
         try:
             db_user = customUser.objects.get(email = user)
-            db_entry_count = variantAnalysis.objects\
-                .filter(uploader = db_user)\
-                .filter(description__icontains=decodedVariantAnalysisName)\
+            db_entry_count = annotation.objects\
+                .filter(study__uploader = db_user)\
                 .count()
         except customUser.DoesNotExist:
             db_entry_count = 0
@@ -196,7 +192,7 @@ class VariantAnalysisCount(APIView):
         return Response(data = r_data, status = status.HTTP_200_OK)
         #endregion
 
-class VariantAnalysisPendingCount(APIView):
+class AnnotationPendingCount(APIView):
     """
     Get pending variant analysis entry count from DDBB uploaded by the user group
     """
@@ -215,8 +211,7 @@ class VariantAnalysisPendingCount(APIView):
         db_entry_count = 0
         try:
             db_user = customUser.objects.get(email = user)
-            db_entry_count = variantAnalysis.objects\
-                .filter(uploaderGroup = db_user.entityGroup)\
+            db_entry_count = annotation.objects\
                 .exclude(status = 'PROCESSED')\
                 .count()
         except Exception as e:
@@ -229,7 +224,7 @@ class VariantAnalysisPendingCount(APIView):
         return Response(data = r_data, status = status.HTTP_200_OK)
         #endregion
 
-class VariantAnalysisPending(APIView):
+class AnnotationPending(APIView):
     """
     Get pending variant analysis entries from DDBB uploaded by any user group
     No filters
@@ -243,7 +238,7 @@ class VariantAnalysisPending(APIView):
 
         #region fetch data from DDBB
         try:
-            db_entries = variantAnalysis.objects\
+            db_entries = annotation.objects\
                 .exclude(status = 'PROCESSED')\
                 .all()
         except Exception as e:

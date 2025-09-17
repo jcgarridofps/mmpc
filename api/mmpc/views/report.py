@@ -140,7 +140,7 @@ class ReportCount(APIView):
         """
         #region Incoming params checking
         query = request.GET.get('query', '') # The user string filter
-        drug_query = request.GET.get('drug_query', '')
+        analysis = request.GET.get('drug_query', '')
         user = request.user.email
         #endregion
 
@@ -150,14 +150,14 @@ class ReportCount(APIView):
         try:
             db_user = customUser.objects.get(email = user)
 
-            if(drug_query != ''):
+            if(analysis != ''):
                 db_entry_count = report.objects\
-                .filter(drug_query__id = drug_query)\
-                .filter(drug_query__variant_analysis__uploader = db_user)\
+                .filter(analysis__id = analysis)\
+                .filter(analysis__annotation__study__uploader = db_user)\
                 .count()
             else:
                 db_entry_count = report.objects\
-                .filter(drug_query__variant_analysis__uploader = db_user)\
+                .filter(analysis__annotation__study__uploader = db_user)\
                 .count()
             
             
