@@ -192,7 +192,7 @@ export async function createDrugQuery(prevState: DrugQueryState, formData: FormD
       formData.append("cancer_types", JSON.stringify(cancer_types));
 
       await fetch(process.env.API_BASE_URL + 
-        "/api/drug_query/",
+        "/api/analysis/",
       {
           method: "POST",
           headers: {

@@ -30,11 +30,11 @@ urlpatterns = [
     path('api/patient/count/', PatientCount.as_view(), name='patient_count'),
     path('api/patient/', Patient.as_view(), name='patient_exists'),
 
-    path('api/analysis/', DrugQuery.as_view(), name='drug_query_new'),
-    path('api/analysis/result/', DrugQueryResult.as_view(), name='drug_query_new'),
-    path('api/analysis/count/', DrugQueryCount.as_view(), name='drug_query_count'),
-    path('api/analysis/pending/count/', DrugQueryPendingCount.as_view(), name='drug_query_pending_count'),
-    path('api/analysis/pending/', DrugQueriesPending.as_view(), name='drug_queries_pending'),
+    path('api/analysis/', Analysis.as_view(), name='drug_query_new'),
+    path('api/analysis/result/', AnalysisResult.as_view(), name='drug_query_new'),
+    path('api/analysis/count/', AnalysisCount.as_view(), name='drug_query_count'),
+    path('api/analysis/pending/count/', AnalysisPendingCount.as_view(), name='drug_query_pending_count'),
+    path('api/analysis/pending/', AnalysisPending.as_view(), name='drug_queries_pending'),
 
     path('api/report/', Report.as_view(), name='reports'),
     path('api/report/count/', ReportCount.as_view(), name='drug_query_count'),

@@ -2,7 +2,7 @@
 Module to work with patients in DDBB
 """
 from mmpc.models import variantAnalysis, customUser, drugQuery, patient
-from mmpc.serializers import variantAnalysisSerializer
+from mmpc.serializers import annotationSerializer
 from mmpc.views import pandrugs
 from rest_framework.views import APIView
 from rest_framework.response import Response

@@ -45,7 +45,7 @@ export async function fetchLatestDrugQueries() {
   try {
 
     const drug_queries = await fetch(process.env.API_BASE_URL + 
-      "/api/drug_query/?" + 
+      "/api/analysis/?" + 
       "page=1&"+
       "elements=" + LATEST_DRUG_QUERY_ITEMS,
     {
@@ -92,7 +92,7 @@ export async function fetchFilteredVariantAnalysisPages(query: string) {
   const safeQuery = encodeURIComponent(query);
   try {
     const data = await fetch(process.env.API_BASE_URL + 
-      "/api/variant_analysis/count?" + 
+      "/api/annotations/count?" + 
       "query=" + safeQuery + "&",
     {
         method: "GET",
@@ -116,7 +116,7 @@ export async function fetchFilteredDrugQueryPages(query: string, variant_analysi
   const safeQuery = encodeURIComponent(query);
   try {
     const data = await fetch(process.env.API_BASE_URL + 
-      "/api/drug_query/count?" + 
+      "/api/analysis/count?" + 
       "query=" + safeQuery + "&variant_analysis_id=" + variant_analysis_id,
     {
         method: "GET",
@@ -167,7 +167,7 @@ export async function fetchFilteredVariantAnalysis(
   const safeQuery = encodeURIComponent(query);
   try {
     const variant_analysis = await fetch(process.env.API_BASE_URL + 
-      "/api/variant_analysis/?" + 
+      "/api/annotations/?" + 
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
       "elements=" + ITEMS_PER_PAGE,
@@ -308,7 +308,7 @@ export async function fetchDrugQueryResult(id:string) {
   const session = await auth();
   try {
     const drug_query_result = await fetch(process.env.API_BASE_URL + 
-      `/api/drug_query/result/?id=${id}`,
+      `/api/analysis/result/?id=${id}`,
     {
         method: "GET",
         headers: {
@@ -415,7 +415,7 @@ export async function fetchFilteredDrugQueries(
   const safeQuery = encodeURIComponent(query);
   try {
     const drug_queries = await fetch(process.env.API_BASE_URL + 
-      "/api/drug_query/?" + 
+      "/api/analysis/?" + 
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
       "elements=" + ITEMS_PER_PAGE + "&" +

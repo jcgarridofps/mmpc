@@ -7,5 +7,5 @@ from .maintenance import *
 from .pandrugs import *
 from .annotations import *
 from .patient import *
-from .drug_query import *
+from .analysis import *
 from .report import *

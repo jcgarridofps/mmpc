@@ -15,7 +15,7 @@ from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 import json
 
-def CreateDrugQuery(cancer_types, parent_analysis_id):
+def CreateAnalysis(cancer_types, parent_analysis_id):
 
     success = False
     normalized_cancer_types = cancer_types.replace(' ', '_').upper()
@@ -33,7 +33,7 @@ def CreateDrugQuery(cancer_types, parent_analysis_id):
         success = False
     return success
 
-class DrugQuery(APIView):
+class Analysis(APIView):
     """
     Get variant analysis from DDBB uploaded by the user
     """
@@ -114,7 +114,7 @@ class DrugQuery(APIView):
         return Response(new_analysis_response.data, status=new_analysis_response.status_code)
         #endregion
 
-class DrugQueryResult(APIView):
+class AnalysisResult(APIView):
     """
     Get result for the given drug query
     """
@@ -151,7 +151,7 @@ class DrugQueryResult(APIView):
         return Response(document, status = status.HTTP_200_OK)
         #endregion
 
-class DrugQueryCount(APIView):
+class AnalysisCount(APIView):
     """
     Get variant analysis entry count from DDBB uploaded by the user
     With filters
@@ -196,7 +196,7 @@ class DrugQueryCount(APIView):
 
 
 
-class DrugQueryPendingCount(APIView):
+class AnalysisPendingCount(APIView):
     """
     Get pending variant analysis entry count from DDBB uploaded by the user group
     No filters
@@ -224,7 +224,7 @@ class DrugQueryPendingCount(APIView):
         return Response(data = r_data, status = status.HTTP_200_OK)
         #endregion
 
-class DrugQueriesPending(APIView):
+class AnalysisPending(APIView):
     """
     Get pending variant analysis entries from DDBB uploaded by any user group
     No filters

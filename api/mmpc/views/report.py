@@ -5,7 +5,7 @@ from mmpc.models import variantAnalysis, customUser, drugQuery, report, entityGr
 from mmpc.serializers import reportSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
-from mmpc.views.drug_query import CreateDrugQuery
+from mmpc.views.analysis import CreateAnalysis
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated

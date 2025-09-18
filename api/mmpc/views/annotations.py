@@ -3,10 +3,10 @@ Bridge module to call pandrugs2 API
 """
 import urllib.parse
 from mmpc.models import annotation, customUser, analysis, entityGroup, patient
-from mmpc.serializers import variantAnalysisSerializer
+from mmpc.serializers import annotationSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
-from mmpc.views.drug_query import CreateDrugQuery
+from mmpc.views.analysis import CreateAnalysis
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -46,7 +46,7 @@ class Annotations(APIView):
             db_objects = []
         #endregion
 
-        db_objects_data = variantAnalysisSerializer(db_objects, many=True)
+        db_objects_data = annotationSerializer(db_objects, many=True)
 
         #region response and status
         return Response(db_objects_data.data, status = status.HTTP_200_OK)
@@ -212,7 +212,7 @@ class AnnotationPendingCount(APIView):
         try:
             db_user = customUser.objects.get(email = user)
             db_entry_count = annotation.objects\
-                .exclude(status = 'PROCESSED')\
+                .exclude(status__computationStatus = 'PROCESSED')\
                 .count()
         except Exception as e:
             print('Error fetching pending variant analysis count ' + str(e))
