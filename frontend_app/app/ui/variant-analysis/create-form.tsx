@@ -12,47 +12,47 @@ import { createVariantAnalysis, State } from '@/app/lib/actions';
 import { useActionState, useRef, useState } from 'react';
 
 const cancer_type: Map<string, boolean> = new Map<string, boolean>([
-    ["Adrenal Gland",false],
-    ["Bile Duct", false],
-    ["Bladder", false],
-    ["Blood", false],
-    ["Blood And Lymph Vessels", false],
-    ["Bone", false],
-    ["Bone Marrow", false],
-    ["Brain", false],
-    ["Breast", false],
-    ["Colon", false],
-    ["Esophagus", false],
-    ["Eye", false],
-    ["Fallopian Tube", false],
-    ["Fatty Tissue", false],
-    ["Head And Neck", false],
-    ["Intestine", false],
-    ["Kidney", false],
-    ["Liver", false],
-    ["Lung", false],
-    ["Mesothelium", false],
-    ["Neuroendocrine System", false],
-    ["Ovary", false],
-    ["Pancreas", false],
-    ["Penis", false],
-    ["Peritoneum", false],
-    ["Prostate", false],
-    ["Rectum", false],
-    ["Skin", false],
-    ["Smooth Muscle", false],
-    ["Soft Tissue", false],
-    ["Spinal Cord", false],
-    ["Stomach", false],
-    ["Suprarenal Gland", false],
-    ["Testis", false],
-    ["Thyroid", false],
-    ["Uterus", false],
-    ["Vulva", false]
-  ]);
+  ["Adrenal Gland", false],
+  ["Bile Duct", false],
+  ["Bladder", false],
+  ["Blood", false],
+  ["Blood And Lymph Vessels", false],
+  ["Bone", false],
+  ["Bone Marrow", false],
+  ["Brain", false],
+  ["Breast", false],
+  ["Colon", false],
+  ["Esophagus", false],
+  ["Eye", false],
+  ["Fallopian Tube", false],
+  ["Fatty Tissue", false],
+  ["Head And Neck", false],
+  ["Intestine", false],
+  ["Kidney", false],
+  ["Liver", false],
+  ["Lung", false],
+  ["Mesothelium", false],
+  ["Neuroendocrine System", false],
+  ["Ovary", false],
+  ["Pancreas", false],
+  ["Penis", false],
+  ["Peritoneum", false],
+  ["Prostate", false],
+  ["Rectum", false],
+  ["Skin", false],
+  ["Smooth Muscle", false],
+  ["Soft Tissue", false],
+  ["Spinal Cord", false],
+  ["Stomach", false],
+  ["Suprarenal Gland", false],
+  ["Testis", false],
+  ["Thyroid", false],
+  ["Uterus", false],
+  ["Vulva", false]
+]);
 
 export default function Form() {
-  const initialState: State = { success: false, message: null, errors: {}};
+  const initialState: State = { success: false, message: null, errors: {} };
   const [state, formAction] = useActionState<State, FormData>(createVariantAnalysis, initialState);
   const [fileName, setFileName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -75,7 +75,7 @@ export default function Form() {
     }
   }
 
-  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value && event.target.value.length > 0) {
       setDescription(event.target.value);
     } else {// Reset if no file is selected
@@ -83,7 +83,7 @@ export default function Form() {
     }
   }
 
-  const handlePatientIdentifierChange = (event: React.ChangeEvent<HTMLInputElement>) =>{
+  const handlePatientIdentifierChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value && event.target.value.length > 0) {
       setPatientIdentifier(event.target.value);
     } else {// Reset if no file is selected
@@ -92,20 +92,20 @@ export default function Form() {
   }
 
   const [cancerSelection, setCancerSelection] = useState<{ [key: string]: boolean }>(() => {
-  const obj: { [key: string]: boolean } = {};
-  for (const [key, value] of cancer_type.entries()) {
-    obj[key] = value;
-  }
-  return obj;
-});
+    const obj: { [key: string]: boolean } = {};
+    for (const [key, value] of cancer_type.entries()) {
+      obj[key] = value;
+    }
+    return obj;
+  });
 
-  const handleFormAction = async (formData: FormData)=>{
+  const handleFormAction = async (formData: FormData) => {
     setFileName("");
     return formAction(formData);
   }
 
   return (
-    <form 
+    <form
       action={handleFormAction}
       //encType='multipart/form-data'
       onKeyDown={(e) => {
@@ -113,7 +113,7 @@ export default function Form() {
           e.preventDefault();
         }
       }}
-      >
+    >
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
 
         {/* VCF file */}
@@ -133,7 +133,7 @@ export default function Form() {
                 readOnly
                 ref={fileNameRef}
                 value={fileName}
-                
+
               />
 
               <input
@@ -206,7 +206,7 @@ export default function Form() {
         {/* PATIENT */}
         <div className="mb-4">
           <label htmlFor="patient_identifier" className="mb-2 block text-sm font-medium">
-              Identify the patient
+            Identify the patient
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -258,13 +258,13 @@ export default function Form() {
         </div>
 
         <div id="cancer-types-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.cancerTypes &&
-              state.errors.cancerTypes.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+          {state.errors?.cancerTypes &&
+            state.errors.cancerTypes.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
+        </div>
 
         <div id="form-error" aria-live="polite" aria-atomic="true">
           <p className="mt-2 text-sm text-red-500">

@@ -46,9 +46,25 @@ const CreateReportSchema = z.object({
   date: z.string(),
 });
 
+const CreateHistorySchema = z.object({
+  patient_id: z
+    .string({
+      invalid_type_error: "Incorrect type for patient_id.",
+      required_error: "Patient ID is required.",
+    })
+    .regex(/^EN\d{10}$/, {
+      message: "Patient ID must start with 'EN' followed by 10 digits.",
+    }),
+  patient_sex: z.string({ 
+    invalid_type_error:  'Incorrect type for patient sex.'}),
+  patient_date: z.string({ 
+    invalid_type_error:  'Incorrect type for patient date.'}),
+});
+
 const CreateAnalysis = CreateAnalysisSchema.omit({id: true, date: true});
 const CreateDrugQuery = CreateDrugQuerySchema.omit({id: true, date: true});
 const CreateReport = CreateReportSchema.omit({id: true, date: true});
+const CreateHistory = CreateHistorySchema;
 
 export type ReportState = {
   success:boolean;
@@ -64,6 +80,16 @@ export type DrugQueryState = {
   errors?: {
     variant_analysis_id?: string[] | null;
     cancer_types?: string[] | null;
+  };
+  message?: string | null;
+}
+
+export type HistoryState = {
+  success:boolean;
+  errors?: {
+    patient_id?: string[] | null;
+    patient_sex?: string[] | null;
+    patient_date?: string[] | null;
   };
   message?: string | null;
 }
@@ -220,6 +246,63 @@ export async function createDrugQuery(prevState: DrugQueryState, formData: FormD
 }
 
 export async function createReport(prevState: ReportState, formData: FormData) {
+
+  const validatedFields = CreateReport.safeParse({
+    variant_analysis_id: formData.get('variant_analysis_id'),
+    drug_query_id: formData.get('drug_query_id'),
+    clinical_report: formData.get('clinical_report'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      ...prevState,
+      success:false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to create report'
+    };
+  }
+
+  const { drug_query_id, clinical_report, variant_analysis_id} = validatedFields.data;
+
+//------------------------------------------------------------------------------------
+
+    const session = await auth();
+    try {
+
+      const formData = new FormData();
+      formData.append("drug_query", drug_query_id);
+      formData.append("clinical_prescription", clinical_report);
+      formData.append("clinical_report", clinical_report);
+
+      const result = await fetch(process.env.API_BASE_URL + 
+        "/api/report/new/",
+      {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session?.accessToken}`
+          },
+          body:formData
+      });
+
+    } catch (error) {
+      console.error('Create report error:', error);
+      return {
+        ...prevState,
+        success: false,
+        message: 'Error creating report'
+      };
+    }
+
+    const newPath: string = `/dashboard/variant-analysis/${variant_analysis_id}/drug-queries/${drug_query_id}/clinical-reports`;
+    revalidatePath(newPath);
+    redirect(newPath);
+
+//-------------------------------------------------------------------------------------------
+
+}
+
+//TODO
+export async function createHistory(prevState: HistoryState, formData: FormData) {
 
   const validatedFields = CreateReport.safeParse({
     variant_analysis_id: formData.get('variant_analysis_id'),
