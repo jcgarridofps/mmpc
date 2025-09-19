@@ -9,3 +9,4 @@ from .annotations import *
 from .patient import *
 from .analysis import *
 from .report import *
+from .history import *

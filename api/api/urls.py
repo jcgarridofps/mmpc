@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/patient/count/', PatientCount.as_view(), name='patient_count'),
     path('api/patient/', Patient.as_view(), name='patient_exists'),
 
-    path('api/analysis/', Analysis.as_view(), name='drug_query_new'),
+    path('api/analysis/', Analysis.as_view(), name='drug_query'),
     path('api/analysis/result/', AnalysisResult.as_view(), name='drug_query_new'),
     path('api/analysis/count/', AnalysisCount.as_view(), name='drug_query_count'),
     path('api/analysis/pending/count/', AnalysisPendingCount.as_view(), name='drug_query_pending_count'),
@@ -40,6 +40,9 @@ urlpatterns = [
     path('api/report/count/', ReportCount.as_view(), name='drug_query_count'),
     path('api/report/new/', Report.as_view(), name='report_new'),
     path('api/report/result/', ReportResult.as_view(), name='report_result'),
+
+    path('api/history/', History.as_view(), name='history'),
+    path('api/history/new/', History.as_view(), name='history_new'),
 ]
 
 admin.site.site_header = 'MMPC Administration panel'

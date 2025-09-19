@@ -36,3 +36,9 @@ class reportSerializer(serializers.ModelSerializer):
         model = report
         fields = ['id', 'date']
 
+class historySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = history
+        fields = ['appId']
+
