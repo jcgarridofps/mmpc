@@ -301,13 +301,12 @@ export async function createReport(prevState: ReportState, formData: FormData) {
 
 }
 
-//TODO
 export async function createHistory(prevState: HistoryState, formData: FormData) {
 
-  const validatedFields = CreateReport.safeParse({
-    variant_analysis_id: formData.get('variant_analysis_id'),
-    drug_query_id: formData.get('drug_query_id'),
-    clinical_report: formData.get('clinical_report'),
+  const validatedFields = CreateHistory.safeParse({
+    patient_id: formData.get('patient_id'),
+    patient_sex: formData.get('patient_sex'),
+    patient_date: formData.get('patient_date'),
   });
 
   if (!validatedFields.success) {
@@ -315,11 +314,11 @@ export async function createHistory(prevState: HistoryState, formData: FormData)
       ...prevState,
       success:false,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Failed to create report'
+      message: 'Missing fields. Failed to create history'
     };
   }
 
-  const { drug_query_id, clinical_report, variant_analysis_id} = validatedFields.data;
+  const { patient_id, patient_sex, patient_date} = validatedFields.data;
 
 //------------------------------------------------------------------------------------
 
@@ -327,12 +326,12 @@ export async function createHistory(prevState: HistoryState, formData: FormData)
     try {
 
       const formData = new FormData();
-      formData.append("drug_query", drug_query_id);
-      formData.append("clinical_prescription", clinical_report);
-      formData.append("clinical_report", clinical_report);
+      formData.append("patient_id", patient_id);
+      formData.append("patient_sex", patient_sex);
+      formData.append("patient_date", patient_date);
 
       const result = await fetch(process.env.API_BASE_URL + 
-        "/api/report/new/",
+        "/api/history/new/",
       {
           method: "POST",
           headers: {
@@ -342,7 +341,7 @@ export async function createHistory(prevState: HistoryState, formData: FormData)
       });
 
     } catch (error) {
-      console.error('Create report error:', error);
+      console.error('Create history error:', error);
       return {
         ...prevState,
         success: false,
@@ -350,7 +349,7 @@ export async function createHistory(prevState: HistoryState, formData: FormData)
       };
     }
 
-    const newPath: string = `/dashboard/variant-analysis/${variant_analysis_id}/drug-queries/${drug_query_id}/clinical-reports`;
+    const newPath: string = `/dashboard/${patient_id}/studies`;
     revalidatePath(newPath);
     redirect(newPath);
 
