@@ -12,20 +12,20 @@ import { createHistory, HistoryState } from '@/app/lib/actions';
 
 export default function Form() {
 
+  const initialState: HistoryState = { 
+    success: false, 
+    message: null, 
+    errors: {},
+   };
+  const [state, formAction] = useActionState<HistoryState, FormData>(createHistory, initialState);
+
   const [patientId, setPatientId] = useState("");
   const [sex, setSex] = useState("");
   const [date, setDate] = useState("");
 
-  const initialState: HistoryState = { success: false, message: null, errors: {} };
-  const [state, formAction] = useActionState<HistoryState, FormData>(createHistory, initialState);
-
-  const handleFormAction = async (formData: FormData) => {
-    return formAction(formData);
-  }
-
   return (
     <form
-      action={handleFormAction}
+      action={formAction}
       onKeyDown={(e) => {
         if (e.key === "Enter" && (e.target as HTMLElement).tagName === "INPUT") {
           e.preventDefault();
@@ -45,6 +45,7 @@ export default function Form() {
               <input
                 id="patient_id"
                 name="patient_id"
+                value={patientId}
                 type="text"
                 placeholder="Identify the patient to start the history for"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"

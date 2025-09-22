@@ -14,7 +14,6 @@ from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 import json
 
-#TODO
 class History(APIView):
     """
     Get history from DDBB
@@ -89,9 +88,10 @@ class History(APIView):
         
         patient_obj = None
         try:
-            patient_obj = create_patient(patient_id)
+            patient_obj = create_patient(patient_identifier=patient_id, patient_sex=patient_sex, patient_dateOfBirth=patient_date)
         except Exception as e:
-            return Response({"message":"Patient ${patient_id} could not be created"},\
+            print(f"Patient {patient_id} could not be created")
+            return Response({"message":f"Patient {patient_id} could not be created"},\
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # CREATE HISTORY
@@ -101,10 +101,10 @@ class History(APIView):
                     )
             new_history.save()
         except Exception as e:
-            return Response({"message":"History for patient ${patient_id} could not be created"},\
+            return Response({"message":f"History for patient {patient_id} could not be created"},\
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
         #region response and status
-        return Response(None, status=status.HTTP_201_CREATED)
+        return Response({"message":"History created successfully", "history_id":new_history.id}, status=status.HTTP_201_CREATED)
         #endregion
 

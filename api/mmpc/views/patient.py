@@ -1,7 +1,7 @@
 """
 Module to work with patients in DDBB
 """
-from mmpc.models import variantAnalysis, customUser, drugQuery, patient
+from mmpc.models import variantAnalysis, customUser, drugQuery, patient, sex
 from mmpc.serializers import annotationSerializer
 from mmpc.views import pandrugs
 from rest_framework.views import APIView
@@ -29,13 +29,17 @@ def get_patient(patient_identifier):
     return patient.objects.get(custom_identifier = patient_identifier)
     
 
-def create_patient(patient_identifier):
+def create_patient(patient_identifier, patient_sex, patient_dateOfBirth):
+    patient_sex_obj = sex.objects.get(sex = patient_sex)
     new_patient = patient.objects.create(
-                    custom_identifier = patient_identifier,
+                    appId = patient_identifier,
+                    sex = patient_sex_obj,
+                    dateOfBirth = patient_dateOfBirth,
                 )
     new_patient.save()
     return new_patient
 
+# DEPRECATED
 class Patient(APIView):
     """
     Get patient from DDBB uploaded by the user
