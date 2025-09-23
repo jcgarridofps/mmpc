@@ -43,6 +43,7 @@ urlpatterns = [
 
     path('api/history/', History.as_view(), name='history'),
     path('api/history/new/', History.as_view(), name='history_new'),
+    path('api/history/patient/', HistoryPatient.as_view(), name='history'),
 ]
 
 admin.site.site_header = 'MMPC Administration panel'

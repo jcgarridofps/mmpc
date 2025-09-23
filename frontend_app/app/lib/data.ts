@@ -483,3 +483,24 @@ export async function fetchPresence(gene_list: string[]) {
     throw new Error('Failed to fetch presence.');
   }
 }
+
+export async function fetchPatientByHistoryAppId(history_id: string) {
+  const session = await auth();
+  try {
+    const patient_appId = await fetch(process.env.API_BASE_URL + 
+      `/api/history/patient/?history_id=${history_id}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json",
+        },
+    });
+    
+    let res = await patient_appId.json();
+    return res['patient_appId'];
+  } catch (error) {
+    console.error('Fetch patient by history id error:', error);
+    throw new Error('Failed to fetch patient by history id.');
+  }
+}

@@ -14,17 +14,25 @@ import { Button } from '@/app/ui/button';
 import { createVariantAnalysis, State } from '@/app/lib/actions';
 import { useActionState, useRef, useState } from 'react';
 
-export default function Form() {
+export default function Form({
+  patient_appId,
+  history_id,
+}: {
+  patient_appId: string;
+  history_id: string;
+}) {
   const initialState: State = { success: false, message: null, errors: {} };
   const [state, formAction] = useActionState<State, FormData>(createVariantAnalysis, initialState);
   const [fileName, setFileName] = useState<string>("");
-  
-  const [patientIdentifier, setPatientIdentifier] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileNameRef = useRef<HTMLInputElement>(null);
 
-  const handleFilePickerButton = () => {
+  const handleVCFFileButton = () => {
+    fileInputRef.current?.click();
+  }
+
+  const handleGENEFileButton = () => {
     fileInputRef.current?.click();
   }
 
@@ -85,14 +93,6 @@ export default function Form() {
     }
   }
 
-  const handlePatientIdentifierChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value && event.target.value.length > 0) {
-      setPatientIdentifier(event.target.value);
-    } else {// Reset if no file is selected
-      setPatientIdentifier("");
-    }
-  }
-
   const handleFormAction = async (formData: FormData) => {
     setFileName("");
     return formAction(formData);
@@ -112,7 +112,7 @@ export default function Form() {
 
         <div className="text-sm block w-full flex mb-4">
           <p className="font-medium">Patient ID:</p>
-          <p className="text-gray-500 ml-1">ENXXXXXXXXX</p>
+          <p className="text-gray-500 ml-1">{patient_appId}</p>
         </div>
 
         {/* Study description */}
@@ -151,7 +151,7 @@ export default function Form() {
         <div className="relative mt-2 rounded-md mb-4">
           <div className="relative">
             <select
-              id="Sample_kind"
+              id="sample_kind"
               name="sample_kind"
               value={sampleKind}
               onChange={handleSampleKindChange}
@@ -194,14 +194,14 @@ export default function Form() {
         {procedure === "PANEL" &&
           (
             <div>
-              <label htmlFor="sample_kind" className="mb-2 block text-sm font-medium">
+              <label htmlFor="panel_version" className="mb-2 block text-sm font-medium">
                 Panel version
               </label>
               <div className="relative mt-2 rounded-md mb-4">
                 <div className="relative">
                   <select
-                    id="sample_kind"
-                    name="sample_kind"
+                    id="panel_version"
+                    name="panel_version"
                     value={panelVersion}
                     onChange={handlePanelVersionChange}
                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -260,8 +260,8 @@ export default function Form() {
                 <div className="flex items-center space-x-2">
                   <div className="relative w-full">
                     <input
-                      id="gene_list_file"
-                      name="gene_list_file"
+                      id="gene_list_file_name"
+                      name="gene_list_file_name"
                       type="text"
                       placeholder="Upload file"
                       className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -273,8 +273,8 @@ export default function Form() {
                     />
 
                     <input
-                      type="file"
-                      name="file"
+                      type="gene_list_file"
+                      name="gene_list_file"
                       accept=".vcf"
                       className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
                       ref={fileInputRef}
@@ -287,7 +287,7 @@ export default function Form() {
                     <button
                       type="button"
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-                      onClick={handleFilePickerButton}
+                      onClick={handleVCFFileButton}
                     >
                       <FolderIcon className="h-5" />
                       <span className="mr-2">
@@ -311,8 +311,8 @@ export default function Form() {
           <div className="flex items-center space-x-2">
             <div className="relative w-full">
               <input
-                id="file"
-                name="file"
+                id="file_name"
+                name="file_name"
                 type="text"
                 placeholder="Upload file"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -338,7 +338,7 @@ export default function Form() {
               <button
                 type="button"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-                onClick={handleFilePickerButton}
+                onClick={handleGENEFileButton}
               >
                 <FolderIcon className="h-5" />
                 <span className="mr-2">
@@ -360,7 +360,8 @@ export default function Form() {
             ))}
         </div>
 
-        {/* Analysis description */}
+        {/* NAME */}
+        {/*
         <div className="mb-4">
           <label htmlFor="name" className="mb-2 block text-sm font-medium">
             Name
@@ -388,7 +389,7 @@ export default function Form() {
                 </p>
               ))}
           </div>
-        </div>
+        </div> */}
 
         <div id="form-error" aria-live="polite" aria-atomic="true">
           <p className="mt-2 text-sm text-red-500">

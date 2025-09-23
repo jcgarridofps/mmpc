@@ -1,7 +1,7 @@
 import Pagination from '@/app/ui/aux/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/studies/table';
-import { CreateInvoice } from '@/app/ui/variant-analysis/buttons';
+import { CreateStudy } from '@/app/ui/studies/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
@@ -14,14 +14,17 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline';
 export const metadata: Metadata = {
   title: 'Variant Analysis',
 };
+  
 
 export default async function Page(props: {
+  params: Promise<{ history_id: string }>;
   searchParams?: Promise<{
     query?: string;
     page?: string;
   }>;
 }) {
 
+  const params = await props.params;
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
@@ -45,7 +48,7 @@ export default async function Page(props: {
         <InformationCircleIcon className="h-[30] w-[30] text-gray-500"/>
         <p className="text-left w-full ml-4">Select one study or create a new study for the patient.</p>
         <div className="h-full inline-block flex items-center ">
-          <CreateInvoice />
+          <CreateStudy history_id={params.history_id} />
         </div>
       </div>
 

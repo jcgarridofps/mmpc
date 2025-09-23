@@ -2,18 +2,23 @@ import Form from '@/app/ui/studies/create-form';
 import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Metadata } from 'next';
+import { fetchPatientByHistoryAppId } from '@/app/lib/data';
 
 export const metadata: Metadata = {
   title: 'Create study',
 };
 
-export default async function Page() {
+export default async function Page(props: {params: Promise<{ history_id: string }>;}
+) {
+
+  const params = await props.params;
+  const patient_appId = await fetchPatientByHistoryAppId(params.history_id);
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Patient: ENXXXXXXXXX', href: '/dashboard/' },
+          { label: `Patient: ${patient_appId}`, href: '/dashboard/' },
           {
             label: 'New study',
             href: '/dashboard2/',
@@ -27,7 +32,7 @@ export default async function Page() {
         <p className="text-left w-full ml-4">Start a new study for the patient.</p>
       </div>
 
-      <Form />
+      <Form patient_appId={patient_appId} history_id={params.history_id}/>
     </main>
   );
 }

@@ -27,6 +27,32 @@ const CreateAnalysisSchema = z.object({
   date: z.string(),
 });
 
+const CreateStudySchema = z.object({
+  description: z
+    .string({ invalid_type_error: 'Please insert a description.' })
+    .max(200, { message: "Description must be at most 30 characters long." }),
+  sample_kind: z
+    .string({ invalid_type_error: 'Please select sample kind.' })
+    .max(30, { message: "Sample kind must be at most 30 characters long." }),
+  procedure: z
+    .string({ invalid_type_error: 'Please select procedure.' })
+    .max(30, { message: "Procedure must be at most 30 characters long." }),
+  panel_version: z
+    .string({ invalid_type_error: 'Please select panel_version.' })
+    .max(30, { message: "Panel version must be at most 30 characters long." }),
+  exome_capture: z
+    .string({ invalid_type_error: 'Please select exome capture.' })
+    .max(30, { message: "Exome capture version must be at most 30 characters long." }),
+  gene_list_file: z.custom<File>((file) => {
+    if (!(file instanceof File)) return false;
+    return file.name.endsWith(".csv");
+  }, { message: "Only -csv files are allowed" }),
+  file: z.custom<File>((file) => {
+    if (!(file instanceof File)) return false;
+    return file.name.endsWith(".vcf");
+  }, { message: "Only -vcf files are allowed" }),
+});
+
 const CreateDrugQuerySchema = z.object({
   id: z.string(),
   variant_analysis_id: z.string({
@@ -70,6 +96,7 @@ const CreateHistorySchema = z.object({
 });
 
 const CreateAnalysis = CreateAnalysisSchema.omit({ id: true, date: true });
+const CreateStudy = CreateStudySchema;
 const CreateDrugQuery = CreateDrugQuerySchema.omit({ id: true, date: true });
 const CreateReport = CreateReportSchema.omit({ id: true, date: true });
 const CreateHistory = CreateHistorySchema;
@@ -131,6 +158,91 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
 
   const validatedFields = CreateAnalysis.safeParse({
     file: file_,
+    description: formData.get('description'),
+    patient_identifier: formData.get('patient_identifier'),
+    cancerTypes: formData.getAll("ctype[]"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      ...prevState,
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to create Invoice'
+    };
+  }
+
+  const { file, description, patient_identifier, cancerTypes } = validatedFields.data;
+
+  //------------------------------------------------------------------------------------
+
+  const session = await auth();
+  try {
+
+    const formData = new FormData();
+    formData.append("withPharmcat", "false");
+    formData.append("vcf_file", file);
+    formData.append("file_name", actualFileName);
+    formData.append("patient_identifier", patient_identifier);
+    formData.append("cancer_types", JSON.stringify(cancerTypes));
+
+    const urlSafeDescription = encodeURIComponent(description);
+    const result = await fetch(process.env.API_BASE_URL +
+      "/api/analysis/new/?" +
+      "name=" + urlSafeDescription,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        },
+        body: formData
+      });
+
+    if (!result.ok) {
+      const errorMessage = await result.json();
+      console.error('Create variant analysis error:', errorMessage.message);
+      return {
+        ...prevState,
+        success: false,
+        message: errorMessage.message
+      };
+    }
+
+  } catch (error) {
+    console.error('Create variant analysis error:', error);
+    return {
+      ...prevState,
+      success: false,
+      message: 'Error creating variant analysis'
+    };
+  }
+
+  revalidatePath('/dashboard/variant-analysis');
+  redirect('/dashboard/variant-analysis/');
+
+  //-------------------------------------------------------------------------------------------
+
+}
+
+export async function createStudy(prevState: State, formData: FormData) {
+  //console.log("Received FormData:", Object.fromEntries(formData.entries()));
+  let file_vcf = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
+  let file_gene = formData.get("file_gene"); //This data is loaded as a Blob, not a File instance
+
+  let actualFileName = "uploaded.vcf"; // Default name
+  for (const [key, value] of formData.entries()) {
+    if (key === "file" && value instanceof File) {
+      actualFileName = value.name; // Extract correct filename
+    }
+  }
+
+  // Convert Blob to File if needed
+  if (file_vcf instanceof Blob) {
+    file_vcf = new File([file_vcf], actualFileName, { type: file_vcf.type });
+  }
+
+  const validatedFields = CreateAnalysis.safeParse({
+    file: file_vcf,
     description: formData.get('description'),
     patient_identifier: formData.get('patient_identifier'),
     cancerTypes: formData.getAll("ctype[]"),

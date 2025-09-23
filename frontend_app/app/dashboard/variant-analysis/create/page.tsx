@@ -1,6 +1,5 @@
 import Form from '@/app/ui/variant-analysis/create-form';
 import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
 import {Metadata} from 'next';
 
 export const metadata: Metadata = {

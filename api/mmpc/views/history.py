@@ -108,3 +108,33 @@ class History(APIView):
         return Response({"message":"History created successfully", "history_id":new_history.id}, status=status.HTTP_201_CREATED)
         #endregion
 
+class HistoryPatient(APIView):
+    """
+    Get patient for a given history appId
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve one patient appId for a given history appId
+        """
+        # CHECK ALL NEEDED INFO IS PROVIDED
+        history_id =  request.GET.get('history_id', '')
+        if(history_id == ''):
+            return Response({"message":"Please identify history_id"},\
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        # FETCH DATA FROM DDBB
+        try:
+            patient_appId = history.objects.get(id = history_id).patient.appId
+                
+        except history.DoesNotExist:
+            return Response({"message":"Provided history not found"},\
+                            status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"message":"Could not get provided history"},\
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        #region response and status
+        return Response({"patient_appId":patient_appId}, status = status.HTTP_200_OK)
+        #endregion
