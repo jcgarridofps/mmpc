@@ -42,3 +42,9 @@ class historySerializer(serializers.ModelSerializer):
         model = history
         fields = ['appId']
 
+class studySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = study
+        fields = ['id', 'appId', 'description', 'date', 'studyProcedure']
+

@@ -129,7 +129,7 @@ class history(models.Model):
 class studyProcedure(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
-    sample = models.ForeignKey(studySample, on_delete=models.CASCADE)
+    sampleKind = models.ForeignKey(studySample, on_delete=models.CASCADE)
     panelVersion = models.ForeignKey(studyPanelVersion, on_delete=models.CASCADE)
     exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE)
     geneList = models.JSONField()
@@ -143,7 +143,7 @@ class study(models.Model):
     variantsFileRoute = models.CharField(max_length=200)
     history = models.ForeignKey(history, on_delete=models.CASCADE)
     uploader = models.ForeignKey(customUser, null=True, on_delete=models.DO_NOTHING)
-    #sampleId = models.CharField(max_length=60)
+    sampleId = models.CharField(max_length=60)
 
 class annotation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

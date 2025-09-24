@@ -11,7 +11,7 @@ import {
   FunnelIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createVariantAnalysis, State } from '@/app/lib/actions';
+import { createStudy, StudyState } from '@/app/lib/actions';
 import { useActionState, useRef, useState } from 'react';
 
 export default function Form({
@@ -21,8 +21,8 @@ export default function Form({
   patient_appId: string;
   history_id: string;
 }) {
-  const initialState: State = { success: false, message: null, errors: {} };
-  const [state, formAction] = useActionState<State, FormData>(createVariantAnalysis, initialState);
+  const initialState: StudyState = { success: false, message: null, errors: {}, history_id: history_id };
+  const [state, formAction] = useActionState<StudyState, FormData>(createStudy, initialState);
   const [fileName, setFileName] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);

@@ -1,52 +1,52 @@
-<diagram program="umletino" version="15.1"><zoom_level>15</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>390</x><y>0</y><w>375</w><h>870</h></coordinates><panel_attributes>FPS
-bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>780</x><y>0</y><w>375</w><h>870</h></coordinates><panel_attributes>USUARIO
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>60</y><w>315</w><h>45</h></coordinates><panel_attributes>PACIENTE
+<diagram program="umletino" version="15.1"><zoom_level>16</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>416</x><y>0</y><w>400</w><h>928</h></coordinates><panel_attributes>FPS
+bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>832</x><y>0</y><w>400</w><h>928</h></coordinates><panel_attributes>USUARIO
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>448</x><y>64</y><w>336</w><h>48</h></coordinates><panel_attributes>PACIENTE
 bg=black
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>375</y><w>315</w><h>45</h></coordinates><panel_attributes>FICHERO DE VARIANTES .VCF
-bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>480</y><w>315</w><h>45</h></coordinates><panel_attributes>ANÁLISIS DE VARIANTES
-bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>585</y><w>315</w><h>45</h></coordinates><panel_attributes>BÚSQUEDA DE FÁRMACOS
-bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>420</x><y>690</y><w>315</w><h>45</h></coordinates><panel_attributes>INFORME
-bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>60</y><w>315</w><h>45</h></coordinates><panel_attributes>PACIENTE
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>448</x><y>400</y><w>336</w><h>48</h></coordinates><panel_attributes>FICHERO DE VARIANTES .VCF
+bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>448</x><y>512</y><w>336</w><h>48</h></coordinates><panel_attributes>ANÁLISIS DE VARIANTES
+bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>448</x><y>624</y><w>336</w><h>48</h></coordinates><panel_attributes>BÚSQUEDA DE FÁRMACOS
+bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>448</x><y>736</y><w>336</w><h>48</h></coordinates><panel_attributes>INFORME
+bg=black</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>64</y><w>336</w><h>48</h></coordinates><panel_attributes>PACIENTE
 bg=black
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>165</y><w>315</w><h>45</h></coordinates><panel_attributes>ESTUDIO
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>176</y><w>336</w><h>48</h></coordinates><panel_attributes>ESTUDIO
 bg=black
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>270</y><w>315</w><h>45</h></coordinates><panel_attributes>MUESTRA
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>288</y><w>336</w><h>48</h></coordinates><panel_attributes>MUESTRA
 bg=black
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>375</y><w>315</w><h>45</h></coordinates><panel_attributes>TÉCNICA
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>400</y><w>336</w><h>48</h></coordinates><panel_attributes>TÉCNICA
 bg=black
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>480</y><w>315</w><h>150</h></coordinates><panel_attributes>ANÁLISIS
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>512</y><w>336</w><h>160</h></coordinates><panel_attributes>ANÁLISIS
 bg=black
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>690</y><w>315</w><h>45</h></coordinates><panel_attributes>SUBINFORME
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>736</y><w>336</w><h>48</h></coordinates><panel_attributes>SUBINFORME
 bg=black
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>810</x><y>795</y><w>315</w><h>45</h></coordinates><panel_attributes>INFORME GLOBAL
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>864</x><y>848</y><w>336</w><h>48</h></coordinates><panel_attributes>INFORME GLOBAL
 bg=black
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>315</y><w>990</w><h>45</h></coordinates><panel_attributes>VISTA - NUEVO ESTUDIO
-bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>375</y><w>990</w><h>45</h></coordinates><panel_attributes>VISTA - NUEVO ANÁLISIS (VARIANT ANALYSIS)
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>435</y><w>990</w><h>45</h></coordinates><panel_attributes>VISTA - CONSULTA DE FÁRMACOS (DRUG QUERY)
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>255</y><w>990</w><h>45</h></coordinates><panel_attributes>VISTA - ESTUDIOS
-bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>495</y><w>990</w><h>60</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE]
-(lista de estudios del paciente)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>570</y><w>990</w><h>60</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>336</y><w>1056</w><h>48</h></coordinates><panel_attributes>VISTA - NUEVO ESTUDIO
+bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>400</y><w>1056</w><h>48</h></coordinates><panel_attributes>VISTA - NUEVO ANÁLISIS (VARIANT ANALYSIS)
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>464</y><w>1056</w><h>48</h></coordinates><panel_attributes>VISTA - CONSULTA DE FÁRMACOS (DRUG QUERY)
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>272</y><w>1056</w><h>48</h></coordinates><panel_attributes>VISTA - ESTUDIOS
+bg=green</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>528</y><w>1056</w><h>64</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE]
+(lista de estudios del paciente)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>608</y><w>1056</w><h>64</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY
 (lista de estudios con la descripción del estudio)
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>720</y><w>990</w><h>60</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY / [STUDY] / ANALYSIS / [ANALYSIS]
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>768</y><w>1056</w><h>64</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY / [STUDY] / ANALYSIS / [ANALYSIS]
 (anterior vista de drug queries)
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>645</y><w>990</w><h>60</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY / [STUDY]
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>688</y><w>1056</w><h>64</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY / [STUDY]
 (lista de análisis)
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1530</x><y>795</y><w>990</w><h>60</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY / [STUDY] / ANALYSIS / [ANALYSIS] / DRUG-QUERIES / [DRUG-QUERY]
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1632</x><y>848</y><w>1056</w><h>64</h></coordinates><panel_attributes>VISTA - PATIENTS / [PACIENTE] / STUDY / [STUDY] / ANALYSIS / [ANALYSIS] / DRUG-QUERIES / [DRUG-QUERY]
 (anterior vista de drug query)
-bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>405</x><y>1485</y><w>240</w><h>285</h></coordinates><panel_attributes>History
+bg=blue</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>432</x><y>1584</y><w>256</w><h>304</h></coordinates><panel_attributes>History
 --
 
 -id: String
 -patient: Patient
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>1485</y><w>255</w><h>285</h></coordinates><panel_attributes>Patient
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>1584</y><w>272</w><h>304</h></coordinates><panel_attributes>Patient
 --
 
 -id: String
 -sex: Sex
 -dateOfBirth: Date
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>795</x><y>1485</y><w>315</w><h>285</h></coordinates><panel_attributes>Study
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>848</x><y>1584</y><w>336</w><h>304</h></coordinates><panel_attributes>Study
 --
 
 -id: String
@@ -58,7 +58,7 @@ bg=blue</panel_attributes><additional_attributes></additional_attributes></eleme
 -sampleId: String
 -uploader: CustomUser
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1260</x><y>1485</y><w>270</w><h>285</h></coordinates><panel_attributes>Annotation
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1344</x><y>1584</y><w>288</w><h>304</h></coordinates><panel_attributes>Annotation
 --
 
 -id: String
@@ -69,7 +69,7 @@ bg=blue</panel_attributes><additional_attributes></additional_attributes></eleme
 -documentID: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1680</x><y>1485</y><w>270</w><h>285</h></coordinates><panel_attributes>Analysis
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1792</x><y>1584</y><w>288</w><h>304</h></coordinates><panel_attributes>Analysis
 --
 
 -id: String
@@ -81,7 +81,7 @@ bg=blue</panel_attributes><additional_attributes></additional_attributes></eleme
 -cancerTypes: JSONB
 -documentId: String
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2100</x><y>1485</y><w>225</w><h>285</h></coordinates><panel_attributes>Report
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2240</x><y>1584</y><w>240</w><h>304</h></coordinates><panel_attributes>Report
 --
 
 -id: String
@@ -92,17 +92,17 @@ bg=blue</panel_attributes><additional_attributes></additional_attributes></eleme
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1935</x><y>1605</y><w>195</w><h>60</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2064</x><y>1712</y><w>208</w><h>64</h></coordinates><panel_attributes>lt=-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1515</x><y>1605</y><w>195</w><h>60</h></coordinates><panel_attributes>lt=-
+m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1616</x><y>1712</y><w>208</w><h>64</h></coordinates><panel_attributes>lt=-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1095</x><y>1605</y><w>195</w><h>60</h></coordinates><panel_attributes>lt=-
+m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1168</x><y>1712</y><w>208</w><h>64</h></coordinates><panel_attributes>lt=-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>630</x><y>1605</y><w>195</w><h>60</h></coordinates><panel_attributes>lt=-
+m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>672</x><y>1712</y><w>208</w><h>64</h></coordinates><panel_attributes>lt=-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>240</x><y>1605</y><w>195</w><h>60</h></coordinates><panel_attributes>lt=-
+m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>256</x><y>1712</y><w>208</w><h>64</h></coordinates><panel_attributes>lt=-
 m1=1
-m2=1</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>780</x><y>1875</y><w>360</w><h>285</h></coordinates><panel_attributes>StudyProcedure
+m2=1</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>832</x><y>2000</y><w>384</w><h>304</h></coordinates><panel_attributes>StudyProcedure
 --
 
 
@@ -112,19 +112,19 @@ m2=1</panel_attributes><additional_attributes>10;10;110;10</additional_attribute
 -exomeCapture: StudyExomeCapture
 -geneList: JSONB
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>435</x><y>2355</y><w>210</w><h>120</h></coordinates><panel_attributes>StudyProcedureType
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>464</x><y>2512</y><w>224</w><h>128</h></coordinates><panel_attributes>StudyProcedureType
 --
 
 -type: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1005</x><y>2355</y><w>210</w><h>120</h></coordinates><panel_attributes>StudyPanelVersion
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1072</x><y>2512</y><w>224</w><h>128</h></coordinates><panel_attributes>StudyPanelVersion
 --
 
 panelVersion: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>720</x><y>2355</y><w>210</w><h>120</h></coordinates><panel_attributes>StudySample
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>768</x><y>2512</y><w>224</w><h>128</h></coordinates><panel_attributes>StudySample
 --
 
 -sample: String
@@ -132,52 +132,52 @@ panelVersion: String
 
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1275</x><y>2355</y><w>210</w><h>120</h></coordinates><panel_attributes>StudyExomeCapture
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1360</x><y>2512</y><w>224</w><h>128</h></coordinates><panel_attributes>StudyExomeCapture
 --
 
 -exomeCapture: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>435</x><y>2535</y><w>210</w><h>105</h></coordinates><panel_attributes>GENOME
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>464</x><y>2704</y><w>224</w><h>112</h></coordinates><panel_attributes>GENOME
 WHOLE_EXOME
 CLINICAL_EXOME
-PANEL</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>945</x><y>1755</y><w>45</w><h>150</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>510</x><y>2145</y><w>345</w><h>240</h></coordinates><panel_attributes>m1=*
-m2=1</panel_attributes><additional_attributes>200;10;200;80;10;80;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>795</x><y>2145</y><w>150</w><h>240</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>10;140;10;110;70;110;70;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1005</x><y>2145</y><w>150</w><h>240</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>70;140;70;110;10;110;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1095</x><y>2145</y><w>330</w><h>240</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>190;140;190;80;10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>525</x><y>2460</y><w>45</w><h>105</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1260</x><y>1245</y><w>270</w><h>135</h></coordinates><panel_attributes>ComputationStatus
+PANEL</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1008</x><y>1872</y><w>48</w><h>160</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>Relation</id><coordinates><x>544</x><y>2288</y><w>368</w><h>256</h></coordinates><panel_attributes>m1=*
+m2=1</panel_attributes><additional_attributes>200;10;200;80;10;80;10;140</additional_attributes></element><element><id>Relation</id><coordinates><x>848</x><y>2288</y><w>160</w><h>256</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>10;140;10;110;70;110;70;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1072</x><y>2288</y><w>160</w><h>256</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>70;140;70;110;10;110;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1168</x><y>2288</y><w>352</w><h>256</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>190;140;190;80;10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>560</x><y>2624</y><w>48</w><h>112</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1344</x><y>1328</y><w>288</w><h>144</h></coordinates><panel_attributes>ComputationStatus
 --
 
 -computationStatus: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1380</x><y>1365</y><w>60</w><h>150</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1680</x><y>1875</y><w>270</w><h>150</h></coordinates><panel_attributes>ComputationVersion
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1472</x><y>1456</y><w>64</w><h>160</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1792</x><y>2000</y><w>288</w><h>160</h></coordinates><panel_attributes>ComputationVersion
 --
 
 -state: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1800</x><y>1755</y><w>60</w><h>150</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1455</x><y>1755</y><w>345</w><h>150</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>200;80;200;50;10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1680</x><y>1245</y><w>270</w><h>135</h></coordinates><panel_attributes>AnalysisType
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1920</x><y>1872</y><w>64</w><h>160</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1552</x><y>1872</y><w>368</w><h>160</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>200;80;200;50;10;50;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1792</x><y>1328</y><w>288</w><h>144</h></coordinates><panel_attributes>AnalysisType
 --
 
 -analysisType: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1890</x><y>1365</y><w>60</w><h>150</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLNote</id><coordinates><x>1680</x><y>2115</y><w>270</w><h>105</h></coordinates><panel_attributes>N/A
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2016</x><y>1456</y><w>64</w><h>160</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>10;10;10;80</additional_attributes></element><element><id>UMLNote</id><coordinates><x>1792</x><y>2256</y><w>288</w><h>112</h></coordinates><panel_attributes>N/A
 UP_TO_DATE
-OUTDATED</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1455</x><y>1365</y><w>405</w><h>150</h></coordinates><panel_attributes>m1=1
-m2=*</panel_attributes><additional_attributes>10;10;10;50;240;50;240;80</additional_attributes></element><element><id>Relation</id><coordinates><x>1800</x><y>2010</y><w>45</w><h>135</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;70;10;10</additional_attributes></element><element><id>UMLNote</id><coordinates><x>1680</x><y>1065</y><w>270</w><h>105</h></coordinates><panel_attributes>DRUG_QUERY</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>1260</x><y>1065</y><w>270</w><h>105</h></coordinates><panel_attributes>PENDING
+OUTDATED</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1552</x><y>1456</y><w>432</w><h>160</h></coordinates><panel_attributes>m1=1
+m2=*</panel_attributes><additional_attributes>10;10;10;50;240;50;240;80</additional_attributes></element><element><id>Relation</id><coordinates><x>1920</x><y>2144</y><w>48</w><h>144</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;70;10;10</additional_attributes></element><element><id>UMLNote</id><coordinates><x>1792</x><y>1136</y><w>288</w><h>112</h></coordinates><panel_attributes>DRUG_QUERY</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLNote</id><coordinates><x>1344</x><y>1136</y><w>288</w><h>112</h></coordinates><panel_attributes>PENDING
 PROCESSED
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1380</x><y>1155</y><w>45</w><h>120</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1800</x><y>1155</y><w>45</w><h>120</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>1875</y><w>255</w><h>150</h></coordinates><panel_attributes>Sex
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1472</x><y>1232</y><w>48</w><h>128</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1920</x><y>1232</y><w>48</w><h>128</h></coordinates><panel_attributes>lt=.</panel_attributes><additional_attributes>10;60;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>2000</y><w>272</w><h>160</h></coordinates><panel_attributes>Sex
 --
 
 -sex: String
 
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>105</x><y>1755</y><w>60</w><h>150</h></coordinates><panel_attributes>lt=-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>112</x><y>1872</y><w>64</w><h>160</h></coordinates><panel_attributes>lt=-
 m1=1
 m2=*</panel_attributes><additional_attributes>10;80;10;10</additional_attributes></element></diagram>

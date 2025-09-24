@@ -129,6 +129,21 @@ export type HistoryState = {
   message?: string | null;
 }
 
+export type StudyState = {
+  success: boolean;
+  errors?: {
+    description?: string[];
+    sample_kind?: string[];
+    procedure?: string[];
+    panel_version?: string[];
+    exome_capture?: string[];
+    gene_list_file?: string[];
+    file?: string[];
+  };
+  message?: string | null;
+  history_id: string;
+}
+
 export type State = {
   success: boolean;
   errors?: {
@@ -224,28 +239,43 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
 
 }
 
-export async function createStudy(prevState: State, formData: FormData) {
+export async function createStudy(prevState: StudyState, formData: FormData) {
   //console.log("Received FormData:", Object.fromEntries(formData.entries()));
   let file_vcf = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
-  let file_gene = formData.get("file_gene"); //This data is loaded as a Blob, not a File instance
+  let file_gene = formData.get("gene_list_file"); //This data is loaded as a Blob, not a File instance
 
-  let actualFileName = "uploaded.vcf"; // Default name
+  let filename_vcf = "uploaded.vcf"; // Default name
   for (const [key, value] of formData.entries()) {
     if (key === "file" && value instanceof File) {
-      actualFileName = value.name; // Extract correct filename
+      filename_vcf = value.name; // Extract correct filename
+    }
+  }
+
+  let filename_gene = "uploaded.csv"; // Default name
+  for (const [key, value] of formData.entries()) {
+    if (key === "file" && value instanceof File) {
+      filename_gene = value.name; // Extract correct filename
     }
   }
 
   // Convert Blob to File if needed
   if (file_vcf instanceof Blob) {
-    file_vcf = new File([file_vcf], actualFileName, { type: file_vcf.type });
+    file_vcf = new File([file_vcf], filename_vcf, { type: file_vcf.type });
   }
 
-  const validatedFields = CreateAnalysis.safeParse({
-    file: file_vcf,
+  // Convert Blob to File if needed
+  if (file_gene instanceof Blob) {
+    file_vcf = new File([file_gene], filename_gene, { type: file_gene.type });
+  }
+
+  const validatedFields = CreateStudy.safeParse({
     description: formData.get('description'),
-    patient_identifier: formData.get('patient_identifier'),
-    cancerTypes: formData.getAll("ctype[]"),
+    sample_kind: formData.get('samle_kind'),
+    procedure: formData.get('procedure'),
+    panel_version: formData.get('panel_version'),
+    exome_capture: formData.get('exome_capture'),
+    gene_list_file: file_gene,
+    file: file_vcf,
   });
 
   if (!validatedFields.success) {
@@ -253,48 +283,52 @@ export async function createStudy(prevState: State, formData: FormData) {
       ...prevState,
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Failed to create Invoice'
+      message: 'Missing fields. Failed to create Study'
     };
   }
 
-  const { file, description, patient_identifier, cancerTypes } = validatedFields.data;
+  const {
+    description,
+    sample_kind,
+    procedure,
+    panel_version,
+    exome_capture,
+    gene_list_file,
+    file
+  } = validatedFields.data;
 
   //------------------------------------------------------------------------------------
 
   const session = await auth();
+
+
+  const newFormData = new FormData();
+  newFormData.append("description", description);
+  newFormData.append("sample_kind", sample_kind);
+  newFormData.append("procedure", procedure);
+  newFormData.append("panel_version", panel_version);
+  newFormData.append("exome_capture", exome_capture);
+  newFormData.append("gene_list_file", gene_list_file);
+  newFormData.append("file", file);
+  newFormData.append("history_id", prevState.history_id);
+
+  const urlSafeDescription = encodeURIComponent(description);
+
+  let result: Response;
+
   try {
-
-    const formData = new FormData();
-    formData.append("withPharmcat", "false");
-    formData.append("vcf_file", file);
-    formData.append("file_name", actualFileName);
-    formData.append("patient_identifier", patient_identifier);
-    formData.append("cancer_types", JSON.stringify(cancerTypes));
-
-    const urlSafeDescription = encodeURIComponent(description);
-    const result = await fetch(process.env.API_BASE_URL +
-      "/api/analysis/new/?" +
+    result = await fetch(process.env.API_BASE_URL +
+      "/api/Study/new/?" +
       "name=" + urlSafeDescription,
       {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`
         },
-        body: formData
+        body: newFormData
       });
-
-    if (!result.ok) {
-      const errorMessage = await result.json();
-      console.error('Create variant analysis error:', errorMessage.message);
-      return {
-        ...prevState,
-        success: false,
-        message: errorMessage.message
-      };
-    }
-
   } catch (error) {
-    console.error('Create variant analysis error:', error);
+    console.error('Create study error:', error);
     return {
       ...prevState,
       success: false,
@@ -302,7 +336,18 @@ export async function createStudy(prevState: State, formData: FormData) {
     };
   }
 
-  revalidatePath('/dashboard/variant-analysis');
+  if (!result.ok) {
+    const errorMessage = await result.json();
+    console.error('Create study error:', errorMessage.message);
+    return {
+      ...prevState,
+      success: false,
+      message: errorMessage.message
+    };
+  }
+  
+  const study_id: string = (await result.json()).story_id;
+  revalidatePath(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/analyses/`);
   redirect('/dashboard/variant-analysis/');
 
   //-------------------------------------------------------------------------------------------
