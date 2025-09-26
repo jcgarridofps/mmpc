@@ -24,16 +24,19 @@ export default function Form({
   const initialState: StudyState = { success: false, message: null, errors: {}, history_id: history_id };
   const [state, formAction] = useActionState<StudyState, FormData>(createStudy, initialState);
   const [fileName, setFileName] = useState<string>("");
+  const [geneFileName, setGeneFileName] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileNameRef = useRef<HTMLInputElement>(null);
+  const geneFileInputRef = useRef<HTMLInputElement>(null);
+  const geneFileNameRef = useRef<HTMLInputElement>(null);
 
   const handleVCFFileButton = () => {
     fileInputRef.current?.click();
   }
 
   const handleGENEFileButton = () => {
-    fileInputRef.current?.click();
+    geneFileInputRef.current?.click();
   }
 
   const [description, setDescription] = useState<string>("");
@@ -50,6 +53,14 @@ export default function Form({
       setFileName(event.target.files[0].name);
     } else {// Reset if no file is selected
       setFileName("");
+    }
+  }
+
+  const handleGeneFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setGeneFileName(event.target.files[0].name);
+    } else {// Reset if no file is selected
+      setGeneFileName("");
     }
   }
 
@@ -267,18 +278,18 @@ export default function Form({
                       className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                       aria-describedby="file-error"
                       readOnly
-                      ref={fileNameRef}
-                      value={fileName}
+                      ref={geneFileNameRef}
+                      value={geneFileName}
 
                     />
 
                     <input
                       type="gene_list_file"
                       name="gene_list_file"
-                      accept=".vcf"
+                      accept=".csv"
                       className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
+                      ref={geneFileInputRef}
+                      onChange={handleGeneFileChange}
                     />
 
                     <DocumentArrowUpIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -325,7 +336,7 @@ export default function Form({
 
               <input
                 type="file"
-                name="file"
+                name="file_vcf"
                 accept=".vcf"
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
                 ref={fileInputRef}

@@ -122,7 +122,7 @@ class patient(models.Model):
 class history(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     appId = models.CharField(unique=True, default=generate_history_id, max_length=12, editable=False)
-    patient = models.ForeignKey(patient, on_delete=models.CASCADE)
+    patient = models.ForeignKey(patient, on_delete=models.CASCADE, null = True)
 
 
 
@@ -138,36 +138,36 @@ class study(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     appId = models.CharField(unique=True, default=generate_study_id, max_length=12, editable=False)
     description = models.CharField(max_length=200)
-    studyProcedure = models.ForeignKey(studyProcedure, on_delete=models.CASCADE)
+    studyProcedure = models.ForeignKey(studyProcedure, on_delete=models.CASCADE, null=True)
     date = models.DateField(auto_now=True)
     variantsFileRoute = models.CharField(max_length=200)
-    history = models.ForeignKey(history, on_delete=models.CASCADE)
+    history = models.ForeignKey(history, on_delete=models.CASCADE, null=True)
     uploader = models.ForeignKey(customUser, null=True, on_delete=models.DO_NOTHING)
     sampleId = models.CharField(max_length=60)
 
 class annotation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     appId = models.CharField(unique=True, default=generate_annotation_id, max_length=12, editable=False)
-    study = models.ForeignKey(study, on_delete=models.CASCADE)
+    study = models.ForeignKey(study, on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now=True)
-    status = models.ForeignKey(computationStatus, on_delete=models.DO_NOTHING)
-    version = models.ForeignKey(computationVersion, on_delete=models.DO_NOTHING)
+    status = models.ForeignKey(computationStatus, on_delete=models.DO_NOTHING, null=True)
+    version = models.ForeignKey(computationVersion, on_delete=models.DO_NOTHING, null=True)
     documentId = models.CharField(default='NONE', max_length=200)
 
 class analysis(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_analysis_id, max_length=12, editable=False)
-    type = models.ForeignKey(analysisType, on_delete=models.CASCADE)
-    annotation = models.ForeignKey(annotation, on_delete=models.CASCADE)
-    version = models.ForeignKey(computationVersion, on_delete=models.DO_NOTHING)
-    status = models.ForeignKey(computationStatus, on_delete=models.DO_NOTHING)
+    appId = models.CharField(unique=False, default=generate_analysis_id, max_length=12, editable=False, null=True)
+    type = models.ForeignKey(analysisType, on_delete=models.CASCADE, null=True)
+    annotation = models.ForeignKey(annotation, on_delete=models.CASCADE, null=True)
+    version = models.ForeignKey(computationVersion, on_delete=models.DO_NOTHING, null=True)
+    status = models.ForeignKey(computationStatus, on_delete=models.DO_NOTHING, null=True)
     date = models.DateTimeField(auto_now=True)
-    cancerTypes = models.JSONField(max_length=300)
+    cancerTypes = models.JSONField(max_length=300, default=dict)
     documentId = models.CharField(default='NONE', max_length=200)
 
 class report(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    appId = models.CharField(unique=True, default=generate_history_id, max_length=12, editable=False)
+    appId = models.CharField(unique=False, default=generate_history_id, max_length=12, editable=False, null=True)
     analysis = models.ForeignKey(analysis, on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now=True)
     document_id = models.CharField(max_length=60, default="")

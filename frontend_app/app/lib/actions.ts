@@ -47,7 +47,7 @@ const CreateStudySchema = z.object({
     if (!(file instanceof File)) return false;
     return file.name.endsWith(".csv");
   }, { message: "Only -csv files are allowed" }),
-  file: z.custom<File>((file) => {
+  file_vcf: z.custom<File>((file) => {
     if (!(file instanceof File)) return false;
     return file.name.endsWith(".vcf");
   }, { message: "Only -vcf files are allowed" }),
@@ -241,31 +241,31 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
 
 export async function createStudy(prevState: StudyState, formData: FormData) {
   //console.log("Received FormData:", Object.fromEntries(formData.entries()));
-  let file_vcf = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
+  let vcf_file = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
   let file_gene = formData.get("gene_list_file"); //This data is loaded as a Blob, not a File instance
 
   let filename_vcf = "uploaded.vcf"; // Default name
   for (const [key, value] of formData.entries()) {
-    if (key === "file" && value instanceof File) {
+    if (key === "vcf_file" && value instanceof File) {
       filename_vcf = value.name; // Extract correct filename
     }
   }
 
   let filename_gene = "uploaded.csv"; // Default name
   for (const [key, value] of formData.entries()) {
-    if (key === "file" && value instanceof File) {
+    if (key === "gene_list_file" && value instanceof File) {
       filename_gene = value.name; // Extract correct filename
     }
   }
 
   // Convert Blob to File if needed
-  if (file_vcf instanceof Blob) {
-    file_vcf = new File([file_vcf], filename_vcf, { type: file_vcf.type });
+  if (vcf_file instanceof Blob) {
+    vcf_file = new File([vcf_file], filename_vcf, { type: vcf_file.type });
   }
 
   // Convert Blob to File if needed
   if (file_gene instanceof Blob) {
-    file_vcf = new File([file_gene], filename_gene, { type: file_gene.type });
+    file_gene = new File([file_gene], filename_gene, { type: file_gene.type });
   }
 
   const validatedFields = CreateStudy.safeParse({
@@ -275,7 +275,7 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
     panel_version: formData.get('panel_version'),
     exome_capture: formData.get('exome_capture'),
     gene_list_file: file_gene,
-    file: file_vcf,
+    file_vcf: vcf_file,
   });
 
   if (!validatedFields.success) {
@@ -294,7 +294,7 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
     panel_version,
     exome_capture,
     gene_list_file,
-    file
+    file_vcf,
   } = validatedFields.data;
 
   //------------------------------------------------------------------------------------
@@ -309,7 +309,7 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
   newFormData.append("panel_version", panel_version);
   newFormData.append("exome_capture", exome_capture);
   newFormData.append("gene_list_file", gene_list_file);
-  newFormData.append("file", file);
+  newFormData.append("file", file_vcf);
   newFormData.append("history_id", prevState.history_id);
 
   const urlSafeDescription = encodeURIComponent(description);
@@ -490,9 +490,9 @@ export async function createHistory(prevState: HistoryState, formData: FormData)
 
 
   const newFormData = new FormData();
-  formData.append('patient_id', patient_id);
-  formData.append('patient_sex', patient_sex);
-  formData.append('patient_date', patient_date);
+  newFormData.append('patient_id', patient_id);
+  newFormData.append('patient_sex', patient_sex);
+  newFormData.append('patient_date', patient_date);
 
   let result: Response;
 
