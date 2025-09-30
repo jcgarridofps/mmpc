@@ -7,6 +7,7 @@ import { AuthError } from 'next-auth';
 import { auth } from '@/auth';
 import { signOut } from '@/auth';
 import { Result } from 'postcss';
+import { json } from 'stream/consumers';
 
 const CreateAnalysisSchema = z.object({
   id: z.string(),
@@ -30,7 +31,7 @@ const CreateAnalysisSchema = z.object({
 const CreateStudySchema = z.object({
   description: z
     .string({ invalid_type_error: 'Please insert a description.' })
-    .max(200, { message: "Description must be at most 30 characters long." }),
+    .max(200, { message: "Description must be at most 200 characters long." }),
   sample_kind: z
     .string({ invalid_type_error: 'Please select sample kind.' })
     .max(30, { message: "Sample kind must be at most 30 characters long." }),
@@ -39,14 +40,17 @@ const CreateStudySchema = z.object({
     .max(30, { message: "Procedure must be at most 30 characters long." }),
   panel_version: z
     .string({ invalid_type_error: 'Please select panel_version.' })
-    .max(30, { message: "Panel version must be at most 30 characters long." }),
+    .max(30, { message: "Panel version must be at most 30 characters long." })
+    .optional(),
   exome_capture: z
     .string({ invalid_type_error: 'Please select exome capture.' })
-    .max(30, { message: "Exome capture version must be at most 30 characters long." }),
+    .max(30, { message: "Exome capture version must be at most 30 characters long." })
+    .optional(),
   gene_list_file: z.custom<File>((file) => {
     if (!(file instanceof File)) return false;
     return file.name.endsWith(".csv");
-  }, { message: "Only -csv files are allowed" }),
+  }, { message: "Only -csv files are allowed" })
+  .optional(),
   file_vcf: z.custom<File>((file) => {
     if (!(file instanceof File)) return false;
     return file.name.endsWith(".vcf");
@@ -240,45 +244,64 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
 }
 
 export async function createStudy(prevState: StudyState, formData: FormData) {
+
+  console.log(">>> FormData entries:");
+for (const [key, value] of formData.entries()) {
+  if (value instanceof File) {
+    console.log(key, "=> FILE:", value.name, value.type, value.size);
+  } else {
+    console.log(key, "=>", value);
+  }
+}
+
   //console.log("Received FormData:", Object.fromEntries(formData.entries()));
   let vcf_file = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
   let file_gene = formData.get("gene_list_file"); //This data is loaded as a Blob, not a File instance
 
+  console.log("--------------1--------------");
+
   let filename_vcf = "uploaded.vcf"; // Default name
+  let filename_gene = "uploaded.csv"; // Default name
+
   for (const [key, value] of formData.entries()) {
-    if (key === "vcf_file" && value instanceof File) {
+    if (key === "file_vcf" && value instanceof File) {
       filename_vcf = value.name; // Extract correct filename
     }
-  }
-
-  let filename_gene = "uploaded.csv"; // Default name
-  for (const [key, value] of formData.entries()) {
     if (key === "gene_list_file" && value instanceof File) {
       filename_gene = value.name; // Extract correct filename
     }
   }
+
+  console.log("--------------3--------------");
 
   // Convert Blob to File if needed
   if (vcf_file instanceof Blob) {
     vcf_file = new File([vcf_file], filename_vcf, { type: vcf_file.type });
   }
 
+  console.log("--------------4--------------");
+
   // Convert Blob to File if needed
   if (file_gene instanceof Blob) {
     file_gene = new File([file_gene], filename_gene, { type: file_gene.type });
   }
 
+  console.log("--------------5--------------");
+
   const validatedFields = CreateStudy.safeParse({
     description: formData.get('description'),
-    sample_kind: formData.get('samle_kind'),
+    sample_kind: formData.get('sample_kind'),
     procedure: formData.get('procedure'),
-    panel_version: formData.get('panel_version'),
-    exome_capture: formData.get('exome_capture'),
-    gene_list_file: file_gene,
+    panel_version: formData.get('panel_version') ?? undefined,
+    exome_capture: formData.get('exome_capture') ?? undefined,
+    gene_list_file: file_gene ?? undefined,
     file_vcf: vcf_file,
   });
 
+  console.log("--------------6--------------");
+
   if (!validatedFields.success) {
+    console.error("Zod validation failed:", validatedFields.error.format());
     return {
       ...prevState,
       success: false,
@@ -286,6 +309,8 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
       message: 'Missing fields. Failed to create Study'
     };
   }
+
+  console.log("--------------7--------------");
 
   const {
     description,
@@ -302,13 +327,15 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
   const session = await auth();
 
 
+  console.log("--------------8--------------");
+
   const newFormData = new FormData();
   newFormData.append("description", description);
   newFormData.append("sample_kind", sample_kind);
   newFormData.append("procedure", procedure);
-  newFormData.append("panel_version", panel_version);
-  newFormData.append("exome_capture", exome_capture);
-  newFormData.append("gene_list_file", gene_list_file);
+  newFormData.append("panel_version", panel_version? panel_version : '');
+  newFormData.append("exome_capture", exome_capture? exome_capture : '');
+  newFormData.append("gene_list_file", gene_list_file? gene_list_file : '');
   newFormData.append("file", file_vcf);
   newFormData.append("history_id", prevState.history_id);
 
@@ -316,9 +343,11 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
 
   let result: Response;
 
+  console.log("--------------9--------------");
+
   try {
     result = await fetch(process.env.API_BASE_URL +
-      "/api/Study/new/?" +
+      "/api/study/new/?" +
       "name=" + urlSafeDescription,
       {
         method: "POST",
@@ -336,15 +365,19 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
     };
   }
 
+  console.log("--------------10--------------");
+
   if (!result.ok) {
-    const errorMessage = await result.json();
-    console.error('Create study error:', errorMessage.message);
+    const errorMessage = await result.text();
+    console.error('Create study error:', errorMessage);
     return {
       ...prevState,
       success: false,
-      message: errorMessage.message
+      message: errorMessage
     };
   }
+
+  console.log("--------------11--------------");
   
   const study_id: string = (await result.json()).story_id;
   revalidatePath(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/analyses/`);

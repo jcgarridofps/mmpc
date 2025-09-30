@@ -284,7 +284,7 @@ export default function Form({
                     />
 
                     <input
-                      type="gene_list_file"
+                      type="file"
                       name="gene_list_file"
                       accept=".csv"
                       className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
@@ -298,7 +298,7 @@ export default function Form({
                     <button
                       type="button"
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-                      onClick={handleVCFFileButton}
+                      onClick={handleGENEFileButton}
                     >
                       <FolderIcon className="h-5" />
                       <span className="mr-2">
@@ -349,7 +349,7 @@ export default function Form({
               <button
                 type="button"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-                onClick={handleGENEFileButton}
+                onClick={handleVCFFileButton}
               >
                 <FolderIcon className="h-5" />
                 <span className="mr-2">

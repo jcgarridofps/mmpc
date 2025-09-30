@@ -130,5 +130,5 @@ class Study(APIView):
         #endregion """
     
         #region response and status
-        return Response({"message":"History created successfully", "history_id":new_history.id}, status=status.HTTP_201_CREATED)
+        return Response({"message":new_analysis_response}, status=status.HTTP_201_CREATED)
         #endregion
