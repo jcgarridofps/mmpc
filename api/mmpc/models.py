@@ -132,7 +132,7 @@ class studyProcedure(models.Model):
     sampleKind = models.ForeignKey(studySample, on_delete=models.CASCADE)
     panelVersion = models.ForeignKey(studyPanelVersion, on_delete=models.CASCADE)
     exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE)
-    geneList = models.JSONField()
+    geneList = models.JSONField(default = dict)
 
 class study(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

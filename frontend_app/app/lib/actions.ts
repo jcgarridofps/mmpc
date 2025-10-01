@@ -55,6 +55,13 @@ const CreateStudySchema = z.object({
     if (!(file instanceof File)) return false;
     return file.name.endsWith(".vcf");
   }, { message: "Only -vcf files are allowed" }),
+  // file_name: z
+  //   .string({ invalid_type_error: 'Please insert a description.' })
+  //   .max(200, { message: "File name must be at most 200 characters long." }),
+  // gene_list_file_name: z
+  //   .string({ invalid_type_error: 'Please insert a description.' })
+  //   .max(200, { message: "Gene list file name must be at most 200 characters long." })
+  // .optional(),
 });
 
 const CreateDrugQuerySchema = z.object({
@@ -336,8 +343,10 @@ for (const [key, value] of formData.entries()) {
   newFormData.append("panel_version", panel_version? panel_version : '');
   newFormData.append("exome_capture", exome_capture? exome_capture : '');
   newFormData.append("gene_list_file", gene_list_file? gene_list_file : '');
-  newFormData.append("file", file_vcf);
+  newFormData.append("file", file_vcf, filename_vcf);
   newFormData.append("history_id", prevState.history_id);
+  newFormData.append("file_name", filename_vcf);
+  newFormData.append("gene_list_file_name", filename_gene);
 
   const urlSafeDescription = encodeURIComponent(description);
 

@@ -118,7 +118,7 @@ class NewVariantAnalysis(APIView):
         headers = {"Authorization": os.environ['PANDRUGS_AUTH']}
         pd_url = os.environ['PANDRUGS_BASE_URL'] + 'variantsanalysis/guest'
         param_list = [("name",request_params.get("name"))]
-        vcf_file = request.FILES.get("vcf_file", False)
+        vcf_file = request.FILES.get("file", False)
         file_name = request.data.get("file_name", False)
 
         if vcf_file is False or file_name is False: #No vcf_file provided

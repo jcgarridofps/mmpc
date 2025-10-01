@@ -1,7 +1,7 @@
 """
 View module for managing application reports
 """
-from mmpc.models import variantAnalysis, customUser, drugQuery, report, entityGroup, patient, study
+from mmpc.models import annotation, customUser, drugQuery, report, entityGroup, patient, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
 from mmpc.serializers import reportSerializer, studySerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
@@ -12,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
+from django.db import models
 import json
 
 class Study(APIView):
@@ -64,26 +65,33 @@ class Study(APIView):
         panel_version = request.POST.get('panel_version', '')
         procedure_type = request.POST.get('procedure', '')
         sample_kind = request.POST.get('sample_kind', '')
-        vcf_file = request.POST.get('file', '')
+        vcf_file = request.FILES.get('file')
+        gene_list_file = request.FILES.get('gene_list_file')
         history_id = request.POST.get('history_id', '')
+        file_name = request.POST.get('file_name', '')
+        gene_list_file_name = request.POST.get('gene_list_file_name', '')
+        file_name_name = vcf_file.name
 
-    
-
-
-
-        """ if(patient_id == ''):
-            return Response({"message":"Please identify patient ID"},\
-                            status=status.HTTP_400_BAD_REQUEST) """
+        if(history_id == ''):
+            return Response({"message":"Please identify history ID"},\
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        #TODO: check modes, gene_list_file, procedure type, etc
+        
+        if(not vcf_file):
+            return Response({"message":"Please add vcf file"},\
+                            status=status.HTTP_400_BAD_REQUEST)
         
 
-        new_analysis_view = pandrugs.NewVariantAnalysis.as_view()
+        # Ask for a new pandrugs variant analysis
+        new_analysis_view = pandrugs.NewVariantAnalysis.as_view() #pandrugs variant analysis
         new_analysis_response = new_analysis_view(request._request)
 
 
         # CREATE STUDY
-        """ if new_analysis_response.status_code == 201:
+        if new_analysis_response.status_code == 201:
             try:
-                new_analysis_id = new_analysis_response.data['analysis_id']
+                new_analysis_id = new_analysis_response.data['analysis_id'] #Pandrugs variant analysis ID
                 uploader = customUser.objects.get(email=request.user.email)
                 uploader_group = uploader.entityGroup
 
@@ -101,19 +109,35 @@ class Study(APIView):
 
                 #Create the new DDBB entry for the new variant analysis
 
-                new_analysis_entry = annotation.objects.create(\
-                    description=description,\
-                    computation_id=new_analysis_id,\
-                    uploader = uploader,\
-                    uploaderGroup = uploader_group,\
-                    status = 'PENDING',\
-                    patient = patient_ref)
-                new_analysis_entry.save()
+                # exome_capture = studyExomeCapture.objects.get()
+                # panel_version
+                procedure_type = studyProcedureType.objects.get(type = procedure_type)
+                #sample_kind = studySample.objects.get()
 
-                analysis_create_result = CreateDrugQuery(\
-                    cancer_types=cancer_types,\
-                    parent_analysis_id=new_analysis_entry.id\
+                study_procedure = studyProcedure.objects.create(
+                    procedureType = procedure_type
                 )
+
+                #TODO: get actual sampleID from vcf file
+                #TODO: add uploader group (uploaderGroup = uploader_group,\)
+                new_study_entry = study.objects.create(\
+                    description = description,\
+                    sampleId = 'dummySampleID',\
+                    history_id = history_id,\
+                    uploader = uploader,\
+                    studyProcedure = study_procedure)
+                
+                new_study_entry.save()
+
+                computation_version = computationVersion.objects.get(id = 1) #N/A
+                computation_status = computationStatus.objects.get(computationStatus = 'PENDING')
+
+                #TODO: check correct computation version. This may need only a string and confirm version some other way
+                new_annotation_entry = annotation.objects.create(\
+                    document_id = new_analysis_id,\
+                    version = computation_version,\
+                    status = computation_status,\
+                    study = new_study_entry)
 
                 if analysis_create_result:
                     return Response(None, status=status.HTTP_201_CREATED)
@@ -125,10 +149,6 @@ class Study(APIView):
                 return Response({"message":"New entry could not be generated into DDBB: "},\
                                  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        #region response and status
         return Response(new_analysis_response.data, status=new_analysis_response.status_code)
-        #endregion """
+
     
-        #region response and status
-        return Response({"message":new_analysis_response}, status=status.HTTP_201_CREATED)
-        #endregion
