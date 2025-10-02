@@ -129,9 +129,9 @@ class history(models.Model):
 class studyProcedure(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
-    sampleKind = models.ForeignKey(studySample, on_delete=models.CASCADE)
-    panelVersion = models.ForeignKey(studyPanelVersion, on_delete=models.CASCADE)
-    exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE)
+    sampleKind = models.ForeignKey(studySample, on_delete=models.CASCADE, null=True)
+    panelVersion = models.ForeignKey(studyPanelVersion, on_delete=models.CASCADE, null=True),
+    exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE, null=True)
     geneList = models.JSONField(default = dict)
 
 class study(models.Model):

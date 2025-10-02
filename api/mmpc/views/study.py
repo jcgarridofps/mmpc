@@ -95,18 +95,6 @@ class Study(APIView):
                 uploader = customUser.objects.get(email=request.user.email)
                 uploader_group = uploader.entityGroup
 
-                #Create or get patient
-                patient_ref = None
-                
-                try:
-                    patient_ref = get_patient(patient_identifier)
-                    if patient_ref is None:
-                        patient_ref = create_patient(patient_identifier)
-                except Exception as e:
-                    print("Error getting or creating patient")
-                    return Response({"message":"Error creating variant analysis"},\
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
                 #Create the new DDBB entry for the new variant analysis
 
                 # exome_capture = studyExomeCapture.objects.get()
@@ -114,9 +102,14 @@ class Study(APIView):
                 procedure_type = studyProcedureType.objects.get(type = procedure_type)
                 #sample_kind = studySample.objects.get()
 
-                study_procedure = studyProcedure.objects.create(
+                new_study_procedure = studyProcedure.objects.create(
                     procedureType = procedure_type
                 )
+                new_study_procedure.save()
+
+                if not new_study_procedure:
+                    return Response({"message": "Error creating new study procedure"},\
+                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
                 #TODO: get actual sampleID from vcf file
                 #TODO: add uploader group (uploaderGroup = uploader_group,\)
@@ -125,28 +118,32 @@ class Study(APIView):
                     sampleId = 'dummySampleID',\
                     history_id = history_id,\
                     uploader = uploader,\
-                    studyProcedure = study_procedure)
+                    studyProcedure = new_study_procedure)
                 
                 new_study_entry.save()
+
+                if not new_study_entry:
+                    return Response({"message": "Error creating new study"},\
+                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
                 computation_version = computationVersion.objects.get(id = 1) #N/A
                 computation_status = computationStatus.objects.get(computationStatus = 'PENDING')
 
                 #TODO: check correct computation version. This may need only a string and confirm version some other way
                 new_annotation_entry = annotation.objects.create(\
-                    document_id = new_analysis_id,\
+                    documentId = new_analysis_id,\
                     version = computation_version,\
                     status = computation_status,\
                     study = new_study_entry)
 
-                if analysis_create_result:
-                    return Response(None, status=status.HTTP_201_CREATED)
-                else:
-                    return Response({"message":"Variant analysis registered, but couldn't create drug query"},\
+                new_annotation_entry.save()
+
+                if not new_annotation_entry:
+                    return Response({"message":"Error creating annotation"},\
                                  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
             except Exception as e:
-                return Response({"message":"New entry could not be generated into DDBB: "},\
+                return Response({"message":"New study entry could not be generated into DDBB: "},\
                                  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(new_analysis_response.data, status=new_analysis_response.status_code)
