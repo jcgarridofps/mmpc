@@ -1,7 +1,9 @@
 """
 View module for managing application reports
 """
-from mmpc.models import annotation, customUser, drugQuery, report, entityGroup, patient, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
+import urllib
+from uuid import UUID
+from mmpc.models import annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
 from mmpc.serializers import reportSerializer, studySerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
@@ -23,7 +25,7 @@ class Study(APIView):
 
     def get(self, request):
         """
-        GET function to retrieve one history entry from DDBB for a given history ID
+        GET function to retrieve one study entry from DDBB for a given study ID
         """
         # CHECK ALL NEEDED INFO IS PROVIDED
         app_id = request.GET.get('query', '')
@@ -148,4 +150,43 @@ class Study(APIView):
 
         return Response(new_analysis_response.data, status=new_analysis_response.status_code)
 
-    
+
+class Studies(APIView):
+    """
+    Get variant analysis from DDBB uploaded by the user
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve drug query DDBB entries
+        """
+        #region Incoming params checking
+        page = int(request.GET.get('page', '1'))
+        query = request.GET.get('query', '') # The user string filter
+        decodedQuery = urllib.parse.unquote(query)
+        elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
+        history_parent_id = UUID(str(request.GET.get('historyId', None)))  #parent history
+        history_parent = history.objects.get(id = history_parent_id)
+        user = request.user.email
+        #endregion
+
+        #region fetch data from DDBB
+        db_objects = []
+        first_requested_element = (page - 1) * elements
+        last_requested_element = first_requested_element + elements
+        try:
+            if(history_parent != None):
+                db_objects = study.objects\
+                    .filter(history = history_parent)\
+                    .filter(appId__icontains=decodedQuery)\
+                    .order_by('-date')\
+                    .all()[first_requested_element : last_requested_element]
+        except customUser.DoesNotExist:
+            db_objects = []
+        #endregion
+        db_objects_data = studySerializer(db_objects, many=True)
+
+        #region response and status
+        return Response(db_objects_data.data, status = status.HTTP_200_OK)
+        #endregion

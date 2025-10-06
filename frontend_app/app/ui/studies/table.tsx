@@ -1,22 +1,25 @@
 import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredVariantAnalysis } from '@/app/lib/data';
-// import { ReviewAnalysis } from './buttons';
+import { fetchFilteredStudies } from '@/app/lib/data';
+import { ReviewStudy } from './buttons';
 
-export type VariantAnalysis = {
+export type Study = {
   id: string;
+  appId: string;
   description: string;
   date: string;
-  status: string;
+  studyProcedure: string;
 };
 
 export default async function DataTable({
   query,
   currentPage,
+  historyId
 }: {
   query: string;
   currentPage: number;
+  historyId: string;
 }) {
-  const variant_analysis:VariantAnalysis[] = await fetchFilteredVariantAnalysis(query, currentPage);
+  const studies:Study[] = await fetchFilteredStudies(query, currentPage, historyId);
 
 
   return (
@@ -41,25 +44,25 @@ export default async function DataTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {variant_analysis?.map((analysis:VariantAnalysis) => (
+              {studies?.map((study:Study) => (
                 <tr
-                  key={analysis.id}
+                  key={study.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap px-3 py-3 pl-6">
-                    {analysis.id}
+                    {study.appId}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 pl-6"
-                  title={analysis.description}
+                  title={study.description}
                   >
-                    {analysis.description}
+                    {study.description}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(analysis.date)}
+                    {formatDateToLocal(study.date)}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      {/* <ReviewAnalysis id={analysis.id} /> */}
+                      <ReviewStudy historyId={historyId} studyId={study.id} />
                     </div>
                   </td>
                 </tr>

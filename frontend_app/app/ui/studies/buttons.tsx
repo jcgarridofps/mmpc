@@ -1,4 +1,4 @@
-import {PlusIcon } from '@heroicons/react/24/outline';
+import {EyeIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 export function CreateStudy({ history_id }: { history_id: string }) {
@@ -9,6 +9,17 @@ export function CreateStudy({ history_id }: { history_id: string }) {
     >
       <PlusIcon className="h-5 md:mr-[8]" />
       <span className="hidden md:inline whitespace-nowrap">New study</span>{' '}
+    </Link>
+  );
+}
+
+export function ReviewStudy({ historyId, studyId }: { historyId: string, studyId: string }) {
+  return (
+    <Link
+      href={`/dashboard/histories/${historyId}/studies/${studyId}/annotations/`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <EyeIcon className="w-5" />
     </Link>
   );
 }

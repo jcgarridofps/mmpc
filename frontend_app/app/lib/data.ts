@@ -187,6 +187,36 @@ export async function fetchFilteredVariantAnalysis(
   }
 }
 
+export async function fetchFilteredStudies(
+  query: string,
+  currentPage: number,
+  historyId: string,
+) {
+  const session = await auth();
+  const safeQuery = encodeURIComponent(query);
+  try {
+    const studies = await fetch(process.env.API_BASE_URL + 
+      "/api/studies/?" + 
+      "page=" + currentPage + "&" +
+      "query=" + safeQuery + "&" +
+      "elements=" + ITEMS_PER_PAGE + "&" +
+      "historyId=" + historyId,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await studies.json();
+    return res;
+  } catch (error) {
+    console.error('Fetch filtered studies error:', error);
+    throw new Error('Failed to fetch studies.');
+  }
+}
+
 export async function fetchFilteredReports(
   drug_query_id: string,
   currentPage: number,

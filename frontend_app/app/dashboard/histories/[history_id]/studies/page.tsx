@@ -55,7 +55,7 @@ export default async function Page(props: {
       <Search placeholder="Search study by ID, description or date. Separate filters by comma." />
 
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
+        <Table query={query} currentPage={currentPage} historyId={params.history_id} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
