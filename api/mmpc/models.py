@@ -143,7 +143,7 @@ class study(models.Model):
     variantsFileRoute = models.CharField(max_length=200)
     history = models.ForeignKey(history, on_delete=models.CASCADE, null=True)
     uploader = models.ForeignKey(customUser, null=True, on_delete=models.DO_NOTHING)
-    sampleId = models.CharField(max_length=60)
+    sampleId = models.CharField(max_length=60, null=True)
 
 class annotation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

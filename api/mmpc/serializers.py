@@ -22,6 +22,14 @@ class locationSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'latitude', 'longitude']
 
 class annotationSerializer(serializers.ModelSerializer):
+    status = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='computationStatus'
+    )
+    version = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='state'
+    )
     class Meta:
         model = annotation
         fields = ['id', 'appId', 'date', 'status', 'version']
