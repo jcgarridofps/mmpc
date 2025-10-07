@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 const ITEMS_PER_PAGE = 6;
 
 const LATEST_VARIANT_ANALYSIS_ITEMS = 5;
+
 export async function fetchLatestVariantAnalysis() {
   /**
    * Fetch latest 5 variant analysis for the user's entity group
@@ -514,7 +515,7 @@ export async function fetchPresence(gene_list: string[]) {
   }
 }
 
-export async function fetchPatientByHistoryAppId(history_id: string) {
+export async function fetchPatientByHistoryId(history_id: string) {
   const session = await auth();
   try {
     const patient_appId = await fetch(process.env.API_BASE_URL + 
@@ -532,5 +533,26 @@ export async function fetchPatientByHistoryAppId(history_id: string) {
   } catch (error) {
     console.error('Fetch patient by history id error:', error);
     throw new Error('Failed to fetch patient by history id.');
+  }
+}
+
+export async function fetchPatientByHistoryAppId(history_appId: string) {
+  const session = await auth();
+  try {
+    const patient_appId = await fetch(process.env.API_BASE_URL + 
+      `/api/history/patient/?history_appId=${history_appId}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json",
+        },
+    });
+    
+    let res = await patient_appId.json();
+    return res['patient_appId'];
+  } catch (error) {
+    console.error('Fetch patient by history appId error:', error);
+    throw new Error('Failed to fetch patient by history appId.');
   }
 }

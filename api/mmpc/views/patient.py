@@ -1,7 +1,8 @@
 """
 Module to work with patients in DDBB
 """
-from mmpc.models import variantAnalysis, customUser, drugQuery, patient, sex
+from uuid import UUID
+from mmpc.models import variantAnalysis, customUser, history, patient, sex
 from mmpc.serializers import annotationSerializer
 from mmpc.views import pandrugs
 from rest_framework.views import APIView
@@ -120,5 +121,31 @@ class PatientCount(APIView):
 
         #region response and status
         r_data = {'entry_count':db_entry_count}
+        return Response(data = r_data, status = status.HTTP_200_OK)
+        #endregion
+
+class PatientByHistory(APIView):
+    """
+    Get patient entry count from DDBB
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve patient DDBB entry count
+        """
+        history_id = UUID(str(request.GET.get('history_id', '')))
+
+        #region fetch data from DDBB
+        patient_appId = ''
+        try:
+            patient_appId = history.objects.get(id = history_id).patient.appId
+        except:
+            return Response({'message': 'Error counting patient entries from DDBB'},\
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        #endregion
+
+        #region response and status
+        r_data = {'patient_appId': patient_appId}
         return Response(data = r_data, status = status.HTTP_200_OK)
         #endregion

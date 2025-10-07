@@ -5,7 +5,7 @@ import { CreateStudy } from '@/app/ui/studies/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredVariantAnalysisPages } from '@/app/lib/data';
+import { fetchFilteredVariantAnalysisPages, fetchPatientByHistoryId } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
@@ -29,16 +29,17 @@ export default async function Page(props: {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchFilteredVariantAnalysisPages(query);
+  const patientAppId = await fetchPatientByHistoryId(params.history_id);
 
   return (
     <div className="w-full">
 
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Patient: ENXXXXXXXXX', href: '/dashboard1/' },
+          { label: `Patient: ${patientAppId} `, href: `/dashboard/histories/${params.history_id}/studies/` },
           {
             label: 'Studies',
-            href: `/dashboard2/`,
+            href: `/dashboard/histories/${params.history_id}/studies/`,
             active: true,
           },
         ]}

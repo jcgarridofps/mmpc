@@ -18,7 +18,7 @@ export default function Breadcrumbs({
       <ol className={clsx(inter.className, 'flex text-base md:text-lg')}>
         {breadcrumbs.map((breadcrumb, index) => (
           <li
-            key={breadcrumb.href}
+            key={breadcrumb.label}
             aria-current={breadcrumb.active}
             className={clsx(
               breadcrumb.active ? 'text-gray-900' : 'text-gray-500',

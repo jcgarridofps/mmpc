@@ -120,13 +120,17 @@ class HistoryPatient(APIView):
         """
         # CHECK ALL NEEDED INFO IS PROVIDED
         history_id =  request.GET.get('history_id', '')
-        if(history_id == ''):
-            return Response({"message":"Please identify history_id"},\
+        history_appId = request.GET.get('history_appId', '')
+        if(history_id == '' and history_appId == ''):
+            return Response({"message":"Please identify history_id or history_appId"},\
                             status=status.HTTP_400_BAD_REQUEST)
         
         # FETCH DATA FROM DDBB
         try:
-            patient_appId = history.objects.get(id = history_id).patient.appId
+            if(history_id != ''):
+                patient_appId = history.objects.get(id = history_id).patient.appId
+            else:
+                patient_appId = history.objects.get(appId = history_appId).patient.appId
                 
         except history.DoesNotExist:
             return Response({"message":"Provided history not found"},\
