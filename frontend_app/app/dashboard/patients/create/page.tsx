@@ -1,5 +1,5 @@
 import Form from '@/app/ui/patient/create-form';
-import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { fetchCustomers } from '@/app/lib/data';
 import {Metadata} from 'next';
 

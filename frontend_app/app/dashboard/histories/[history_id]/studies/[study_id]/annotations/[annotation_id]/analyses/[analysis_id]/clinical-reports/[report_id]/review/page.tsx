@@ -7,7 +7,7 @@ import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchFilteredVariantAnalysisPages } from '@/app/lib/data';
 import { Metadata } from 'next';
-import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import ReportResult from '@/app/ui/report/result';
 
 export const metadata: Metadata = {

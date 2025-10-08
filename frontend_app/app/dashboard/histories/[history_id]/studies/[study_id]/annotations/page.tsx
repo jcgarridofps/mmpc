@@ -1,13 +1,13 @@
 import Pagination from '@/app/ui/aux/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/variant-analysis/table';
-import { CreateInvoice } from '@/app/ui/variant-analysis/buttons';
+import Table from '@/app/ui/annotations/table';
+import { CreateInvoice } from '@/app/ui/annotations/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredVariantAnalysisPages } from '@/app/lib/data';
+import { fetchFilteredVariantAnalysisPages, fetchPatientByHistoryId, fetchStudyByStudyId } from '@/app/lib/data';
 import { Metadata } from 'next';
-import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { InformationCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 
@@ -16,26 +16,32 @@ export const metadata: Metadata = {
 };
 
 export default async function Page(props: {
+  params: Promise<{ 
+    history_id: string,
+    study_id: string 
+  }>;
   searchParams?: Promise<{
     query?: string;
     page?: string;
   }>;
 }) {
 
+  const params = await props.params;
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchFilteredVariantAnalysisPages(query);
+  const patientAppId = await fetchPatientByHistoryId(params.history_id);
+  const studyAppId = await fetchStudyByStudyId(params.study_id);
 
   return (
     <div className="w-full">
 
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Patient: ENXXXXXXXXX', href: '/dashboard1/' },
+          { label: `Patient: ${patientAppId}`, href: `/dashboard/histories/${params.history_id}/studies/` },
           {
-            label: 'Study: SXXXXXXXXX',
-            href: `/dashboard2/`,
+            label: `Study: ${studyAppId}`, href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/`,
           },
           {
             label: 'Annotations',
@@ -61,7 +67,7 @@ export default async function Page(props: {
       <Search placeholder="Search variant annotation by ID, date or state. Separate filters by comma." />
 
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
+        <Table query={query} currentPage={currentPage} history_id={params.history_id} study_id={params.study_id}/>
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />

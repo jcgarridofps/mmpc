@@ -1,5 +1,5 @@
 import Form from '@/app/ui/variant-analysis/edit-form';
-import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { fetchCustomers, fetchInvoiceById } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import {Metadata} from 'next';

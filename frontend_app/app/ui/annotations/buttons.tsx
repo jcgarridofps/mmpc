@@ -23,3 +23,14 @@ export function ReviewAnalysis({ id }: { id: string }) {
     </Link>
   );
 }
+
+export function ReviewAnnotation({ historyId, studyId, annotationId }: { historyId: string, studyId: string, annotationId: string }) {
+  return (
+    <Link
+      href={`/dashboard/histories/${historyId}/studies/${studyId}/annotations/${annotationId}/analyses/`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <EyeIcon className="w-5" />
+    </Link>
+  );
+}

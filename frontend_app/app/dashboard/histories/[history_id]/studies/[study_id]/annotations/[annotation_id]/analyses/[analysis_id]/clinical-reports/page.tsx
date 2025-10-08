@@ -7,7 +7,7 @@ import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchFilteredReportPages } from '@/app/lib/data';
 import { Metadata } from 'next';
-import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import Table from '@/app/ui/report/table';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 

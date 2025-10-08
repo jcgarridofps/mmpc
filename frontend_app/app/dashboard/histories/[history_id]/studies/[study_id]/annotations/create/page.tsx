@@ -1,5 +1,5 @@
-import Form from '@/app/ui/variant-analysis/create-form';
-import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import Form from '@/app/ui/annotations/create-form';
+import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import {Metadata} from 'next';
 
 export const metadata: Metadata = {

@@ -28,16 +28,26 @@ class Study(APIView):
         GET function to retrieve one study entry from DDBB for a given study ID
         """
         # CHECK ALL NEEDED INFO IS PROVIDED
-        app_id = request.GET.get('query', '')
-        if(app_id == '' or not app_id.startswith('ST')):
-            return Response({"message":"Please identify study ID"},\
+        app_id = request.GET.get('app_id', '')
+        study_id = request.GET.get('study_id', '')
+
+        if(app_id == '' and study_id == ''):
+            return Response({"message":"Please identify study ID or appId"},\
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if(app_id != '' and not app_id.startswith('ST')):
+            return Response({"message":"Please identify study appId"},\
                             status=status.HTTP_400_BAD_REQUEST)
         
         # FETCH DATA FROM DDBB
         db_object = None
         try:
-            db_object = study.objects\
-                    .get(appId = app_id)
+            if(study_id != ''):
+                db_object = study.objects\
+                        .get(id = study_id)
+            else:
+                db_object = study.objects\
+                        .get(appId = app_id)
                 
         except study.DoesNotExist:
             return Response({"message":"Provided history not found"},\

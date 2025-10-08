@@ -1,22 +1,27 @@
 import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredVariantAnalysis } from '@/app/lib/data';
-import { ReviewAnalysis } from './buttons';
+import { fetchFilteredAnnotations } from '@/app/lib/data';
+import { ReviewAnalysis, ReviewAnnotation } from './buttons';
 
-export type VariantAnalysis = {
+export type Annotation = {
   id: string;
-  description: string;
+  appId: string;
   date: string;
   status: string;
+  version: string
 };
 
 export default async function DataTable({
   query,
   currentPage,
+  history_id,
+  study_id
 }: {
   query: string;
   currentPage: number;
+  history_id: string;
+  study_id: string;
 }) {
-  const variant_analysis:VariantAnalysis[] = await fetchFilteredVariantAnalysis(query, currentPage);
+  const annotations:Annotation[] = await fetchFilteredAnnotations(query, currentPage);
 
 
   return (
@@ -44,26 +49,26 @@ export default async function DataTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {variant_analysis?.map((analysis:VariantAnalysis) => (
+              {annotations?.map((annotation:Annotation) => (
                 <tr
-                  key={analysis.id}
+                  key={annotation.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap px-3 py-3 pl-6">
-                    {analysis.id}
+                    {annotation.appId}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(analysis.date)}
+                    {formatDateToLocal(annotation.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-red-700">
                     OUTDATED
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {analysis.status}
+                    {annotation.status}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <ReviewAnalysis id={analysis.id} />
+                      <ReviewAnnotation historyId={history_id} studyId={study_id} annotationId={annotation.id} />
                     </div>
                   </td>
                 </tr>

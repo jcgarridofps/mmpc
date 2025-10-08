@@ -160,14 +160,14 @@ export async function fetchFilteredReportPages(query: string, drug_query_id: str
   }
 }
 
-export async function fetchFilteredVariantAnalysis(
+export async function fetchFilteredAnnotations(
   query: string,
   currentPage: number,
 ) {
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const variant_analysis = await fetch(process.env.API_BASE_URL + 
+    const annotations = await fetch(process.env.API_BASE_URL + 
       "/api/annotations/?" + 
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
@@ -180,7 +180,7 @@ export async function fetchFilteredVariantAnalysis(
         },
     });
     
-    let res = await variant_analysis.json();
+    let res = await annotations.json();
     return res;
   } catch (error) {
     console.error('Fetch filtered variant analysis error:', error);
@@ -530,6 +530,27 @@ export async function fetchPatientByHistoryId(history_id: string) {
     
     let res = await patient_appId.json();
     return res['patient_appId'];
+  } catch (error) {
+    console.error('Fetch patient by history id error:', error);
+    throw new Error('Failed to fetch patient by history id.');
+  }
+}
+
+export async function fetchStudyByStudyId(study_id: string) {
+  const session = await auth();
+  try {
+    const study = await fetch(process.env.API_BASE_URL + 
+      `/api/study/?study_id=${study_id}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json",
+        },
+    });
+    
+    let res = await study.json();
+    return res['appId'];
   } catch (error) {
     console.error('Fetch patient by history id error:', error);
     throw new Error('Failed to fetch patient by history id.');

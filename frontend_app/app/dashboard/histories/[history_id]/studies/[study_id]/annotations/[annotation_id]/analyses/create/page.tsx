@@ -1,5 +1,5 @@
 import Form from '@/app/ui/drug-queries/create-form';
-import Breadcrumbs from '@/app/ui/variant-analysis/breadcrumbs';
+import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Metadata } from 'next';
 
