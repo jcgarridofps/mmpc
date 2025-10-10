@@ -8,7 +8,7 @@ import {
   PaperAirplaneIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createVariantAnalysis, State } from '@/app/lib/actions';
+import { createAnnotation, State } from '@/app/lib/actions';
 import { useActionState, useRef, useState } from 'react';
 
 const cancer_type: Map<string, boolean> = new Map<string, boolean>([
@@ -53,7 +53,7 @@ const cancer_type: Map<string, boolean> = new Map<string, boolean>([
 
 export default function Form() {
   const initialState: State = { success: false, message: null, errors: {} };
-  const [state, formAction] = useActionState<State, FormData>(createVariantAnalysis, initialState);
+  const [state, formAction] = useActionState<State, FormData>(createAnnotation, initialState);
   const [fileName, setFileName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [patientIdentifier, setPatientIdentifier] = useState<string>("");

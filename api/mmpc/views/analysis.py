@@ -48,7 +48,7 @@ class Analysis(APIView):
         query = request.GET.get('query', '') # The user string filter
         decodedQuery = urllib.parse.unquote(query)
         elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
-        variant_analysis_parent = request.GET.get('variant_analysis', None) #parent variant analysis
+        variant_analysis_parent = request.GET.get('annotation_id', None) #parent annotation
         user = request.user.email
         #endregion
 
@@ -79,13 +79,13 @@ class Analysis(APIView):
 
     def post(self, request):
         """
-        POST function to generate new drug query DDBB entries
+        POST function to generate new analysis DDBB entries
         This endpoint makes use of pandrugs.py endpoints
         """
 
-        variant_analysis_id = request.POST.get('variant_analysis_id', None)
-        if(variant_analysis_id is None):
-            return Response({"message":"Variant analysis is missing"},\
+        annotation_id = request.POST.get('annotation_id', None)
+        if(annotation_id is None):
+            return Response({"message":"Annotation id is missing"},\
                             status=status.HTTP_400_BAD_REQUEST)
 
         cancer_types = request.POST.get('cancer_types', '') # The user string filter //TODO: get cancer types from body
@@ -95,9 +95,9 @@ class Analysis(APIView):
 
         # If the new analysis has been created (in pandrugs)
         try:
-            drug_query_create_result = CreateDrugQuery(\
+            drug_query_create_result = CreateAnalysis(\
                 cancer_types=cancer_types,\
-                parent_analysis_id=variant_analysis_id\
+                parent_analysis_id=annotation_id\
             )
 
             if drug_query_create_result:

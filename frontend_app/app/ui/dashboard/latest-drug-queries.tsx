@@ -5,11 +5,15 @@ import { lusitana } from '@/app/ui/fonts';
 import { fetchLatestDrugQueries } from '@/app/lib/data';
 import { formatDateToLocal } from '@/app/lib/utils';
 
-export type DrugQuery = {
+export type Analysis = {
   id: string;
+  appId: string;
   cancer_types: string;
   date: string;
-  status: string;
+  type: AnalysisType;
+  //annotation: Annotation;
+  status: ComputationStatus;
+  version: ComputationVersion;
 };
 
 export default async function LatestDrugQueries(){

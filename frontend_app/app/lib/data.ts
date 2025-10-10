@@ -437,20 +437,20 @@ export async function fetchPendingAnnotationCount() {
   }
 }
 
-export async function fetchFilteredDrugQueries(
+export async function fetchFilteredAnalyses(
   query: string,
   currentPage: number,
-  variant_analysis: string
+  annotationId: string
 ) {
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const drug_queries = await fetch(process.env.API_BASE_URL + 
+    const analyses = await fetch(process.env.API_BASE_URL + 
       "/api/analysis/?" + 
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
       "elements=" + ITEMS_PER_PAGE + "&" +
-      "variant_analysis=" + variant_analysis, 
+      "annotation_id=" + annotationId, 
     {
         method: "GET",
         headers: {
@@ -459,7 +459,7 @@ export async function fetchFilteredDrugQueries(
         },
     });
     
-    let res = await drug_queries.json();
+    let res = await analyses.json();
     return res;
   } catch (error) {
     console.error('Fetch filtered drug queries error:', error);
@@ -554,6 +554,27 @@ export async function fetchStudyByStudyId(study_id: string) {
   } catch (error) {
     console.error('Fetch patient by history id error:', error);
     throw new Error('Failed to fetch patient by history id.');
+  }
+}
+
+export async function fetchAnnotationByAnnotationId(annotation_id: string) {
+  const session = await auth();
+  try {
+    const annotation = await fetch(process.env.API_BASE_URL + 
+      `/api/annotation/?annotation_id=${annotation_id}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json",
+        },
+    });
+    
+    let res = await annotation.json();
+    return res['appId'];
+  } catch (error) {
+    console.error('Fetch annotation by annotation id error:', error);
+    throw new Error('Failed to fetch annotation by annotation id.');
   }
 }
 

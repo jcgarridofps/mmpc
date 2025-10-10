@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/annotations/count/', AnnotationCount.as_view(), name='variant_analysis_count'),
     path('api/annotations/pending/count/', AnnotationPendingCount.as_view(), name='variant_analysis_pending_count'),
 
+    path('api/annotation/', Annotation.as_view(), name='analysis_get_result'),
     path('api/annotation/result/', AnnotationResult.as_view(), name='analysis_get_result'),
     path('api/annotation/presence/', PresenceCheck.as_view(), name='analysis_presence'),
     path('api/annotation/new/', Annotations.as_view(), name='analysis_new'),

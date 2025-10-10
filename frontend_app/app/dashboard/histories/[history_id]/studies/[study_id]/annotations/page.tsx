@@ -1,7 +1,7 @@
 import Pagination from '@/app/ui/aux/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/annotations/table';
-import { CreateInvoice } from '@/app/ui/annotations/buttons';
+import { CreateAnnotation } from '@/app/ui/annotations/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
@@ -55,7 +55,7 @@ export default async function Page(props: {
         <InformationCircleIcon className="h-[30] w-[30] text-gray-500"/>
         <p className="text-left w-full ml-4">Select one variant annotation or request a new one.</p>
         <div className="h-full inline-block flex items-center ">
-          <CreateInvoice />
+          <CreateAnnotation history_id={params.history_id} study_id={params.study_id} />
         </div>
       </div>
 

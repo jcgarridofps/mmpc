@@ -1,11 +1,11 @@
 import Pagination from '@/app/ui/aux/pagination';
 import Search from '@/app/ui/search';
-import DrugQueriesTable from '@/app/ui/drug-queries/table';
-import { CreateDrugQuery } from '@/app/ui/drug-queries/buttons';
+import DrugQueriesTable from '@/app/ui/analysis/table';
+import { CreateAnalysis } from '@/app/ui/analysis/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredDrugQueryPages } from '@/app/lib/data';
+import { fetchFilteredDrugQueryPages, fetchPatientByHistoryId, fetchStudyByStudyId, fetchAnnotationByAnnotationId } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
@@ -15,7 +15,11 @@ export const metadata: Metadata = {
 };
 
 export default async function Page(props: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ 
+    history_id: string,
+    study_id: string,
+    annotation_id: string  
+   }>;
   searchParams?: Promise<{
     query?: string;
     page?: string;
@@ -25,26 +29,28 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const params = await props.params;
   const query = searchParams?.query || '';
-  const variantAnalysisId = params.id;
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchFilteredDrugQueryPages(query, variantAnalysisId);
+  const totalPages = await fetchFilteredDrugQueryPages(query, params.annotation_id);
+  const patientAppId = await fetchPatientByHistoryId(params.history_id);
+  const studyAppId = await fetchStudyByStudyId(params.study_id);
+  const annotationAppId = await fetchAnnotationByAnnotationId(params.annotation_id);
 
   return (
     <div className="w-full">
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Patient: ENXXXXXXXXX', href: '/dashboard1/' },
+          { label: `Patient: ${patientAppId}`, href: `/dashboard/histories/${params.history_id}/studies/` },
           {
-            label: 'Study: SXXXXXXXXX',
-            href: `/dashboard2/`,
+            label: `Study: ${studyAppId}`,
+            href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/`,
           },
           {
-            label: 'Annotation: AXXXXXXXXX',
-            href: `/dashboard3/`,
+            label: `Annotation: ${annotationAppId}`,
+            href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/`,
           },
           {
             label: 'Analyses',
-            href: `/dashboard4/`,
+            href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/`,
             active: true,
           },
         ]}
@@ -54,7 +60,7 @@ export default async function Page(props: {
         <InformationCircleIcon className="h-[30] w-[30] text-gray-500" />
         <p className="text-left w-full ml-4">Select one analysis to review or request a new one.</p>
         <div className="h-full inline-block flex items-center ">
-          <CreateDrugQuery variant_analysis_uuid={variantAnalysisId} />
+          <CreateAnalysis history_id={params.history_id} study_id={params.study_id} annotation_id={params.annotation_id} />
         </div>
       </div>
 
@@ -70,7 +76,7 @@ export default async function Page(props: {
         </div>
 
         <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-          <DrugQueriesTable query={query} currentPage={currentPage} variant_analysis={variantAnalysisId} />
+          <DrugQueriesTable query={query} currentPage={currentPage} history_id={params.history_id} study_id={params.study_id} annotation_id={params.annotation_id} />
         </Suspense>
         <div className="mt-5 flex w-full justify-center">
           <Pagination totalPages={totalPages} />

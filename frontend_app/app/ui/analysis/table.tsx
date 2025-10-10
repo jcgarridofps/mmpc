@@ -1,26 +1,24 @@
 import { formatDateToLocal } from '@/app/lib/utils';
-import { fetchFilteredDrugQueries } from '@/app/lib/data';
+import { fetchFilteredAnalyses } from '@/app/lib/data';
 import { ReviewDrugQuery } from './buttons';
-import { DrugQuery } from '../dashboard/latest-drug-queries';
+import { Analysis } from '@/types/app-types';
+import { parseAppSegmentConfig } from 'next/dist/build/segment-config/app/app-segment-config';
 
-export type VariantAnalysis = {
-  id: string;
-  description: string;
-  date: string;
-  status: string;
-};
-
-export default async function DrugQueriesTable({
+export default async function AnalysesTable({
   query,
   currentPage,
-  variant_analysis,
+  history_id,
+  study_id,
+  annotation_id
 }: {
   query: string;
   currentPage: number;
-  variant_analysis: string;
+  history_id: string;
+  study_id: string;
+  annotation_id: string;
 }) {
-  const drug_queries:DrugQuery[] = await fetchFilteredDrugQueries(query, currentPage, variant_analysis);
-  console.log(JSON.stringify(drug_queries));
+  const analyses:Analysis[] = await fetchFilteredAnalyses(query, currentPage, annotation_id);
+  console.log(JSON.stringify(analyses));
 
   return (
     <div className="mt-6 flow-root">
@@ -50,33 +48,33 @@ export default async function DrugQueriesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {drug_queries?.map((drug_query:DrugQuery) => (
+              {analyses?.map((analysis:Analysis) => (
                 <tr
-                  key={drug_query.id}
+                  key={analysis.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{drug_query.id}</p>
+                      <p>{analysis.id}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{drug_query.cancer_types}</p>
+                      <p>{analysis.cancer_types}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(drug_query.date)}
+                    {formatDateToLocal(analysis.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-red-700">
                     OUTDATED
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {drug_query.status}
+                    {analysis.status.computationStatus}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className={drug_query.status != "PROCESSED" ? "hidden" : "flex justify-end gap-3"} >
-                      <ReviewDrugQuery id={variant_analysis} query_id={drug_query.id}/>
+                    <div className={analysis.status.computationStatus != "PROCESSED" ? "hidden" : "flex justify-end gap-3"} >
+                      <ReviewDrugQuery id={annotation_id} query_id={analysis.id}/>
                     </div>
                   </td>
                 </tr>

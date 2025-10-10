@@ -1,4 +1,5 @@
-import Form from '@/app/ui/drug-queries/create-form';
+import { fetchAnnotationByAnnotationId, fetchPatientByHistoryId, fetchStudyByStudyId } from '@/app/lib/data';
+import Form from '@/app/ui/analysis/create-form';
 import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Metadata } from 'next';
@@ -8,26 +9,33 @@ export const metadata: Metadata = {
 };
 
 export default async function PagePage(props: {
-    params: Promise<{ id: string }>;
+    params: Promise<{
+        history_id: string,
+        study_id: string,
+        annotation_id: string
+    }>;
 }) {
-    const { params } = await props
-    const { id } = await params
+    const params = await props.params;
+    const patientAppId = await fetchPatientByHistoryId(params.history_id);
+    const studyAppId = await fetchStudyByStudyId(params.study_id);
+    const annotationAppId = await fetchAnnotationByAnnotationId(params.annotation_id);
+
     return (
         <main>
             <Breadcrumbs
                 breadcrumbs={[
-                    { label: 'Patient: ENXXXXXXXXX', href: '/dashboard1/' },
+                    { label: `Patient: ${patientAppId}`, href: `/dashboard/histories/${params.history_id}/studies/` },
                     {
-                        label: 'Study: SXXXXXXXXX',
-                        href: `/dashboard2/`,
+                        label: `Study: ${studyAppId}`,
+                        href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/`,
                     },
                     {
-                        label: 'Annotation: AXXXXXXXXX',
-                        href: `/dashboard3/`,
+                        label: `Annotation: ${annotationAppId}`,
+                        href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/`,
                     },
                     {
                         label: 'New analysis',
-                        href: `/dashboard4/`,
+                        href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/create/`,
                         active: true,
                     },
                 ]}
@@ -38,7 +46,7 @@ export default async function PagePage(props: {
                 <p className="text-left w-full ml-4">Request a new analysis overt the current annotation.</p>
             </div>
 
-            <Form id={id} />
+            <Form annotation_id={params.annotation_id} />
         </main>
     );
 }

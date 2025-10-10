@@ -1,7 +1,7 @@
 import Pagination from '@/app/ui/aux/pagination';
 import Search from '@/app/ui/search';
-import DrugQueriesTable from '@/app/ui/drug-queries/table';
-import { CreateDrugQuery } from '@/app/ui/drug-queries/buttons';
+import DrugQueriesTable from '@/app/ui/analysis/table';
+import { CreateDrugQuery } from '@/app/ui/analysis/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';

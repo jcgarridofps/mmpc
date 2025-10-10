@@ -9,7 +9,7 @@ import { signOut } from '@/auth';
 import { Result } from 'postcss';
 import { json } from 'stream/consumers';
 
-const CreateAnalysisSchema = z.object({
+const CreateAnnotationSchema = z.object({
   id: z.string(),
   description: z
     .string({ invalid_type_error: 'Please insert a description.' })
@@ -64,10 +64,10 @@ const CreateStudySchema = z.object({
   // .optional(),
 });
 
-const CreateDrugQuerySchema = z.object({
+const CreateAnalysisSchema = z.object({
   id: z.string(),
-  variant_analysis_id: z.string({
-    invalid_type_error: 'Please insert a variant analysis identifier.'
+  annotation_id: z.string({
+    invalid_type_error: 'Please insert an annotation ID.'
   }),
   cancer_types: z.custom<string[]>((c_types) => {
     return c_types.length > 0;
@@ -106,9 +106,9 @@ const CreateHistorySchema = z.object({
   }),
 });
 
-const CreateAnalysis = CreateAnalysisSchema.omit({ id: true, date: true });
+const CreateAnnotation = CreateAnnotationSchema.omit({ id: true, date: true });
 const CreateStudy = CreateStudySchema;
-const CreateDrugQuery = CreateDrugQuerySchema.omit({ id: true, date: true });
+const CreateAnalysis = CreateAnalysisSchema.omit({ id: true, date: true });
 const CreateReport = CreateReportSchema.omit({ id: true, date: true });
 const CreateHistory = CreateHistorySchema;
 
@@ -121,10 +121,10 @@ export type ReportState = {
   message?: string | null;
 }
 
-export type DrugQueryState = {
+export type AnalysisState = {
   success: boolean;
   errors?: {
-    variant_analysis_id?: string[] | null;
+    annotation_id?: string[] | null;
     cancer_types?: string[] | null;
   };
   message?: string | null;
@@ -166,7 +166,7 @@ export type State = {
   message?: string | null;
 };
 
-export async function createVariantAnalysis(prevState: State, formData: FormData) {
+export async function createAnnotation(prevState: State, formData: FormData) {
   //console.log("Received FormData:", Object.fromEntries(formData.entries()));
   let file_ = formData.get("file"); //This data is loaded as a Blob, not a File instance
 
@@ -182,7 +182,7 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
     file_ = new File([file_], actualFileName, { type: file_.type });
   }
 
-  const validatedFields = CreateAnalysis.safeParse({
+  const validatedFields = CreateAnnotation.safeParse({
     file: file_,
     description: formData.get('description'),
     patient_identifier: formData.get('patient_identifier'),
@@ -396,10 +396,12 @@ for (const [key, value] of formData.entries()) {
 
 }
 
-export async function createDrugQuery(prevState: DrugQueryState, formData: FormData) {
+export async function createAnalysis(prevState: AnalysisState, formData: FormData) {
+console.log("ALADIN SOBRE HIELO");
+console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG " + formData.get('annotation_id'));
 
-  const validatedFields = CreateDrugQuery.safeParse({
-    variant_analysis_id: formData.get('variant_analysis_id'),
+  const validatedFields = CreateAnalysis.safeParse({
+    annotation_id: formData.get('annotation_id'),
     cancer_types: formData.getAll("ctype[]")
   });
 
@@ -412,7 +414,7 @@ export async function createDrugQuery(prevState: DrugQueryState, formData: FormD
     };
   }
 
-  const { variant_analysis_id, cancer_types } = validatedFields.data;
+  const { annotation_id, cancer_types } = validatedFields.data;
 
   //------------------------------------------------------------------------------------
 
@@ -420,7 +422,7 @@ export async function createDrugQuery(prevState: DrugQueryState, formData: FormD
   try {
 
     const formData = new FormData();
-    formData.append("variant_analysis_id", variant_analysis_id);
+    formData.append("annotation_id", annotation_id);
     formData.append("cancer_types", JSON.stringify(cancer_types));
 
     await fetch(process.env.API_BASE_URL +
@@ -443,7 +445,7 @@ export async function createDrugQuery(prevState: DrugQueryState, formData: FormD
     };
   }
 
-  const redirectPath = `/dashboard/variant-analysis/${variant_analysis_id}/drug-queries`;
+  const redirectPath = `/dashboard/histories/${history_id}/studies/${study_id}/annotations/${annotation_id}/analyses/`;
   revalidatePath(redirectPath);
   redirect(redirectPath);
 

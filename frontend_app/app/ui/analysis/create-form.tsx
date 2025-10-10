@@ -12,16 +12,16 @@ import {
   PaperAirplaneIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createDrugQuery, DrugQueryState } from '@/app/lib/actions';
+import { createAnalysis, AnalysisState } from '@/app/lib/actions';
 import { useActionState, useEffect, useRef, useState } from 'react';
 import { ClassDictionary } from 'clsx';
 
 export default function Form(
-  { id }: { id: string }
+  { annotation_id }: { annotation_id: string }
 ) {
   const router = useRouter();
-  const initialState: DrugQueryState = { success: false, message: null, errors: {} };
-  const [state, formAction] = useActionState(createDrugQuery, initialState);
+  const initialState: AnalysisState = { success: false, message: null, errors: {} };
+  const [state, formAction] = useActionState(createAnalysis, initialState);
   const [typeOfAnalysis, setTypeOfAnalysis] = useState("DRUG QUERY");
 
   const cancer_type: Map<string, boolean> = new Map<string, boolean>([
@@ -74,6 +74,7 @@ export default function Form(
   }
 
   const handleSubmit = () => {
+    console.log("BLANCANIEVES");
     drugQuerySubmitButton.current?.click();
   }
 
@@ -149,14 +150,14 @@ export default function Form(
 
           <input
             type="hidden"
-            id="variant_analysis_id"
-            name="variant_analysis_id"
-            value={id}
+            id="annotation_id"
+            name="annotation_id"
+            value={annotation_id}
           />
 
-          <div id="variant-analysis-id-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.variant_analysis_id &&
-              state.errors.variant_analysis_id.map((error: string) => (
+          <div id="annotation-id-error" aria-live="polite" aria-atomic="true">
+            {state.errors?.annotation_id &&
+              state.errors.annotation_id.map((error: string) => (
                 <p className="mt-2 text-sm text-red-500" key={error}>
                   {error}
                 </p>

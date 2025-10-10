@@ -15,6 +15,42 @@ from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 import json
 
+class Annotation(APIView):
+    """
+    Get annotation by annotation_Id
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve annotation entry by annotation_id
+        """
+        #region Incoming params checking
+        user = request.user.email
+        annotation_id = request.GET.get('annotation_id', '')
+        #endregion
+
+        if(annotation_id == ''):
+            return Response({"message":"An annotation_id is needed"},\
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        #region fetch data from DDBB
+        db_object = None
+        try:
+            db_object = annotation.objects\
+                .get(id = annotation_id)
+        except customUser.DoesNotExist:
+            return Response({"message":"Object not found"},\
+                            status=status.HTTP_404_NOT_FOUND)
+        #endregion
+
+        db_object_data = annotationSerializer(db_object, many=False)
+
+        #region response and status
+        return Response(db_object_data.data, status = status.HTTP_200_OK)
+        #endregion
+
+
 class Annotations(APIView):
     """
     Get variant analysis from DDBB uploaded by the user

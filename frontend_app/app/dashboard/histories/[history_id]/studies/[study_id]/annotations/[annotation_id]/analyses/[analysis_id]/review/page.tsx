@@ -1,8 +1,8 @@
 import Pagination from '@/app/ui/aux/pagination';
 import Search from '@/app/ui/search';
-import DrugQueriesTable from '@/app/ui/drug-queries/table';
-import { CreateClinicalReport, ClinicalReports } from '@/app/ui/drug-queries/buttons';
-import DrugQueryResult from '@/app/ui/drug-queries/result';
+import DrugQueriesTable from '@/app/ui/analysis/table';
+import { CreateClinicalReport, ClinicalReports } from '@/app/ui/analysis/buttons';
+import DrugQueryResult from '@/app/ui/analysis/result';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
