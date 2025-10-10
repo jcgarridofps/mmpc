@@ -45,7 +45,7 @@ export default async function Page(props: {
           },
           {
             label: 'Annotations',
-            href: `/dashboard3/`,
+            href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/`,
             active: true,
           },
         ]}
