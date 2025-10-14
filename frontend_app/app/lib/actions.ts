@@ -388,9 +388,9 @@ for (const [key, value] of formData.entries()) {
 
   console.log("--------------11--------------");
   
-  const study_id: string = (await result.json()).story_id;
-  revalidatePath(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/analyses/`);
-  redirect('/dashboard/variant-analysis/');
+  const study_id: string = (await result.json()).study_id;
+  revalidatePath(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/anotations/`);
+  redirect(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/annotations/`);
 
   //-------------------------------------------------------------------------------------------
 
@@ -399,6 +399,9 @@ for (const [key, value] of formData.entries()) {
 export async function createAnalysis(prevState: AnalysisState, formData: FormData) {
 console.log("ALADIN SOBRE HIELO");
 console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG " + formData.get('annotation_id'));
+
+  const history_id = formData.get('history_id');
+  const study_id = formData.get('study_id');
 
   const validatedFields = CreateAnalysis.safeParse({
     annotation_id: formData.get('annotation_id'),

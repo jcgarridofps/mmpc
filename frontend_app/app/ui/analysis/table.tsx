@@ -55,12 +55,12 @@ export default async function AnalysesTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{analysis.id}</p>
+                      <p>{analysis.appId}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{analysis.cancer_types}</p>
+                      <p>{JSON.stringify(analysis.cancerTypes)}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
@@ -70,10 +70,10 @@ export default async function AnalysesTable({
                     OUTDATED
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {analysis.status.computationStatus}
+                    {analysis.status}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className={analysis.status.computationStatus != "PROCESSED" ? "hidden" : "flex justify-end gap-3"} >
+                    <div className={analysis.status != "PROCESSED" ? "hidden" : "flex justify-end gap-3"} >
                       <ReviewDrugQuery id={annotation_id} query_id={analysis.id}/>
                     </div>
                   </td>

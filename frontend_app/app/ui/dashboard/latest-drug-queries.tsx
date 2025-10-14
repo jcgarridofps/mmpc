@@ -2,7 +2,7 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
 //import { LatestInvoice } from '@/app/lib/definitions';
-import { fetchLatestDrugQueries } from '@/app/lib/data';
+import { fetchLatestAnalyses } from '@/app/lib/data';
 import { formatDateToLocal } from '@/app/lib/utils';
 
 export type Analysis = {
@@ -10,26 +10,26 @@ export type Analysis = {
   appId: string;
   cancer_types: string;
   date: string;
-  type: AnalysisType;
+  type: string;
   //annotation: Annotation;
-  status: ComputationStatus;
-  version: ComputationVersion;
+  status: string;
+  version: string;
 };
 
 export default async function LatestDrugQueries(){
 
-  const latestDrugQueries: DrugQuery[] = await fetchLatestDrugQueries();
+  const latestDrugQueries: Analysis[] = await fetchLatestAnalyses();
 
   return (
-    <div className="flex w-full flex-col md:col-span-4">
-      <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
+    <div className="flex w-full h-full flex-col md:col-span-4">
+      <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4 relative">
         <h3 className="pb-4 ml-2 text-sm font-medium">Latest analyses</h3>
 
-        <div className="bg-white px-6 rounded-xl">
+        <div className="w-[96%] bg-white px-6 rounded-xl absolute top-0 mt-[3rem]">
           {latestDrugQueries.map((query, i) => {
             return (
               <div
-                key={query.id}
+                key={query.appId}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -40,7 +40,7 @@ export default async function LatestDrugQueries(){
                 <div className="flex items-center">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {query.id}
+                      {query.appId}
                     </p>
                     <p className="hidden text-sm text-gray-500 sm:block">
                       {formatDateToLocal(query.date)}

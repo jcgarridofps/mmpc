@@ -5,11 +5,11 @@ const ITEMS_PER_PAGE = 6;
 
 const LATEST_VARIANT_ANALYSIS_ITEMS = 5;
 
-export async function fetchLatestVariantAnalysis() {
+export async function fetchLatestAnnotations() {
   /**
    * Fetch latest 5 variant analysis for the user's entity group
    */
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
   const session = await auth();
 
   try {
@@ -35,12 +35,12 @@ export async function fetchLatestVariantAnalysis() {
   }
 }
 
-const LATEST_DRUG_QUERY_ITEMS = 5;
-export async function fetchLatestDrugQueries() {
+const LATEST_ANALYSES_ITEMS = 5;
+export async function fetchLatestAnalyses() {
   /**
    * Fetch latest 5 variant analysis for the user's entity group
    */
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  //await new Promise((resolve) => setTimeout(resolve, 2000));
   const session = await auth();
 
   try {
@@ -48,7 +48,7 @@ export async function fetchLatestDrugQueries() {
     const drug_queries = await fetch(process.env.API_BASE_URL + 
       "/api/analysis/?" + 
       "page=1&"+
-      "elements=" + LATEST_DRUG_QUERY_ITEMS,
+      "elements=" + LATEST_ANALYSES_ITEMS,
     {
         method: "GET",
         headers: {
@@ -61,8 +61,8 @@ export async function fetchLatestDrugQueries() {
     console.log(res);
     return res;
   } catch (error) {
-    console.error('Failed to fetch latest drug queries: ' + error);
-    throw new Error('Failed to fetch latest drug queries.');
+    console.error('Failed to fetch latest analyses: ' + error);
+    throw new Error('Failed to fetch latest analyses.');
   }
 }
 
@@ -163,6 +163,7 @@ export async function fetchFilteredReportPages(query: string, drug_query_id: str
 export async function fetchFilteredAnnotations(
   query: string,
   currentPage: number,
+  studyId: string
 ) {
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
@@ -171,7 +172,8 @@ export async function fetchFilteredAnnotations(
       "/api/annotations/?" + 
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
-      "elements=" + ITEMS_PER_PAGE,
+      "elements=" + ITEMS_PER_PAGE + "&" +
+      "studyId=" + studyId,
     {
         method: "GET",
         headers: {

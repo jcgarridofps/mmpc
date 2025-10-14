@@ -46,7 +46,7 @@ export default async function PagePage(props: {
                 <p className="text-left w-full ml-4">Request a new analysis overt the current annotation.</p>
             </div>
 
-            <Form annotation_id={params.annotation_id} />
+            <Form history_id={params.history_id} study_id={params.study_id} annotation_id={params.annotation_id} />
         </main>
     );
 }

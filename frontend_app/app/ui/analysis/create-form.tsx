@@ -17,7 +17,7 @@ import { useActionState, useEffect, useRef, useState } from 'react';
 import { ClassDictionary } from 'clsx';
 
 export default function Form(
-  { annotation_id }: { annotation_id: string }
+  { history_id, study_id, annotation_id }: { history_id: string, study_id: string, annotation_id: string }
 ) {
   const router = useRouter();
   const initialState: AnalysisState = { success: false, message: null, errors: {} };
@@ -147,6 +147,20 @@ export default function Form(
               ))}
           </div> */}
           </div>
+
+          <input
+            type="hidden"
+            id="history_id"
+            name="history_id"
+            value={history_id}
+          />
+
+          <input
+            type="hidden"
+            id="study_id"
+            name="study_id"
+            value={study_id}
+          />
 
           <input
             type="hidden"

@@ -21,7 +21,7 @@ export default async function DataTable({
   history_id: string;
   study_id: string;
 }) {
-  const annotations:Annotation[] = await fetchFilteredAnnotations(query, currentPage);
+  const annotations:Annotation[] = await fetchFilteredAnnotations(query, currentPage, study_id);
 
 
   return (

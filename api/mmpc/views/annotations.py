@@ -66,6 +66,7 @@ class Annotations(APIView):
         query = request.GET.get('query', '') # The user string filter
         elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
         user = request.user.email
+        studyId = request.GET.get('studyId','')
         #endregion
 
         #region fetch data from DDBB
@@ -73,11 +74,19 @@ class Annotations(APIView):
         first_requested_element = (page - 1) * elements
         last_requested_element = first_requested_element + elements
         try:
-            db_user = customUser.objects.get(email = user)
-            db_objects = annotation.objects\
-                .filter(study__uploader = db_user)\
-                .order_by('-date')\
-                .all()[first_requested_element : last_requested_element]
+            if(studyId):
+                db_user = customUser.objects.get(email = user)
+                db_objects = annotation.objects\
+                    .filter(study__uploader = db_user)\
+                    .filter(study__id = studyId)\
+                    .order_by('-date')\
+                    .all()[first_requested_element : last_requested_element]
+            else:
+                db_user = customUser.objects.get(email = user)
+                db_objects = annotation.objects\
+                    .filter(study__uploader = db_user)\
+                    .order_by('-date')\
+                    .all()[first_requested_element : last_requested_element]
         except customUser.DoesNotExist:
             db_objects = []
         #endregion

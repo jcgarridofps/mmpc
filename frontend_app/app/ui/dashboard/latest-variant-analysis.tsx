@@ -1,11 +1,12 @@
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLatestVariantAnalysis } from '@/app/lib/data';
+import { fetchLatestAnnotations } from '@/app/lib/data';
 import { formatDateToLocal } from '@/app/lib/utils';
 
 export type VariantAnalysis = {
   id: string;
+  appId: string;
   description: string;
   date: string;
   status: string;
@@ -13,14 +14,14 @@ export type VariantAnalysis = {
 
 export default async function LatestVariantAnalysis(){
 
-  const latestVariantAnalysis: VariantAnalysis[] = await fetchLatestVariantAnalysis();
+  const latestVariantAnalysis: VariantAnalysis[] = await fetchLatestAnnotations();
 
   return (
-    <div className="flex w-full flex-col md:col-span-4">
-      <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
+    <div className="flex flex-col md:col-span-4 w-full">
+      <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4 relative w-full">
         <h3 className="pb-4 ml-2 text-sm font-medium">Latest annotations</h3>
         
-        <div className="bg-white px-6 rounded-xl">
+        <div className=" w-[96%] bg-white px-6 rounded-xl absolute top-0 mt-[3rem]">
           {latestVariantAnalysis.map((analysis, i) => {
             return (
               <div
@@ -35,7 +36,7 @@ export default async function LatestVariantAnalysis(){
                 <div className="flex items-center">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {analysis.id}
+                      {analysis.appId}
                     </p>
                     <p className="hidden text-sm text-gray-500 sm:block">
                       {formatDateToLocal(analysis.date)}

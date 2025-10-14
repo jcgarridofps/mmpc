@@ -13,10 +13,10 @@ export type ComputationVersion = {
 export type Analysis = {
   id: string;
   appId: string;
-  cancer_types: string;
+  cancerTypes: string;
   date: string;
   type: AnalysisType;
   //annotation: Annotation;
-  status: ComputationStatus;
-  version: ComputationVersion;
+  status: string;
+  version: string;
 };

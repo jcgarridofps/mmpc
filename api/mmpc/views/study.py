@@ -158,7 +158,10 @@ class Study(APIView):
                 return Response({"message":"New study entry could not be generated into DDBB: "},\
                                  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response(new_analysis_response.data, status=new_analysis_response.status_code)
+        data = {
+            "study_id": new_study_entry.id,
+        }
+        return Response(data, status=new_analysis_response.status_code)
 
 
 class Studies(APIView):

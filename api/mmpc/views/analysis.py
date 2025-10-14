@@ -2,8 +2,8 @@
 Bridge module to call pandrugs2 API
 """
 import urllib.parse
-from mmpc.models import customUser, drugQuery, variantAnalysis, entityGroup, patient
-from mmpc.serializers import drugQuerySerializer
+from mmpc.models import customUser, drugQuery, analysis, variantAnalysis, entityGroup, patient
+from mmpc.serializers import analysisSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
 from rest_framework.views import APIView
@@ -15,17 +15,16 @@ from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 import json
 
-def CreateAnalysis(cancer_types, parent_analysis_id):
+def CreateAnalysis(cancer_types, annotation_id):
 
     success = False
-    normalized_cancer_types = cancer_types.replace(' ', '_').upper()
+    normalized_cancer_types = json.loads(cancer_types.replace(' ', '_').upper())
     try:
-        new_drugquery_entry = drugQuery.objects.create(\
-                        cancer_types=normalized_cancer_types,\
-                        variant_analysis_id = parent_analysis_id,\
-                        status = 'PENDING'
+        new_analysis_entry = analysis.objects.create(\
+                        cancerTypes=normalized_cancer_types,\
+                        annotation_id = annotation_id,
                     )
-        new_drugquery_entry.save()
+        new_analysis_entry.save()
         success = True
     except Exception as e:
         print("Error inserting new drug query into DDBB: ")
@@ -41,14 +40,14 @@ class Analysis(APIView):
 
     def get(self, request):
         """
-        GET function to retrieve drug query DDBB entries
+        GET function to retrieve analysis DDBB entries
         """
         #region Incoming params checking
         page = int(request.GET.get('page', '1'))
         query = request.GET.get('query', '') # The user string filter
         decodedQuery = urllib.parse.unquote(query)
         elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
-        variant_analysis_parent = request.GET.get('annotation_id', None) #parent annotation
+        annotation_id = request.GET.get('annotation_id', None) #parent annotation
         user = request.user.email
         #endregion
 
@@ -57,21 +56,21 @@ class Analysis(APIView):
         first_requested_element = (page - 1) * elements
         last_requested_element = first_requested_element + elements
         try:
-            if(variant_analysis_parent != None):
-                db_objects = drugQuery.objects\
-                    .filter(variant_analysis = variant_analysis_parent)\
-                    .filter(cancer_types__icontains=decodedQuery)\
+            if(annotation_id != None):
+                db_objects = analysis.objects\
+                    .filter(annotation_id = annotation_id)\
+                    .filter(cancerTypes__icontains=decodedQuery)\
                     .order_by('-date')\
                     .all()[first_requested_element : last_requested_element]
             else:
-                db_objects = drugQuery.objects\
+                db_objects = analysis.objects\
                     .order_by('-date')\
                     .all()[first_requested_element : last_requested_element]
         except customUser.DoesNotExist:
             db_objects = []
         #endregion
 
-        db_objects_data = drugQuerySerializer(db_objects, many=True)
+        db_objects_data = analysisSerializer(db_objects, many=True)
 
         #region response and status
         return Response(db_objects_data.data, status = status.HTTP_200_OK)
@@ -83,12 +82,12 @@ class Analysis(APIView):
         This endpoint makes use of pandrugs.py endpoints
         """
 
-        annotation_id = request.POST.get('annotation_id', None)
+        annotation_id = request.data.get('annotation_id', None)
         if(annotation_id is None):
             return Response({"message":"Annotation id is missing"},\
                             status=status.HTTP_400_BAD_REQUEST)
 
-        cancer_types = request.POST.get('cancer_types', '') # The user string filter //TODO: get cancer types from body
+        cancer_types = request.data.get('cancer_types', '') # The user string filter //TODO: get cancer types from body
         if(cancer_types == ''):
             return Response({"message":"At least one cancer type must be selected"},\
                             status=status.HTTP_400_BAD_REQUEST)
@@ -96,8 +95,8 @@ class Analysis(APIView):
         # If the new analysis has been created (in pandrugs)
         try:
             drug_query_create_result = CreateAnalysis(\
-                cancer_types=cancer_types,\
-                parent_analysis_id=annotation_id\
+                cancer_types = cancer_types,\
+                annotation_id = annotation_id\
             )
 
             if drug_query_create_result:
