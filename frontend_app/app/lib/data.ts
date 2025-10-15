@@ -35,6 +35,36 @@ export async function fetchLatestAnnotations() {
   }
 }
 
+// Fetch history by given history_appId
+export async function fetchHistory(history_appId: string) {
+  /**
+   * Fetch history by given history_appId
+   */
+  // await new Promise((resolve) => setTimeout(resolve, 2000));
+  const session = await auth();
+
+  try {
+
+    const history = await fetch(process.env.API_BASE_URL + 
+      "/api/history/get/?" + 
+      `appId=${history_appId}`,
+    {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+    });
+    
+    let res = await history.json();
+
+    return res;
+  } catch (error) {
+    console.error(`Failed to fetch history with appID ${history_appId}.`, error);
+    throw new Error(`Failed to fetch history with appID ${history_appId}.`);
+  }
+}
+
 const LATEST_ANALYSES_ITEMS = 5;
 export async function fetchLatestAnalyses() {
   /**
