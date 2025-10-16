@@ -26,7 +26,7 @@ class History(APIView):
         """
         # CHECK ALL NEEDED INFO IS PROVIDED
         app_id = request.GET.get('query', '')
-        if(app_id == '' or not app_id.startswith('EN') or not app_id.startswith('PH')):
+        if(app_id == '' or (not app_id.startswith('EN') and not app_id.startswith('PH'))):
             return Response({"message":"Please identify patient ID or history ID"},\
                             status=status.HTTP_400_BAD_REQUEST)
         

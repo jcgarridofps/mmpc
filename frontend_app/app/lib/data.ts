@@ -1,3 +1,5 @@
+"use server";
+
 import postgres from 'postgres';
 import { auth } from '@/auth';
 
@@ -35,10 +37,10 @@ export async function fetchLatestAnnotations() {
   }
 }
 
-// Fetch history by given history_appId
-export async function fetchHistory(history_appId: string) {
+// Fetch history by given history_appId or patient_appId
+export async function fetchHistory(query: string) {
   /**
-   * Fetch history by given history_appId
+   * Fetch history by given history_appId or patient_appId
    */
   // await new Promise((resolve) => setTimeout(resolve, 2000));
   const session = await auth();
@@ -46,8 +48,8 @@ export async function fetchHistory(history_appId: string) {
   try {
 
     const history = await fetch(process.env.API_BASE_URL + 
-      "/api/history/get/?" + 
-      `appId=${history_appId}`,
+      "/api/history/?" + 
+      `query=${query}`,
     {
         method: "GET",
         headers: {
@@ -60,8 +62,8 @@ export async function fetchHistory(history_appId: string) {
 
     return res;
   } catch (error) {
-    console.error(`Failed to fetch history with appID ${history_appId}.`, error);
-    throw new Error(`Failed to fetch history with appID ${history_appId}.`);
+    console.error(`Failed to fetch history with appID ${query}.`, error);
+    throw new Error(`Failed to fetch history with appID ${query}.`);
   }
 }
 
