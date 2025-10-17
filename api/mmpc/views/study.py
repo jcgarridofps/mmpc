@@ -1,7 +1,9 @@
 """
 View module for managing application reports
 """
+import os
 import urllib
+from django.conf import settings
 from uuid import UUID
 from mmpc.models import annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
 from mmpc.serializers import reportSerializer, studySerializer
@@ -16,7 +18,9 @@ from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 from django.db import models
 import json
-
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+    
 class Study(APIView):
     """
     Get Study from DDBB
@@ -94,6 +98,28 @@ class Study(APIView):
             return Response({"message":"Please add vcf file"},\
                             status=status.HTTP_400_BAD_REQUEST)
         
+        # --- Save VCF file on disk ---
+        file_path = ''
+
+        try:
+            # Ensure target folder exists
+            save_dir = os.path.join(settings.BASE_DIR, "files")
+            os.makedirs(save_dir, exist_ok=True)
+
+            # Use provided file name or fall back to original
+            safe_name = file_name or vcf_file.name
+
+            file_path = os.path.join(save_dir, safe_name)
+
+            # Write file to disk
+            with default_storage.open(file_path, 'wb+') as destination:
+                for chunk in vcf_file.chunks():
+                    destination.write(chunk)
+
+        except Exception as e:
+            return Response({"message": f"Error saving VCF file: {e}"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 
         # Ask for a new pandrugs variant analysis
         new_analysis_view = pandrugs.NewVariantAnalysis.as_view() #pandrugs variant analysis
@@ -130,7 +156,9 @@ class Study(APIView):
                     sampleId = 'dummySampleID',\
                     history_id = history_id,\
                     uploader = uploader,\
-                    studyProcedure = new_study_procedure)
+                    studyProcedure = new_study_procedure,\
+                    variantsFileRoute = file_path,\
+                    )
                 
                 new_study_entry.save()
 

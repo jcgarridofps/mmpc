@@ -2,7 +2,7 @@
 Bridge module to call pandrugs2 API
 """
 import urllib.parse
-from mmpc.models import annotation, customUser, analysis, entityGroup, patient
+from mmpc.models import annotation, computationStatus, computationVersion, customUser, analysis, entityGroup, patient, study
 from mmpc.serializers import annotationSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
@@ -14,6 +14,27 @@ from rest_framework import status
 from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 import json
+from rest_framework.test import APIRequestFactory
+from rest_framework.request import Request
+
+def get_file_as_upload(file_path: str):
+    """
+    Reads the given file path and returns a ('file', file_object) tuple
+    suitable for `requests` or similar libraries.
+    Example usage:
+        requests.post(url, files=get_file_as_upload('/files/example.vcf'))
+    """
+    try:
+        # Open file in binary read mode
+        file_obj = open(file_path, 'rb')
+
+        # Extract name for upload
+        filename = os.path.basename(file_path)
+
+        # Return in format expected by 'files={'file': (...) }'
+        return {'file': (filename, file_obj, 'application/octet-stream')}
+    except FileNotFoundError:
+        raise Exception(f"File not found at path: {file_path}")
 
 class Annotation(APIView):
     """
@@ -55,12 +76,40 @@ class Annotation(APIView):
         POST function to generate new annotation DDBB entries
         This endpoint makes use of pandrugs.py endpoints
         """
+        study_id =  request.data.get('study_id', '')
+        study_obj = study.objects.get(id = study_id)
+        variants_file_route = study_obj.variantsFileRoute
 
-        name = "DEFAULT"
-        file = #TODO
+        headers = request.headers.get('Authorization')
+
+        vcf_file = None
+        file_name = None
+
+        try:
+            vcf_file = get_file_as_upload(variants_file_route)
+            file_name = vcf_file.name
+        except:
+            return Response(json.loads(json.dumps(\
+                {"message":"No vcf_file or file_name provided"})), status = 400)
+        
+        form_data = {"filename":file_name}
+        form_files = {"vcfFile":(vcf_file.name, vcf_file.file, vcf_file.content_type)}
+        
+        factory = APIRequestFactory()
+
+        post_data = {"file_name": file_name,}
+        path = f"/internal/pandrugs/new-analysis/?name=DEFAULT"
+
+
+        new_request = factory.post(
+            path,
+            data={**post_data, "file": vcf_file},  # merge data and file
+            format='multipart'
+        )
+        new_request.META["HTTP_AUTHORIZATION"] = request.headers.get("Authorization")
 
         new_analysis_view = pandrugs.NewVariantAnalysis.as_view()
-        new_analysis_response = new_analysis_view(request._request)
+        new_analysis_response = new_analysis_view(Request(new_request))
 
         # If the new analysis has been created (in pandrugs)
         if new_analysis_response.status_code == 201:
@@ -69,38 +118,19 @@ class Annotation(APIView):
                 uploader = customUser.objects.get(email=request.user.email)
                 uploader_group = uploader.entityGroup
 
-                #Create or get patient
-                patient_ref = None
+                computation_version = computationVersion.objects.get(id = 1) #N/A
+                computation_status = computationStatus.objects.get(computationStatus = 'PENDING')
                 
-                try:
-                    patient_ref = get_patient(patient_identifier)
-                    if patient_ref is None:
-                        patient_ref = create_patient(patient_identifier)
-                except Exception as e:
-                    print("Error getting or creating patient")
-                    return Response({"message":"Error creating variant analysis"},\
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                new_annotation_entry = annotation.objects.create(\
+                    documentId = new_analysis_id,\
+                    version = computation_version,\
+                    status = computation_status,\
+                    study = study)
 
-                #Create the new DDBB entry for the new variant analysis
+                new_annotation_entry.save()
 
-                new_analysis_entry = annotation.objects.create(\
-                    description=description,\
-                    computation_id=new_analysis_id,\
-                    uploader = uploader,\
-                    uploaderGroup = uploader_group,\
-                    status = 'PENDING',\
-                    patient = patient_ref)
-                new_analysis_entry.save()
-
-                analysis_create_result = CreateDrugQuery(\
-                    cancer_types=cancer_types,\
-                    parent_analysis_id=new_analysis_entry.id\
-                )
-
-                if analysis_create_result:
-                    return Response(None, status=status.HTTP_201_CREATED)
-                else:
-                    return Response({"message":"Variant analysis registered, but couldn't create drug query"},\
+                if not new_annotation_entry:
+                    return Response({"message":"Error creating annotation"},\
                                  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
             except Exception as e:

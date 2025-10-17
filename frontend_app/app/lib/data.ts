@@ -7,6 +7,43 @@ const ITEMS_PER_PAGE = 6;
 
 const LATEST_VARIANT_ANALYSIS_ITEMS = 5;
 
+export async function newAnnotation(studyId:string){
+
+  const session = await auth();
+
+  try {
+
+    const variant_analysis = await fetch(process.env.API_BASE_URL + 
+      "/api/annotation/",{
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+        body: JSON.stringify({
+          study_id: studyId,
+        }),
+    });
+    
+    let res = await variant_analysis.json();
+
+    if (!res.ok) {
+    throw new Error(`Failed to fetch external data: ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data;
+
+    return res;
+  } catch (error) {
+    console.error('Annotation could not be created: ', error);
+    throw new Error('FAnnotation could not be created.');
+  }
+
+
+  
+}
+
 export async function fetchLatestAnnotations() {
   /**
    * Fetch latest 5 variant analysis for the user's entity group
