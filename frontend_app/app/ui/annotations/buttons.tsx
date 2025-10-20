@@ -21,10 +21,11 @@ export function CreateAnnotation({ history_id, study_id }: { history_id: string,
   const handleAction = async () => {
     startTransition(async () => {
       try {
-        await newAnnotation(study_id);
+        const res = await newAnnotation(study_id);
+        const annotation_id = res["annotation_id"];
         // After successful creation, navigate to annotation creation page
         router.push(
-          `/dashboard/histories/${history_id}/studies/${study_id}/annotations/`
+          `/dashboard/histories/${history_id}/studies/${study_id}/annotations/${annotation_id}/analyses/`
         );
       } catch (error) {
         console.error("Failed to create annotation:", error);

@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 import requests
+from rest_framework import status
 
 class GetAnalysisResult(APIView):
     """
@@ -144,3 +145,39 @@ class NewVariantAnalysis(APIView):
                 {"message": "Unknown error. Please revise your request or try again later."}),\
                 status = 500)
         #endregion
+
+#Receives a file path and sends it to pandrugs for a new variant analysis creation
+def create_new_variant_analysis(file_path):
+
+    pd_url = os.environ['PANDRUGS_BASE_URL'] + 'variantsanalysis/guest'
+    headers = {"Authorization": os.environ['PANDRUGS_AUTH']}
+    param_list = [("name","DEFAULT")]
+        
+    try:
+        # Open the file in binary mode
+        with open(file_path, "rb") as f:
+            # Create the multipart/form-data payload
+            form_files = {"vcfFile": (os.path.basename(file_path), f, "text/vcf")}
+
+            # Optional: include additional fields if required
+            form_data = \
+            {"withPharmcat":"false",\
+            "filename":os.path.basename(file_path)}
+
+            # Send POST request
+            pd_response = requests.post(\
+            pd_url, headers=headers, params = param_list,\
+            data=form_data, files=form_files, timeout=60)
+
+        # Forward the external API’s response back to the client
+        #region response and status
+        if pd_response.status_code == 201:
+            return Response(json.loads(json.dumps(\
+                {"analysis_id":pd_response.headers["Location"].split('/')[-1]})),\
+                status = 201)
+        return Response(json.dumps(\
+                {"message": "Unknown error. Please revise your request or try again later."}),\
+                status = 500)
+
+    except requests.exceptions.RequestException as e:
+        return Response({"error": f"Failed to create variant annotation: {e}"}, status=status.HTTP_502_BAD_GATEWAY)

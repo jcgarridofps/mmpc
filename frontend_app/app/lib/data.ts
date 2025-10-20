@@ -7,41 +7,38 @@ const ITEMS_PER_PAGE = 6;
 
 const LATEST_VARIANT_ANALYSIS_ITEMS = 5;
 
-export async function newAnnotation(studyId:string){
+export async function newAnnotation(studyId: string) {
 
   const session = await auth();
 
   try {
 
-    const variant_analysis = await fetch(process.env.API_BASE_URL + 
-      "/api/annotation/",{
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session?.accessToken}`,
-          "Content-Type": "Application/json"
-        },
-        body: JSON.stringify({
-          study_id: studyId,
-        }),
+    const res = await fetch(process.env.API_BASE_URL +
+      "/api/annotation/", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session?.accessToken}`,
+        "Content-Type": "Application/json"
+      },
+      body: JSON.stringify({
+        study_id: studyId,
+      }),
     });
-    
-    let res = await variant_analysis.json();
 
     if (!res.ok) {
-    throw new Error(`Failed to fetch external data: ${res.status}`);
-  }
+      throw new Error(`Failed to fetch external data`);
+    }
 
-  const data = await res.json();
-  return data;
+    const data = await res.json();
+    return data;
 
-    return res;
   } catch (error) {
     console.error('Annotation could not be created: ', error);
-    throw new Error('FAnnotation could not be created.');
+    throw new Error('Annotation could not be created.');
   }
 
 
-  
+
 }
 
 export async function fetchLatestAnnotations() {
@@ -53,18 +50,18 @@ export async function fetchLatestAnnotations() {
 
   try {
 
-    const variant_analysis = await fetch(process.env.API_BASE_URL + 
-      "/api/annotations/?" + 
-      "page=1&"+
+    const variant_analysis = await fetch(process.env.API_BASE_URL +
+      "/api/annotations/?" +
+      "page=1&" +
       "elements=" + LATEST_VARIANT_ANALYSIS_ITEMS,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await variant_analysis.json();
 
     return res;
@@ -84,17 +81,17 @@ export async function fetchHistory(query: string) {
 
   try {
 
-    const history = await fetch(process.env.API_BASE_URL + 
-      "/api/history/?" + 
+    const history = await fetch(process.env.API_BASE_URL +
+      "/api/history/?" +
       `query=${query}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await history.json();
 
     return res;
@@ -114,18 +111,18 @@ export async function fetchLatestAnalyses() {
 
   try {
 
-    const drug_queries = await fetch(process.env.API_BASE_URL + 
-      "/api/analysis/?" + 
-      "page=1&"+
+    const drug_queries = await fetch(process.env.API_BASE_URL +
+      "/api/analysis/?" +
+      "page=1&" +
       "elements=" + LATEST_ANALYSES_ITEMS,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await drug_queries.json();
     console.log(res);
     return res;
@@ -161,19 +158,19 @@ export async function fetchFilteredVariantAnalysisPages(query: string) {
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const data = await fetch(process.env.API_BASE_URL + 
-      "/api/annotations/count?" + 
+    const data = await fetch(process.env.API_BASE_URL +
+      "/api/annotations/count?" +
       "query=" + safeQuery + "&",
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
+      });
     const json_data = await data.json();
 
-    const totalPages = Math.ceil(Number(json_data? json_data['entry_count']:0) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(Number(json_data ? json_data['entry_count'] : 0) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error('Database Error:', error);
@@ -185,19 +182,19 @@ export async function fetchFilteredDrugQueryPages(query: string, variant_analysi
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const data = await fetch(process.env.API_BASE_URL + 
-      "/api/analysis/count?" + 
+    const data = await fetch(process.env.API_BASE_URL +
+      "/api/analysis/count?" +
       "query=" + safeQuery + "&variant_analysis_id=" + variant_analysis_id,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
+      });
     const json_data = await data.json();
 
-    const totalPages = Math.ceil(Number(json_data? json_data['entry_count']:0) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(Number(json_data ? json_data['entry_count'] : 0) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error('Database Error:', error);
@@ -209,19 +206,19 @@ export async function fetchFilteredReportPages(query: string, drug_query_id: str
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const data = await fetch(process.env.API_BASE_URL + 
-      "/api/report/count?" + 
+    const data = await fetch(process.env.API_BASE_URL +
+      "/api/report/count?" +
       "query=" + safeQuery + "&drug_query=" + drug_query_id,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
+      });
     const json_data = await data.json();
 
-    const totalPages = Math.ceil(Number(json_data? json_data['entry_count']:0) / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(Number(json_data ? json_data['entry_count'] : 0) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
     console.error('Database Error:', error);
@@ -237,20 +234,20 @@ export async function fetchFilteredAnnotations(
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const annotations = await fetch(process.env.API_BASE_URL + 
-      "/api/annotations/?" + 
+    const annotations = await fetch(process.env.API_BASE_URL +
+      "/api/annotations/?" +
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
       "elements=" + ITEMS_PER_PAGE + "&" +
       "studyId=" + studyId,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await annotations.json();
     return res;
   } catch (error) {
@@ -267,20 +264,20 @@ export async function fetchFilteredStudies(
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const studies = await fetch(process.env.API_BASE_URL + 
-      "/api/studies/?" + 
+    const studies = await fetch(process.env.API_BASE_URL +
+      "/api/studies/?" +
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
       "elements=" + ITEMS_PER_PAGE + "&" +
       "historyId=" + historyId,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await studies.json();
     return res;
   } catch (error) {
@@ -296,27 +293,27 @@ export async function fetchFilteredReports(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   const session = await auth();
   try {
-    const uri:string = process.env.API_BASE_URL + 
-      "/api/report/?" + 
+    const uri: string = process.env.API_BASE_URL +
+      "/api/report/?" +
       "page=" + currentPage + "&" +
       "drug_query_id=" + drug_query_id + "&" +
       "elements=" + ITEMS_PER_PAGE;
 
     console.log("MACARENO ECHA EL FRENO:" + uri);
 
-    const reports = await fetch(process.env.API_BASE_URL + 
-      "/api/report/?" + 
+    const reports = await fetch(process.env.API_BASE_URL +
+      "/api/report/?" +
       "page=" + currentPage + "&" +
       "drug_query_id=" + drug_query_id + "&" +
       "elements=" + ITEMS_PER_PAGE,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await reports.json();
     return res;
   } catch (error) {
@@ -328,24 +325,24 @@ export async function fetchFilteredReports(
 export async function fetchAnnotationCount() {
   const session = await auth();
   try {
-    const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
+    const variant_analysis_count = await fetch(process.env.API_BASE_URL +
       "/api/annotations/count/",
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
-    try{
+      });
+
+    try {
       let res = await variant_analysis_count.json();
       return res['entry_count'];
     }
-    catch(error){
+    catch (error) {
       console.error("ERROR: " + error);
     }
-    
+
   } catch (error) {
     console.error('Fetch variant analysis count error:', error);
     throw new Error('Failed to fetch variant analysis count.');
@@ -355,24 +352,24 @@ export async function fetchAnnotationCount() {
 export async function fetchAnalysisCount() {
   const session = await auth();
   try {
-    const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
+    const variant_analysis_count = await fetch(process.env.API_BASE_URL +
       "/api/analysis/count/",
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
-    try{
+      });
+
+    try {
       let res = await variant_analysis_count.json();
       return res['entry_count'];
     }
-    catch(error){
+    catch (error) {
       console.error("ERROR: " + error);
     }
-    
+
   } catch (error) {
     console.error('Fetch analysis count error:', error);
     throw new Error('Failed to fetch analysis count.');
@@ -382,105 +379,105 @@ export async function fetchAnalysisCount() {
 export async function fetchReportCount() {
   const session = await auth();
   try {
-    const report_count = await fetch(process.env.API_BASE_URL + 
+    const report_count = await fetch(process.env.API_BASE_URL +
       "/api/report/count/",
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
-    try{
+      });
+
+    try {
       let res = await report_count.json();
       return res['entry_count'];
     }
-    catch(error){
+    catch (error) {
       console.error("ERROR: " + error);
     }
-    
+
   } catch (error) {
     console.error('Fetch report count error:', error);
     throw new Error('Failed to fetch report count.');
   }
 }
 
-export async function fetchDrugQueryResult(id:string) {
+export async function fetchDrugQueryResult(id: string) {
   const session = await auth();
   try {
-    const drug_query_result = await fetch(process.env.API_BASE_URL + 
+    const drug_query_result = await fetch(process.env.API_BASE_URL +
       `/api/analysis/result/?id=${id}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
-    try{
+      });
+
+    try {
       let res = await drug_query_result.json();
       return res;
     }
-    catch(error){
+    catch (error) {
       console.error("ERROR: " + error);
     }
-    
+
   } catch (error) {
     console.error('Error fetching variant analysis result:', error);
     throw new Error('Failed to fetch variant analysis result.');
   }
 }
 
-export async function fetchVariantAnalysisResult(analysis_id:string) {
+export async function fetchVariantAnalysisResult(analysis_id: string) {
   const session = await auth();
   try {
-    const variant_analysis_result = await fetch(process.env.API_BASE_URL + 
+    const variant_analysis_result = await fetch(process.env.API_BASE_URL +
       `/api/analysis/result/?id=${analysis_id}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
-    try{
+      });
+
+    try {
       let res = await variant_analysis_result.json();
       return res;
     }
-    catch(error){
+    catch (error) {
       console.error("ERROR: " + error);
     }
-    
+
   } catch (error) {
     console.error('Error fetching variant analysis result:', error);
     throw new Error('Failed to fetch variant analysis result.');
   }
 }
 
-export async function fetchReportResult(id:string) {
+export async function fetchReportResult(id: string) {
   const session = await auth();
   try {
-    const report_result = await fetch(process.env.API_BASE_URL + 
+    const report_result = await fetch(process.env.API_BASE_URL +
       `/api/report/result/?id=${id}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
-    try{
+      });
+
+    try {
       let res = await report_result.json();
       return res;
     }
-    catch(error){
+    catch (error) {
       console.error("ERROR: " + error);
     }
-    
+
   } catch (error) {
     console.error('Error fetching report result:', error);
     throw new Error('Failed to fetch variant analysis result.');
@@ -490,16 +487,16 @@ export async function fetchReportResult(id:string) {
 export async function fetchPendingAnnotationCount() {
   const session = await auth();
   try {
-    const variant_analysis_count = await fetch(process.env.API_BASE_URL + 
+    const variant_analysis_count = await fetch(process.env.API_BASE_URL +
       "/api/annotations/pending/count/",
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await variant_analysis_count.json();
     return res['entry_count'];
   } catch (error) {
@@ -516,20 +513,20 @@ export async function fetchFilteredAnalyses(
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
-    const analyses = await fetch(process.env.API_BASE_URL + 
-      "/api/analysis/?" + 
+    const analyses = await fetch(process.env.API_BASE_URL +
+      "/api/analysis/?" +
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
       "elements=" + ITEMS_PER_PAGE + "&" +
-      "annotation_id=" + annotationId, 
-    {
+      "annotation_id=" + annotationId,
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await analyses.json();
     return res;
   } catch (error) {
@@ -541,16 +538,16 @@ export async function fetchFilteredAnalyses(
 export async function fetchPatientCount() {
   const session = await auth();
   try {
-    const patient_count = await fetch(process.env.API_BASE_URL + 
+    const patient_count = await fetch(process.env.API_BASE_URL +
       "/api/patient/count/",
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await patient_count.json();
     return res['entry_count'];
   } catch (error) {
@@ -560,24 +557,24 @@ export async function fetchPatientCount() {
 }
 
 export async function fetchPresence(gene_list: string[]) {
-  let params:string = "";
-  gene_list.forEach((gene)=> {
+  let params: string = "";
+  gene_list.forEach((gene) => {
     params += "gene=" + gene + '&';
   });
-  params = params.substring(0,params.length - 1);
+  params = params.substring(0, params.length - 1);
 
   const session = await auth();
   try {
-    const presence_result = await fetch(process.env.API_BASE_URL + 
+    const presence_result = await fetch(process.env.API_BASE_URL +
       "/api/analysis/presence/?" + params,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json"
         },
-    });
-    
+      });
+
     let res = await presence_result.json();
     return res;
   } catch (error) {
@@ -589,16 +586,16 @@ export async function fetchPresence(gene_list: string[]) {
 export async function fetchPatientByHistoryId(history_id: string) {
   const session = await auth();
   try {
-    const patient_appId = await fetch(process.env.API_BASE_URL + 
+    const patient_appId = await fetch(process.env.API_BASE_URL +
       `/api/history/patient/?history_id=${history_id}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json",
         },
-    });
-    
+      });
+
     let res = await patient_appId.json();
     return res['patient_appId'];
   } catch (error) {
@@ -610,16 +607,16 @@ export async function fetchPatientByHistoryId(history_id: string) {
 export async function fetchStudyByStudyId(study_id: string) {
   const session = await auth();
   try {
-    const study = await fetch(process.env.API_BASE_URL + 
+    const study = await fetch(process.env.API_BASE_URL +
       `/api/study/?study_id=${study_id}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json",
         },
-    });
-    
+      });
+
     let res = await study.json();
     return res['appId'];
   } catch (error) {
@@ -631,16 +628,16 @@ export async function fetchStudyByStudyId(study_id: string) {
 export async function fetchAnnotationByAnnotationId(annotation_id: string) {
   const session = await auth();
   try {
-    const annotation = await fetch(process.env.API_BASE_URL + 
+    const annotation = await fetch(process.env.API_BASE_URL +
       `/api/annotation/?annotation_id=${annotation_id}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json",
         },
-    });
-    
+      });
+
     let res = await annotation.json();
     return res['appId'];
   } catch (error) {
@@ -652,16 +649,16 @@ export async function fetchAnnotationByAnnotationId(annotation_id: string) {
 export async function fetchPatientByHistoryAppId(history_appId: string) {
   const session = await auth();
   try {
-    const patient_appId = await fetch(process.env.API_BASE_URL + 
+    const patient_appId = await fetch(process.env.API_BASE_URL +
       `/api/history/patient/?history_appId=${history_appId}`,
-    {
+      {
         method: "GET",
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
           "Content-Type": "Application/json",
         },
-    });
-    
+      });
+
     let res = await patient_appId.json();
     return res['patient_appId'];
   } catch (error) {

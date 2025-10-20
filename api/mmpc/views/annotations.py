@@ -1,6 +1,7 @@
 """
 Bridge module to call pandrugs2 API
 """
+import os
 import urllib.parse
 from mmpc.models import annotation, computationStatus, computationVersion, customUser, analysis, entityGroup, patient, study
 from mmpc.serializers import annotationSerializer
@@ -16,6 +17,7 @@ from mmpc.mongo.mongo import db as mdb
 import json
 from rest_framework.test import APIRequestFactory
 from rest_framework.request import Request
+import requests
 
 def get_file_as_upload(file_path: str):
     """
@@ -79,42 +81,17 @@ class Annotation(APIView):
         study_id =  request.data.get('study_id', '')
         study_obj = study.objects.get(id = study_id)
         variants_file_route = study_obj.variantsFileRoute
-
-        headers = request.headers.get('Authorization')
-
-        vcf_file = None
-        file_name = None
-
-        try:
-            vcf_file = get_file_as_upload(variants_file_route)
-            file_name = vcf_file.name
-        except:
-            return Response(json.loads(json.dumps(\
-                {"message":"No vcf_file or file_name provided"})), status = 400)
         
-        form_data = {"filename":file_name}
-        form_files = {"vcfFile":(vcf_file.name, vcf_file.file, vcf_file.content_type)}
-        
-        factory = APIRequestFactory()
+        # Ensure the file exists
+        if not os.path.exists(variants_file_route):
+            return Response({"error": f"File not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        post_data = {"file_name": file_name,}
-        path = f"/internal/pandrugs/new-analysis/?name=DEFAULT"
-
-
-        new_request = factory.post(
-            path,
-            data={**post_data, "file": vcf_file},  # merge data and file
-            format='multipart'
-        )
-        new_request.META["HTTP_AUTHORIZATION"] = request.headers.get("Authorization")
-
-        new_analysis_view = pandrugs.NewVariantAnalysis.as_view()
-        new_analysis_response = new_analysis_view(Request(new_request))
+        pd_response = pandrugs.create_new_variant_analysis(variants_file_route)
 
         # If the new analysis has been created (in pandrugs)
-        if new_analysis_response.status_code == 201:
+        if pd_response.status_code == 201:
             try:
-                new_analysis_id = new_analysis_response.data['analysis_id']
+                new_analysis_id = pd_response.data['analysis_id']
                 uploader = customUser.objects.get(email=request.user.email)
                 uploader_group = uploader.entityGroup
 
@@ -125,7 +102,7 @@ class Annotation(APIView):
                     documentId = new_analysis_id,\
                     version = computation_version,\
                     status = computation_status,\
-                    study = study)
+                    study = study_obj)
 
                 new_annotation_entry.save()
 
@@ -138,7 +115,7 @@ class Annotation(APIView):
                                  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         #region response and status
-        return Response(new_analysis_response.data, status=new_analysis_response.status_code)
+        return Response({"annotation_id": new_annotation_entry.id}, status=pd_response.status_code)
         #endregion
 
 
