@@ -153,6 +153,7 @@ class annotation(models.Model):
     status = models.ForeignKey(computationStatus, on_delete=models.DO_NOTHING, null=True)
     version = models.ForeignKey(computationVersion, on_delete=models.DO_NOTHING, null=True)
     documentId = models.CharField(default='NONE', max_length=200)
+    pdComputationId = models.CharField(default='', max_length=200) 
 
 class analysis(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
