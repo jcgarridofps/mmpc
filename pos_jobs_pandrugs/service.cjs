@@ -57,7 +57,7 @@ function sleep() {
  */
 async function get_service_variant_annotation() {
   // 1. Fetch document IDs from Postgres
-  const { rows } = await pgClient.query(`SELECT id, pdComputationId, documentId FROM public.mmpc_annotation WHERE status.computationStatus = $1 ORDER BY date ASC LIMIT $2`, [COMPUTATION_STATUS.pending, MAX_VARIANT_ANALYSIS_PER_TICK]);
+  const { rows } = await pgClient.query(`SELECT an.id, an."pdComputationId", an."documentId" FROM public.mmpc_annotation AS an INNER JOIN public.mmpc_computationstatus AS cs ON an.status_id = cs.id WHERE cs."computationStatus" = $1 ORDER BY date ASC LIMIT $2`, [COMPUTATION_STATUS.pending, MAX_VARIANT_ANALYSIS_PER_TICK]);
 
   for (const row of rows) {
     annotation_queue.enqueue(row)
@@ -70,7 +70,7 @@ async function get_service_variant_annotation() {
  */
 async function get_pandrugs_annotation(computation_id) {
   request_url = EXTERNAL_API_URL + 'variantsanalysis/guest/' + computation_id;
-
+  console.log("WEKYWEKY______________:" + computation_id);
   try {
     const pandrugs_answer = await axios.get(request_url, {
       headers: {
@@ -89,6 +89,7 @@ async function get_pandrugs_annotation(computation_id) {
  * Gets pandrugs analysis (drug query) result by computation id and cancer types
  */
 async function get_pandrugs_analysis(computation_id, cancer_types) {
+  console.log(computation_id);
   try {
     request_url = EXTERNAL_API_URL + 'genedrug/fromComputationId?' +
       'computationId=' + computation_id + '&' +
@@ -100,7 +101,7 @@ async function get_pandrugs_analysis(computation_id, cancer_types) {
       'geneDependency=true&' +
       'biomarker=true&' +
       'pathwayMember=false&';
-    JSON.parse(cancer_types).forEach(cancer_type => {
+    cancer_types.forEach(cancer_type => {
       request_url += 'cancer=' + cancer_type + '&';
     });
 
@@ -143,10 +144,10 @@ async function get_service_analyses() {
 async function set_service_annotation(annotation_id, new_status, document_id) {
   try {
     const new_status_obj = await pgClient.query('SELECT cs.id from public.mmpc_computationstatus AS cs WHERE cs."computationStatus" = $1', [new_status]);
-    await pgClient.query('UPDATE public.mmpc_annotation SET documentId = $1, status_id = $2 WHERE id = $3', [document_id, new_status_obj[0].id, annotation_id]);
+    await pgClient.query('UPDATE public.mmpc_annotation SET "documentId" = $1, status_id = $2 WHERE id = $3', [document_id, new_status_obj.rows[0].id, annotation_id]);
   }
   catch (error) {
-    console.log("ERROR WHEN UPDATING VARIANTANALYSIS ENTRY: " + error);
+    console.log("ERROR WHEN UPDATING ANNOTATION ENTRY: " + error);
   }
 }
 
@@ -154,9 +155,10 @@ async function set_service_annotation(annotation_id, new_status, document_id) {
  * Sets drug query status and document_id
  */
 async function set_service_analysis(analysis_id, new_status, document_id) {
+  console.log("GAMBERRO: " + analysis_id + new_status + document_id);
   try {
     const new_status_obj = await pgClient.query('SELECT cs.id from public.mmpc_computationstatus AS cs WHERE cs."computationStatus" = $1', [new_status]);
-    await pgClient.query('UPDATE public.mmpc_analysis SET documentId = $1, status_id = $2 WHERE id = $3', [document_id, new_status_obj[0].id, analysis_id]);
+    await pgClient.query('UPDATE public.mmpc_analysis SET "documentId" = $1, status_id = $2 WHERE id = $3', [document_id, new_status_obj.rows[0].id, analysis_id]);
   }
   catch (error) {
     console.log("DATABASE OPERATION ERROR: " + error);
@@ -202,8 +204,9 @@ async function mainLoop() {
 
       if (annotation_queue.length() > 0) {
         for (const annotation of annotation_queue.queue) {
+          console.log("ANNNNNNNNNNNNNNNNNNNN: " + JSON.stringify(annotation));
           try {
-            pandrugs_annotation = await get_pandrugs_annotation(annotation.documentId);
+            pandrugs_annotation = await get_pandrugs_annotation(annotation.pdComputationId);
             //CHECK IF ANALYSIS IS READY. IF NOT, CONTINUE
             if (pandrugs_annotation.finished == true) {
               // IF READY
@@ -242,7 +245,8 @@ async function mainLoop() {
       //IF PENDING QUERIES, EXECUTE THEM SEQUENTIALLY
       if (analysis_queue.length() > 0) {
         for (const query of analysis_queue.queue) {
-          await get_pandrugs_analysis(query.computation_id, query.cancer_types)
+          console.log("QUERY: " + JSON.stringify(query));
+          await get_pandrugs_analysis(query.pdComputationId, query.cancerTypes)
             .then(async (result) => {
               console.log("E");
               //SAVE RESULT INTO MONGODB AND GET THE GENERATED ID
@@ -252,17 +256,17 @@ async function mainLoop() {
               //UPDATE SERVICE DRUG QUERY ENTRY WITH THE DOCUMENT ID
               //AND SET STATUS TO COMPLETED
               //console.log(JSON.stringify(query));
-              await set_service_analysis(query.id, COMPUTATION_STATUS.processed, document_id)
+              await set_service_analysis(query.analysis_id, COMPUTATION_STATUS.processed, document_id)
                 .then(() => {
                   console.log("UPDATED DRUGQUERY SUCCESSFULLY")
                   console.log("DRUG QUERY JOB FINISHED SUCCESSFULLY");
                 })
-                .catch((error) => { console.log("ERROR WHEN UPDATING DRUGQUERY ENTRY: ") });
+                .catch((error) => { console.log("ERROR WHEN UPDATING ANALYSIS ENTRY: ") });
               //.catch((error)=>{console.log("ERROR WHEN UPDATING DRUGQUERY ENTRY: " + error)});
             })
             .catch((error) => {
-              console.log("ERROR WHEN APPLYING DRUG QUERY JOB: " + error);
-              //console.log("ERROR WHEN APPLYING DRUG QUERY JOB: ");
+              console.log("ERROR WHEN APPLYING ANALYSIS JOB: " + error);
+              //console.log("ERROR WHEN APPLYING ANALYSIS JOB: ");
             });
         }
       }

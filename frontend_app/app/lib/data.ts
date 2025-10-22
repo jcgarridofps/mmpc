@@ -404,6 +404,7 @@ export async function fetchReportCount() {
 }
 
 export async function fetchDrugQueryResult(id: string) {
+  console.log("FETCH DRUG QUERY RESULT: " + id);
   const session = await auth();
   try {
     const drug_query_result = await fetch(process.env.API_BASE_URL +
@@ -434,7 +435,7 @@ export async function fetchVariantAnalysisResult(analysis_id: string) {
   const session = await auth();
   try {
     const variant_analysis_result = await fetch(process.env.API_BASE_URL +
-      `/api/analysis/result/?id=${analysis_id}`,
+      `/api/annotation/result/?id=${analysis_id}`,
       {
         method: "GET",
         headers: {

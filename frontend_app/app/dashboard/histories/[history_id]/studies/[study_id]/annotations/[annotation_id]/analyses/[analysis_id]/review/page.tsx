@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page(props: {
-  params: Promise<{ id: string, query_id: string }>;
+  params: Promise<{ annotation_id: string, analysis_id: string }>;
   searchParams?: Promise<{
     query?: string;
     page?: string;
@@ -28,9 +28,9 @@ export default async function Page(props: {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchFilteredVariantAnalysisPages(query);
-  const variantAnalysisId = params.id;
-  const drugQueryId = params.query_id;
-  console.log("QUERY ID: " + drugQueryId);
+  const annotationId = params.annotation_id;
+  const analysisId = params.analysis_id;
+  console.log("QUERY ID: " + analysisId);
 
   return (
     <main>
@@ -56,16 +56,16 @@ export default async function Page(props: {
         <InformationCircleIcon className="h-[30] w-[30] text-gray-500" />
         <p className="text-left w-full ml-4">Select one analysis to review or request a new one.</p>
         <div className="h-full inline-block flex items-center ">
-          <CreateClinicalReport variant_analysis_uuid={variantAnalysisId} drug_query_uuid={drugQueryId} />
+          <CreateClinicalReport variant_analysis_uuid={annotationId} drug_query_uuid={analysisId} />
         </div>
         <div className=" ml-2 h-full inline-block flex items-center ">
-          <ClinicalReports variant_analysis_uuid={variantAnalysisId} drug_query_uuid={drugQueryId} />
+          <ClinicalReports variant_analysis_uuid={annotationId} drug_query_uuid={analysisId} />
         </div>
       </div>
       
       <div className="w-full">
         <div>
-          <DrugQueryResult query_id={params.query_id} analysis_id={params.id}/>
+          <DrugQueryResult analysis_id={params.analysis_id} annotation_id={params.annotation_id}/>
         </div>
       </div>
     </main>

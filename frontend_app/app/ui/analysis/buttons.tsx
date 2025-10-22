@@ -60,10 +60,10 @@ export function ClinicalReports({ variant_analysis_uuid, drug_query_uuid }: { va
   );
 }
 
-export function ReviewDrugQuery({ id, query_id }: { id: string, query_id: string }) {
+export function ReviewAnalysis({ history_id, study_id, annotation_id, analysis_id }: { history_id: string, study_id: string, annotation_id: string, analysis_id:string }) {
   return (
     <Link
-      href={`/dashboard/variant-analysis/${id}/drug-queries/${query_id}/review`}
+      href={`/dashboard/histories/${history_id}/studies/${study_id}/annotations/${annotation_id}/analyses/${analysis_id}/review/`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <EyeIcon className="w-5" />

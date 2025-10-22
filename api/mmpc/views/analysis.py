@@ -2,7 +2,7 @@
 Bridge module to call pandrugs2 API
 """
 import urllib.parse
-from mmpc.models import customUser, drugQuery, analysis, variantAnalysis, entityGroup, patient
+from mmpc.models import customUser, drugQuery, analysis, variantAnalysis, entityGroup, patient, computationStatus
 from mmpc.serializers import analysisSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
@@ -15,7 +15,7 @@ from bson import ObjectId
 from mmpc.mongo.mongo import db as mdb
 import json
 
-def CreateAnalysis(cancer_types, annotation_id):
+def CreateAnalysis(cancer_types, annotation_id, status_entry):
 
     success = False
     normalized_cancer_types = json.loads(cancer_types.replace(' ', '_').upper())
@@ -23,6 +23,7 @@ def CreateAnalysis(cancer_types, annotation_id):
         new_analysis_entry = analysis.objects.create(\
                         cancerTypes=normalized_cancer_types,\
                         annotation_id = annotation_id,
+                        status = status_entry,
                     )
         new_analysis_entry.save()
         success = True
@@ -94,12 +95,16 @@ class Analysis(APIView):
 
         # If the new analysis has been created (in pandrugs)
         try:
-            drug_query_create_result = CreateAnalysis(\
+
+            status_entry = computationStatus.objects.get(computationStatus = "PENDING")
+
+            analysis_create_result = CreateAnalysis(\
                 cancer_types = cancer_types,\
-                annotation_id = annotation_id\
+                annotation_id = annotation_id,\
+                status_entry = status_entry,
             )
 
-            if drug_query_create_result:
+            if analysis_create_result:
                 return Response(None, status=status.HTTP_201_CREATED)
             else:
                 return Response({"message":"Drug query not created"},\
@@ -130,8 +135,8 @@ class AnalysisResult(APIView):
         #region fetch document_id from postgres DDBB
 
         try:
-            query = drugQuery.objects.filter(id = query_id)[0]
-        except drugQuery.DoesNotExist:
+            query = analysis.objects.filter(id = query_id)[0]
+        except analysis.DoesNotExist:
             query = None
         #endregion
 

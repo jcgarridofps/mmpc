@@ -129,7 +129,7 @@ class Study(APIView):
         # CREATE STUDY
         if new_analysis_response.status_code == 201:
             try:
-                new_analysis_id = new_analysis_response.data['analysis_id'] #Pandrugs variant analysis ID
+                new_analysis_comp_id = new_analysis_response.data['analysis_id'] #Pandrugs variant analysis ID (computation ID)
                 uploader = customUser.objects.get(email=request.user.email)
                 uploader_group = uploader.entityGroup
 
@@ -171,7 +171,7 @@ class Study(APIView):
 
                 #TODO: check correct computation version. This may need only a string and confirm version some other way
                 new_annotation_entry = annotation.objects.create(\
-                    documentId = new_analysis_id,\
+                    pdComputationId = new_analysis_comp_id,\
                     version = computation_version,\
                     status = computation_status,\
                     study = new_study_entry)

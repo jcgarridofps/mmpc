@@ -1,6 +1,6 @@
 import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchFilteredAnalyses } from '@/app/lib/data';
-import { ReviewDrugQuery } from './buttons';
+import { ReviewAnalysis } from './buttons';
 import { Analysis } from '@/types/app-types';
 import { parseAppSegmentConfig } from 'next/dist/build/segment-config/app/app-segment-config';
 
@@ -74,7 +74,7 @@ export default async function AnalysesTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className={analysis.status != "PROCESSED" ? "hidden" : "flex justify-end gap-3"} >
-                      <ReviewDrugQuery id={annotation_id} query_id={analysis.id}/>
+                      <ReviewAnalysis history_id={history_id} study_id = {study_id} annotation_id={annotation_id} analysis_id={analysis.id}/>
                     </div>
                   </td>
                 </tr>

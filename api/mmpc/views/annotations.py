@@ -99,7 +99,7 @@ class Annotation(APIView):
                 computation_status = computationStatus.objects.get(computationStatus = 'PENDING')
                 
                 new_annotation_entry = annotation.objects.create(\
-                    documentId = new_analysis_id,\
+                    pdComputationId = new_analysis_id,\
                     version = computation_version,\
                     status = computation_status,\
                     study = study_obj)
@@ -193,7 +193,7 @@ class Annotations(APIView):
         # If the new analysis has been created (in pandrugs)
         if new_analysis_response.status_code == 201:
             try:
-                new_analysis_id = new_analysis_response.data['analysis_id']
+                new_analysis_comp_id = new_analysis_response.data['analysis_id']
                 uploader = customUser.objects.get(email=request.user.email)
                 uploader_group = uploader.entityGroup
 
@@ -211,16 +211,18 @@ class Annotations(APIView):
 
                 #Create the new DDBB entry for the new variant analysis
 
-                new_analysis_entry = annotation.objects.create(\
+                new_annotation_entry = annotation.objects.create(\
                     description=description,\
                     computation_id=new_analysis_id,\
                     uploader = uploader,\
                     uploaderGroup = uploader_group,\
                     status = 'PENDING',\
                     patient = patient_ref)
-                new_analysis_entry.save()
+                new_annotation_entry.save()
 
-                analysis_create_result = CreateDrugQuery(\
+
+
+                analysis_create_result = CreateAnalysis(\
                     cancer_types=cancer_types,\
                     parent_analysis_id=new_analysis_entry.id\
                 )
@@ -257,16 +259,16 @@ class AnnotationResult(APIView):
 
         try:
             analysis = annotation.objects.filter(id = annotation_id)[0]
-        except analysis.DoesNotExist:
+        except annotation.DoesNotExist:
             analysis = None
         #endregion
 
-        document_id = analysis.document_id
+        document_id = analysis.documentId
 
         # get actual document from mongodb
 
         collection = mdb["variant_analysis"]
-        document = collection.find_one({"_id" : ObjectId(document_id.replace('"',''))})
+        document = collection.find_one({"_id" : ObjectId(document_id.replace('"','').replace('\'',''))})
         if document and '_id' in document:
             document['_id'] = str(document['_id']) # This is for preventig a type error
 
