@@ -62,7 +62,7 @@ class Annotation(APIView):
         try:
             db_object = annotation.objects\
                 .get(id = annotation_id)
-        except customUser.DoesNotExist:
+        except annotation.DoesNotExist:
             return Response({"message":"Object not found"},\
                             status=status.HTTP_404_NOT_FOUND)
         #endregion
@@ -213,7 +213,7 @@ class Annotations(APIView):
 
                 new_annotation_entry = annotation.objects.create(\
                     description=description,\
-                    computation_id=new_analysis_id,\
+                    computation_id=new_analysis_comp_id,\
                     uploader = uploader,\
                     uploaderGroup = uploader_group,\
                     status = 'PENDING',\
@@ -224,7 +224,7 @@ class Annotations(APIView):
 
                 analysis_create_result = CreateAnalysis(\
                     cancer_types=cancer_types,\
-                    parent_analysis_id=new_analysis_entry.id\
+                    parent_analysis_id=new_annotation_entry.id\
                 )
 
                 if analysis_create_result:
@@ -268,7 +268,7 @@ class AnnotationResult(APIView):
         # get actual document from mongodb
 
         collection = mdb["variant_analysis"]
-        document = collection.find_one({"_id" : ObjectId(document_id.replace('"','').replace('\'',''))})
+        document = collection.find_one({"_id" : ObjectId(document_id.replace('"',''))})
         if document and '_id' in document:
             document['_id'] = str(document['_id']) # This is for preventig a type error
 

@@ -112,7 +112,7 @@ export async function fetchLatestAnalyses() {
   try {
 
     const drug_queries = await fetch(process.env.API_BASE_URL +
-      "/api/analysis/?" +
+      "/api/analyses/?" +
       "page=1&" +
       "elements=" + LATEST_ANALYSES_ITEMS,
       {
@@ -515,7 +515,7 @@ export async function fetchFilteredAnalyses(
   const safeQuery = encodeURIComponent(query);
   try {
     const analyses = await fetch(process.env.API_BASE_URL +
-      "/api/analysis/?" +
+      "/api/analyses/?" +
       "page=" + currentPage + "&" +
       "query=" + safeQuery + "&" +
       "elements=" + ITEMS_PER_PAGE + "&" +
@@ -567,7 +567,7 @@ export async function fetchPresence(gene_list: string[]) {
   const session = await auth();
   try {
     const presence_result = await fetch(process.env.API_BASE_URL +
-      "/api/analysis/presence/?" + params,
+      "/api/annotation/presence/?" + params,
       {
         method: "GET",
         headers: {
@@ -644,6 +644,27 @@ export async function fetchAnnotationByAnnotationId(annotation_id: string) {
   } catch (error) {
     console.error('Fetch annotation by annotation id error:', error);
     throw new Error('Failed to fetch annotation by annotation id.');
+  }
+}
+
+export async function fetchAnalysisByAnalysisId(analysis_id: string) {
+  const session = await auth();
+  try {
+    const analysis = await fetch(process.env.API_BASE_URL +
+      `/api/analysis/?analysis_id=${analysis_id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json",
+        },
+      });
+
+    let res = await analysis.json();
+    return res['appId'];
+  } catch (error) {
+    console.error('Fetch analysis by analysis id error:', error);
+    throw new Error('Failed to fetch analysis by analysis id.');
   }
 }
 

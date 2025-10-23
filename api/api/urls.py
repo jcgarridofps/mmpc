@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/patient/', Patient.as_view(), name='patient_exists'),
 
     path('api/analysis/', Analysis.as_view(), name='drug_query'),
+    path('api/analyses/', Analyses.as_view(), name='analyses'),
     path('api/analysis/result/', AnalysisResult.as_view(), name='drug_query_new'),
     path('api/analysis/count/', AnalysisCount.as_view(), name='drug_query_count'),
     path('api/analysis/pending/count/', AnalysisPendingCount.as_view(), name='drug_query_pending_count'),

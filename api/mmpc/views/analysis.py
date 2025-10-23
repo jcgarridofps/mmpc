@@ -41,40 +41,31 @@ class Analysis(APIView):
 
     def get(self, request):
         """
-        GET function to retrieve analysis DDBB entries
+        GET function to retrieve analysis entry by analysis_id
         """
         #region Incoming params checking
-        page = int(request.GET.get('page', '1'))
-        query = request.GET.get('query', '') # The user string filter
-        decodedQuery = urllib.parse.unquote(query)
-        elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
-        annotation_id = request.GET.get('annotation_id', None) #parent annotation
         user = request.user.email
+        analysis_id = request.GET.get('analysis_id', '')
         #endregion
+
+        if(analysis_id == ''):
+            return Response({"message":"An analysis_id is needed"},\
+                            status=status.HTTP_400_BAD_REQUEST)
 
         #region fetch data from DDBB
-        db_objects = []
-        first_requested_element = (page - 1) * elements
-        last_requested_element = first_requested_element + elements
+        db_object = None
         try:
-            if(annotation_id != None):
-                db_objects = analysis.objects\
-                    .filter(annotation_id = annotation_id)\
-                    .filter(cancerTypes__icontains=decodedQuery)\
-                    .order_by('-date')\
-                    .all()[first_requested_element : last_requested_element]
-            else:
-                db_objects = analysis.objects\
-                    .order_by('-date')\
-                    .all()[first_requested_element : last_requested_element]
-        except customUser.DoesNotExist:
-            db_objects = []
+            db_object = analysis.objects\
+                .get(id = analysis_id)
+        except analysis.DoesNotExist:
+            return Response({"message":"Object not found"},\
+                            status=status.HTTP_404_NOT_FOUND)
         #endregion
 
-        db_objects_data = analysisSerializer(db_objects, many=True)
+        db_object_data = analysisSerializer(db_object, many=False)
 
         #region response and status
-        return Response(db_objects_data.data, status = status.HTTP_200_OK)
+        return Response(db_object_data.data, status = status.HTTP_200_OK)
         #endregion
 
     def post(self, request):
@@ -118,6 +109,50 @@ class Analysis(APIView):
         return Response(new_analysis_response.data, status=new_analysis_response.status_code)
         #endregion
 
+class Analyses(APIView):
+    """
+    Get variant analysis from DDBB uploaded by the user
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve analysis DDBB entries
+        """
+        #region Incoming params checking
+        page = int(request.GET.get('page', '1'))
+        query = request.GET.get('query', '') # The user string filter
+        decodedQuery = urllib.parse.unquote(query)
+        elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
+        annotation_id = request.GET.get('annotation_id', None) #parent annotation
+        user = request.user.email
+        #endregion
+
+        #region fetch data from DDBB
+        db_objects = []
+        first_requested_element = (page - 1) * elements
+        last_requested_element = first_requested_element + elements
+        try:
+            if(annotation_id != None):
+                db_objects = analysis.objects\
+                    .filter(annotation_id = annotation_id)\
+                    .filter(cancerTypes__icontains=decodedQuery)\
+                    .order_by('-date')\
+                    .all()[first_requested_element : last_requested_element]
+            else:
+                db_objects = analysis.objects\
+                    .order_by('-date')\
+                    .all()[first_requested_element : last_requested_element]
+        except customUser.DoesNotExist:
+            db_objects = []
+        #endregion
+
+        db_objects_data = analysisSerializer(db_objects, many=True)
+
+        #region response and status
+        return Response(db_objects_data.data, status = status.HTTP_200_OK)
+        #endregion
+
 class AnalysisResult(APIView):
     """
     Get result for the given drug query
@@ -142,7 +177,7 @@ class AnalysisResult(APIView):
 
         print(query)
 
-        document_id = query.document_id
+        document_id = query.documentId
 
         # get actual document from mongodb
 
