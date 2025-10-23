@@ -288,14 +288,23 @@ class AnnotationCount(APIView):
         """
         #region Incoming params checking
         query = request.GET.get('query', '') # The user string filter
+        decodedQuery = urllib.parse.unquote(query)
         user = request.user.email
+        study_id = request.GET.get('study_id', '')
         #endregion
 
         #region fetch data from DDBB
         db_entry_count = 0
         try:
             db_user = customUser.objects.get(email = user)
-            db_entry_count = annotation.objects\
+            if(len(study_id) > 0):
+                db_entry_count = annotation.objects\
+                .filter(study__uploader = db_user)\
+                .filter(study__id = study_id)\
+                .filter(appId__icontains = decodedQuery)\
+                .count()
+            else:
+                db_entry_count = annotation.objects\
                 .filter(study__uploader = db_user)\
                 .count()
         except customUser.DoesNotExist:

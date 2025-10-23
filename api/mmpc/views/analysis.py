@@ -204,7 +204,7 @@ class AnalysisCount(APIView):
         #region Incoming params checking
         query = request.GET.get('query', '') # The user string filter
         decodedQuery = urllib.parse.unquote(query)
-        variant_analysis_id = request.GET.get('variant_analysis_id', '')
+        annotation_id = request.GET.get('annotation_id', '')
         db_user = request.user
         #endregion
 
@@ -212,11 +212,11 @@ class AnalysisCount(APIView):
         db_entry_count = 0
         try:
 
-            if(len(variant_analysis_id) > 0):
+            if(len(annotation_id) > 0):
 
                 db_entry_count = drugQuery.objects\
                     .filter(variant_analysis__uploader = db_user)\
-                    .filter(variant_analysis__id = variant_analysis_id)\
+                    .filter(variant_analysis__id = annotation_id)\
                     .filter(cancer_types__icontains = decodedQuery)\
                     .count()
                 

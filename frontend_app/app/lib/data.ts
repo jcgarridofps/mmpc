@@ -154,13 +154,37 @@ export async function fetchCardData() {
   }
 }
 
-export async function fetchFilteredVariantAnalysisPages(query: string) {
+export async function fetchFilteredStudiesPages(query: string, history_id: string) {
+  const session = await auth();
+  const safeQuery = encodeURIComponent(query);
+  try {
+    const data = await fetch(process.env.API_BASE_URL +
+      "/api/studies/count?" +
+      "query=" + safeQuery + "&history_id=" + history_id,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json"
+        },
+      });
+    const json_data = await data.json();
+
+    const totalPages = Math.ceil(Number(json_data ? json_data['entry_count'] : 0) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of studies.');
+  }
+}
+
+export async function fetchFilteredAnnotationsPages(query: string, study_id: string) {
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
     const data = await fetch(process.env.API_BASE_URL +
       "/api/annotations/count?" +
-      "query=" + safeQuery + "&",
+      "query=" + safeQuery + "&study_id=" + study_id,
       {
         method: "GET",
         headers: {
@@ -174,17 +198,17 @@ export async function fetchFilteredVariantAnalysisPages(query: string) {
     return totalPages;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
+    throw new Error('Failed to fetch total number of annotations.');
   }
 }
 
-export async function fetchFilteredDrugQueryPages(query: string, variant_analysis_id: string) {
+export async function fetchFilteredAnalysesPages(query: string, annotation_id: string) {
   const session = await auth();
   const safeQuery = encodeURIComponent(query);
   try {
     const data = await fetch(process.env.API_BASE_URL +
       "/api/analysis/count?" +
-      "query=" + safeQuery + "&variant_analysis_id=" + variant_analysis_id,
+      "query=" + safeQuery + "&annotation_id=" + annotation_id,
       {
         method: "GET",
         headers: {
@@ -198,7 +222,7 @@ export async function fetchFilteredDrugQueryPages(query: string, variant_analysi
     return totalPages;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of drug queries.');
+    throw new Error('Failed to fetch total number of analyses.');
   }
 }
 
@@ -325,7 +349,7 @@ export async function fetchFilteredReports(
 export async function fetchAnnotationCount() {
   const session = await auth();
   try {
-    const variant_analysis_count = await fetch(process.env.API_BASE_URL +
+    const annotation_count = await fetch(process.env.API_BASE_URL +
       "/api/annotations/count/",
       {
         method: "GET",
@@ -336,7 +360,7 @@ export async function fetchAnnotationCount() {
       });
 
     try {
-      let res = await variant_analysis_count.json();
+      let res = await annotation_count.json();
       return res['entry_count'];
     }
     catch (error) {

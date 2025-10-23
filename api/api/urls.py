@@ -50,6 +50,7 @@ urlpatterns = [
     path('api/study/', Study.as_view(), name='study'),
     path('api/study/new/', Study.as_view(), name='study_new'),
     path('api/studies/', Studies.as_view(), name='studies'),
+    path('api/studies/count/', StudiesCount.as_view(), name='studies'),
 ]
 
 admin.site.site_header = 'MMPC Administration panel'

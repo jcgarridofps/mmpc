@@ -5,7 +5,7 @@ import { CreateAnalysis } from '@/app/ui/analysis/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredDrugQueryPages, fetchPatientByHistoryId, fetchStudyByStudyId, fetchAnnotationByAnnotationId } from '@/app/lib/data';
+import { fetchFilteredAnalysesPages, fetchPatientByHistoryId, fetchStudyByStudyId, fetchAnnotationByAnnotationId } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
@@ -30,7 +30,7 @@ export default async function Page(props: {
   const params = await props.params;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchFilteredDrugQueryPages(query, params.annotation_id);
+  const totalPages = await fetchFilteredAnalysesPages(query, params.annotation_id);
   const patientAppId = await fetchPatientByHistoryId(params.history_id);
   const studyAppId = await fetchStudyByStudyId(params.study_id);
   const annotationAppId = await fetchAnnotationByAnnotationId(params.annotation_id);

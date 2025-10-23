@@ -5,7 +5,7 @@ import { CreateClinicalReport } from '@/app/ui/analysis/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredVariantAnalysisPages } from '@/app/lib/data';
+import { fetchFilteredAnnotationsPages } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import ReportResult from '@/app/ui/report/result';
@@ -26,7 +26,7 @@ export default async function Page(props: {
   const params = await props.params;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchFilteredVariantAnalysisPages(query);
+  const totalPages = await fetchFilteredAnnotationsPages(query);
   const variantAnalysisId = params.id;
   const drugQueryId = params.query_id;
   const reportId = params.report_id;

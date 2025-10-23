@@ -5,7 +5,7 @@ import { CreateStudy } from '@/app/ui/studies/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredVariantAnalysisPages, fetchPatientByHistoryId } from '@/app/lib/data';
+import { fetchFilteredStudiesPages, fetchPatientByHistoryId } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
@@ -28,7 +28,7 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchFilteredVariantAnalysisPages(query);
+  const totalPages = await fetchFilteredStudiesPages(query, params.history_id);
   const patientAppId = await fetchPatientByHistoryId(params.history_id);
 
   return (

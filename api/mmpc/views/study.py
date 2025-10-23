@@ -231,3 +231,46 @@ class Studies(APIView):
         #region response and status
         return Response(db_objects_data.data, status = status.HTTP_200_OK)
         #endregion
+
+class StudiesCount(APIView):
+    """
+    Get studies entry count from DDBB uploaded by the user
+    With filters
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve studies DDBB entry count
+        """
+        #region Incoming params checking
+        query = request.GET.get('query', '') # The user string filter
+        decodedQuery = urllib.parse.unquote(query)
+        history_id = request.GET.get('history_id', '')
+        db_user = request.user
+        #endregion
+
+        #region fetch data from DDBB
+        db_entry_count = 0
+        try:
+
+            if(len(history_id) > 0):
+
+                db_entry_count = study.objects\
+                    .filter(uploader = db_user)\
+                    .filter(history__id = history_id)\
+                    .filter(appId__icontains = decodedQuery)\
+                    .count()
+                
+            else:
+                db_entry_count = study.objects\
+                    .filter(uploader = db_user)\
+                    .count()
+        except:
+            db_entry_count = 0
+        #endregion
+
+        #region response and status
+        r_data = {'entry_count':db_entry_count}
+        return Response(data = r_data, status = status.HTTP_200_OK)
+        #endregion
