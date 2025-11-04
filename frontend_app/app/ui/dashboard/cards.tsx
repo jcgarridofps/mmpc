@@ -30,9 +30,9 @@ export default async function CardWrapper() {
     <>
 
       <Card title="Total Reports" value={totalReports} type="reports" />
-      <Card title="Pending Analysis" value={totalPendingAnalysis} type="pending_analysis" />
-      <Card title="Total Variant Analysis" value={numberOfVariantAnalysis} type="analysis" />
-      <Card title="Total Drug Queries" value={numberOfDrugQueries} type="drug_queries" />
+      <Card title="Pending annotations" value={totalPendingAnalysis} type="pending_analysis" />
+      <Card title="Total annotations" value={numberOfVariantAnalysis} type="analysis" />
+      <Card title="Total analyses" value={numberOfDrugQueries} type="drug_queries" />
 {/*       <Card
         title="Total Patients"
         value={numberOfPatients}
@@ -54,7 +54,7 @@ export function Card({
   const Icon = iconMap[type];
 
   return (
-    <div className="rounded-xl bg-gray-50 p-2 shadow-sm">
+    <div className="rounded-xl bg-gray-50 p-4 shadow-sm">
       <div className="flex p-4">
         {Icon ? <Icon className="h-5 w-5 text-gray-700" /> : null}
         <h3 className="ml-2 text-sm font-medium">{title}</h3>

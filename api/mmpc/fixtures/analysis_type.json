@@ -1,0 +1,9 @@
+[
+  {
+    "model": "mmpc.analysisType",
+    "pk": 1,
+    "fields": {
+      "analysis_type": "DRUG_QUERY"
+    }
+  }
+]

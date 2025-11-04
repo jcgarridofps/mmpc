@@ -5,7 +5,9 @@ from .avatars import *
 from .drfLogger import *
 from .maintenance import *
 from .pandrugs import *
-from .variant_analysis import *
+from .annotations import *
 from .patient import *
-from .drug_query import *
+from .analysis import *
 from .report import *
+from .history import *
+from .study import *

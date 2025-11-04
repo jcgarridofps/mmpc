@@ -26,6 +26,9 @@ export default async function Table({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  ID
+                </th>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                   Date
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
@@ -39,6 +42,9 @@ export default async function Table({
                   key={report.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {report.id}
+                  </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(report.date)}
                   </td>

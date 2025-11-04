@@ -21,18 +21,51 @@ class locationSerializer(serializers.ModelSerializer):
         model = location
         fields = ['id', 'name', 'latitude', 'longitude']
 
-class variantAnalysisSerializer(serializers.ModelSerializer):
+class annotationSerializer(serializers.ModelSerializer):
+    status = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='computationStatus'
+    )
+    version = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='state'
+    )
     class Meta:
-        model = variantAnalysis
-        fields = ['id', 'description', 'date', 'status']
+        model = annotation
+        fields = ['id', 'appId', 'date', 'status', 'version']
 
-class drugQuerySerializer(serializers.ModelSerializer):
+class analysisSerializer(serializers.ModelSerializer):
+    type = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='analysis_type'
+    )
+    status = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='computationStatus'
+    )
+    version = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='state'
+    )
     class Meta:
-        model = drugQuery
-        fields = ['id', 'cancer_types', 'date', 'status']
+        model = analysis
+        fields = ['id', 'appId', 'type', 'version', 'status', 'date', 'cancerTypes']
+
 
 class reportSerializer(serializers.ModelSerializer):
     class Meta:
         model = report
         fields = ['id', 'date']
+
+class historySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = history
+        fields = ['id', 'appId']
+
+class studySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = study
+        fields = ['id', 'appId', 'description', 'date', 'studyProcedure']
 

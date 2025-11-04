@@ -5,52 +5,115 @@ import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { auth } from '@/auth';
+import { signOut } from '@/auth';
+import { Result } from 'postcss';
+import { json } from 'stream/consumers';
 
-const CreateAnalysisSchema = z.object({
+const CreateAnnotationSchema = z.object({
   id: z.string(),
   description: z
-    .string({ invalid_type_error:  'Please insert a description.'})
-    .max(30, {message: "Description must be at most 30 characters long."}),
-  file: z.custom<File>((file) =>{
-    if(!(file instanceof File)) return false;
+    .string({ invalid_type_error: 'Please insert a description.' })
+    .max(30, { message: "Description must be at most 30 characters long." }),
+  file: z.custom<File>((file) => {
+    if (!(file instanceof File)) return false;
     return file.name.endsWith(".vcf");
-  }, {message: "Only -vcf files are allowed"}),
-  patient_identifier: z.string({ 
-    invalid_type_error:  'Please insert a patient identifier.'})
-    .length(11,{message: 'Please insert a correct patient identifier'}),
-  cancerTypes: z.custom<string[]>((c_types) =>{
+  }, { message: "Only -vcf files are allowed" }),
+  patient_identifier: z.string({
+    invalid_type_error: 'Please insert a patient identifier.'
+  })
+    .length(11, { message: 'Please insert a correct patient identifier' }),
+  cancerTypes: z.custom<string[]>((c_types) => {
     return c_types.length > 0;
-  }, {message: "Please select at least one cancer type"}),
+  }, { message: "Please select at least one cancer type" }),
   date: z.string(),
 });
 
-const CreateDrugQuerySchema = z.object({
+const CreateStudySchema = z.object({
+  description: z
+    .string({ invalid_type_error: 'Please insert a description.' })
+    .max(200, { message: "Description must be at most 200 characters long." }),
+  sample_kind: z
+    .string({ invalid_type_error: 'Please select sample kind.' })
+    .max(30, { message: "Sample kind must be at most 30 characters long." }),
+  procedure: z
+    .string({ invalid_type_error: 'Please select procedure.' })
+    .max(30, { message: "Procedure must be at most 30 characters long." }),
+  panel_version: z
+    .string({ invalid_type_error: 'Please select panel_version.' })
+    .max(30, { message: "Panel version must be at most 30 characters long." })
+    .optional(),
+  exome_capture: z
+    .string({ invalid_type_error: 'Please select exome capture.' })
+    .max(30, { message: "Exome capture version must be at most 30 characters long." })
+    .optional(),
+  gene_list_file: z.custom<File>((file) => {
+    if (!(file instanceof File)) return false;
+    return file.name.endsWith(".csv");
+  }, { message: "Only -csv files are allowed" })
+  .optional(),
+  file_vcf: z.custom<File>((file) => {
+    if (!(file instanceof File)) return false;
+    return file.name.endsWith(".vcf");
+  }, { message: "Only -vcf files are allowed" }),
+  // file_name: z
+  //   .string({ invalid_type_error: 'Please insert a description.' })
+  //   .max(200, { message: "File name must be at most 200 characters long." }),
+  // gene_list_file_name: z
+  //   .string({ invalid_type_error: 'Please insert a description.' })
+  //   .max(200, { message: "Gene list file name must be at most 200 characters long." })
+  // .optional(),
+});
+
+const CreateAnalysisSchema = z.object({
   id: z.string(),
-  variant_analysis_id: z.string({ 
-    invalid_type_error:  'Please insert a variant analysis identifier.'}),    
-  cancer_types: z.custom<string[]>((c_types) =>{
+  annotation_id: z.string({
+    invalid_type_error: 'Please insert an annotation ID.'
+  }),
+  cancer_types: z.custom<string[]>((c_types) => {
     return c_types.length > 0;
-  }, {message: "Please select at least one cancer type"}),
+  }, { message: "Please select at least one cancer type" }),
   date: z.string(),
 });
 
 const CreateReportSchema = z.object({
   id: z.string(),
-  variant_analysis_id: z.string({ 
-    invalid_type_error:  'Incorrect type for variant analysis id.'}),
-  drug_query_id: z.string({ 
-    invalid_type_error:  'Incorrect type for drug query id.'}),
-  clinical_report: z.string({ 
-    invalid_type_error:  'Incorrect type for clinical report.'}),
+  variant_analysis_id: z.string({
+    invalid_type_error: 'Incorrect type for variant analysis id.'
+  }),
+  drug_query_id: z.string({
+    invalid_type_error: 'Incorrect type for drug query id.'
+  }),
+  clinical_report: z.string({
+    invalid_type_error: 'Incorrect type for clinical report.'
+  }),
   date: z.string(),
 });
 
-const CreateAnalysis = CreateAnalysisSchema.omit({id: true, date: true});
-const CreateDrugQuery = CreateDrugQuerySchema.omit({id: true, date: true});
-const CreateReport = CreateReportSchema.omit({id: true, date: true});
+const CreateHistorySchema = z.object({
+  patient_id: z
+    .string({
+      invalid_type_error: "Incorrect type for patient_id.",
+      required_error: "Patient ID is required.",
+    })
+    .regex(/^EN\d{10}$/, {
+      message: "Patient ID must start with 'EN' followed by 10 digits.",
+    }),
+  patient_sex: z.string({
+    invalid_type_error: 'Incorrect type for patient sex.'
+  }),
+  patient_date: z.string({
+    invalid_type_error: 'Incorrect type for patient date.'
+  }),
+});
+
+const CreateAnnotation = CreateAnnotationSchema.omit({ id: true, date: true });
+const CreateStudy = CreateStudySchema;
+const CreateAnalysis = CreateAnalysisSchema.omit({ id: true, date: true });
+const CreateReport = CreateReportSchema.omit({ id: true, date: true });
+const CreateHistory = CreateHistorySchema;
 
 export type ReportState = {
-  success:boolean;
+  success: boolean;
   errors?: {
     drug_query?: string[] | null;
     clinical_report?: string[] | null;
@@ -58,17 +121,42 @@ export type ReportState = {
   message?: string | null;
 }
 
-export type DrugQueryState = {
-  success:boolean;
+export type AnalysisState = {
+  success: boolean;
   errors?: {
-    variant_analysis_id?: string[] | null;
+    annotation_id?: string[] | null;
     cancer_types?: string[] | null;
   };
   message?: string | null;
 }
 
+export type HistoryState = {
+  success: boolean;
+  errors?: {
+    patient_id?: string[] | null;
+    patient_sex?: string[] | null;
+    patient_date?: string[] | null;
+  };
+  message?: string | null;
+}
+
+export type StudyState = {
+  success: boolean;
+  errors?: {
+    description?: string[];
+    sample_kind?: string[];
+    procedure?: string[];
+    panel_version?: string[];
+    exome_capture?: string[];
+    gene_list_file?: string[];
+    file?: string[];
+  };
+  message?: string | null;
+  history_id: string;
+}
+
 export type State = {
-  success:boolean;
+  success: boolean;
   errors?: {
     file?: string[] | null;
     description?: string[] | null;
@@ -78,7 +166,7 @@ export type State = {
   message?: string | null;
 };
 
-export async function createVariantAnalysis(prevState: State, formData: FormData) {
+export async function createAnnotation(prevState: State, formData: FormData) {
   //console.log("Received FormData:", Object.fromEntries(formData.entries()));
   let file_ = formData.get("file"); //This data is loaded as a Blob, not a File instance
 
@@ -94,7 +182,7 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
     file_ = new File([file_], actualFileName, { type: file_.type });
   }
 
-  const validatedFields = CreateAnalysis.safeParse({
+  const validatedFields = CreateAnnotation.safeParse({
     file: file_,
     description: formData.get('description'),
     patient_identifier: formData.get('patient_identifier'),
@@ -104,7 +192,7 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
   if (!validatedFields.success) {
     return {
       ...prevState,
-      success:false,
+      success: false,
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing fields. Failed to create Invoice'
     };
@@ -112,109 +200,259 @@ export async function createVariantAnalysis(prevState: State, formData: FormData
 
   const { file, description, patient_identifier, cancerTypes } = validatedFields.data;
 
-//------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------
 
-    const session = await auth();
-    try {
+  const session = await auth();
+  try {
 
-      const formData = new FormData();
-      formData.append("withPharmcat", "false");
-      formData.append("vcf_file", file);
-      formData.append("file_name", actualFileName);
-      formData.append("patient_identifier", patient_identifier);
-      formData.append("cancer_types", JSON.stringify(cancerTypes));
+    const formData = new FormData();
+    formData.append("withPharmcat", "false");
+    formData.append("vcf_file", file);
+    formData.append("file_name", actualFileName);
+    formData.append("patient_identifier", patient_identifier);
+    formData.append("cancer_types", JSON.stringify(cancerTypes));
 
-      const urlSafeDescription = encodeURIComponent(description);
-      const result = await fetch(process.env.API_BASE_URL + 
-        "/api/analysis/new/?" + 
-        "name=" + urlSafeDescription,
+    const urlSafeDescription = encodeURIComponent(description);
+    const result = await fetch(process.env.API_BASE_URL +
+      "/api/analysis/new/?" +
+      "name=" + urlSafeDescription,
       {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`
-          },
-          body:formData
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        },
+        body: formData
       });
 
-      if (!result.ok)
-      {
-        const errorMessage = await result.json();
-        console.error('Create variant analysis error:', errorMessage.message);
-        return {
-          ...prevState,
-          success: false,
-          message: errorMessage.message
-        };
-      }
-
-    } catch (error) {
-      console.error('Create variant analysis error:', error);
+    if (!result.ok) {
+      const errorMessage = await result.json();
+      console.error('Create variant analysis error:', errorMessage.message);
       return {
         ...prevState,
         success: false,
-        message: 'Error creating variant analysis'
+        message: errorMessage.message
       };
     }
 
-    revalidatePath('/dashboard/variant-analysis');
-    redirect('/dashboard/variant-analysis/');
+  } catch (error) {
+    console.error('Create variant analysis error:', error);
+    return {
+      ...prevState,
+      success: false,
+      message: 'Error creating variant analysis'
+    };
+  }
 
-//-------------------------------------------------------------------------------------------
+  revalidatePath('/dashboard/variant-analysis');
+  redirect('/dashboard/variant-analysis/');
+
+  //-------------------------------------------------------------------------------------------
 
 }
 
-export async function createDrugQuery(prevState: DrugQueryState, formData: FormData) {
+export async function createStudy(prevState: StudyState, formData: FormData) {
 
-  const validatedFields = CreateDrugQuery.safeParse({
-    variant_analysis_id: formData.get('variant_analysis_id'),
+  console.log(">>> FormData entries:");
+for (const [key, value] of formData.entries()) {
+  if (value instanceof File) {
+    console.log(key, "=> FILE:", value.name, value.type, value.size);
+  } else {
+    console.log(key, "=>", value);
+  }
+}
+
+  //console.log("Received FormData:", Object.fromEntries(formData.entries()));
+  let vcf_file = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
+  let file_gene = formData.get("gene_list_file"); //This data is loaded as a Blob, not a File instance
+
+  console.log("--------------1--------------");
+
+  let filename_vcf = "uploaded.vcf"; // Default name
+  let filename_gene = "uploaded.csv"; // Default name
+
+  for (const [key, value] of formData.entries()) {
+    if (key === "file_vcf" && value instanceof File) {
+      filename_vcf = value.name; // Extract correct filename
+    }
+    if (key === "gene_list_file" && value instanceof File) {
+      filename_gene = value.name; // Extract correct filename
+    }
+  }
+
+  console.log("--------------3--------------");
+
+  // Convert Blob to File if needed
+  if (vcf_file instanceof Blob) {
+    vcf_file = new File([vcf_file], filename_vcf, { type: vcf_file.type });
+  }
+
+  console.log("--------------4--------------");
+
+  // Convert Blob to File if needed
+  if (file_gene instanceof Blob) {
+    file_gene = new File([file_gene], filename_gene, { type: file_gene.type });
+  }
+
+  console.log("--------------5--------------");
+
+  const validatedFields = CreateStudy.safeParse({
+    description: formData.get('description'),
+    sample_kind: formData.get('sample_kind'),
+    procedure: formData.get('procedure'),
+    panel_version: formData.get('panel_version') ?? undefined,
+    exome_capture: formData.get('exome_capture') ?? undefined,
+    gene_list_file: file_gene ?? undefined,
+    file_vcf: vcf_file,
+  });
+
+  console.log("--------------6--------------");
+
+  if (!validatedFields.success) {
+    console.error("Zod validation failed:", validatedFields.error.format());
+    return {
+      ...prevState,
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to create Study'
+    };
+  }
+
+  console.log("--------------7--------------");
+
+  const {
+    description,
+    sample_kind,
+    procedure,
+    panel_version,
+    exome_capture,
+    gene_list_file,
+    file_vcf,
+  } = validatedFields.data;
+
+  //------------------------------------------------------------------------------------
+
+  const session = await auth();
+
+
+  console.log("--------------8--------------");
+
+  const newFormData = new FormData();
+  newFormData.append("description", description);
+  newFormData.append("sample_kind", sample_kind);
+  newFormData.append("procedure", procedure);
+  newFormData.append("panel_version", panel_version? panel_version : '');
+  newFormData.append("exome_capture", exome_capture? exome_capture : '');
+  newFormData.append("gene_list_file", gene_list_file? gene_list_file : '');
+  newFormData.append("file", file_vcf, filename_vcf);
+  newFormData.append("history_id", prevState.history_id);
+  newFormData.append("file_name", filename_vcf);
+  newFormData.append("gene_list_file_name", filename_gene);
+
+  const urlSafeDescription = encodeURIComponent(description);
+
+  let result: Response;
+
+  console.log("--------------9--------------");
+
+  try {
+    result = await fetch(process.env.API_BASE_URL +
+      "/api/study/new/?" +
+      "name=" + urlSafeDescription,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        },
+        body: newFormData
+      });
+  } catch (error) {
+    console.error('Create study error:', error);
+    return {
+      ...prevState,
+      success: false,
+      message: 'Error creating variant analysis'
+    };
+  }
+
+  console.log("--------------10--------------");
+
+  if (!result.ok) {
+    const errorMessage = await result.text();
+    console.error('Create study error:', errorMessage);
+    return {
+      ...prevState,
+      success: false,
+      message: errorMessage
+    };
+  }
+
+  console.log("--------------11--------------");
+  
+  const study_id: string = (await result.json()).study_id;
+  revalidatePath(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/anotations/`);
+  redirect(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/annotations/`);
+
+  //-------------------------------------------------------------------------------------------
+
+}
+
+export async function createAnalysis(prevState: AnalysisState, formData: FormData) {
+console.log("ALADIN SOBRE HIELO");
+console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG " + formData.get('annotation_id'));
+
+  const history_id = formData.get('history_id');
+  const study_id = formData.get('study_id');
+
+  const validatedFields = CreateAnalysis.safeParse({
+    annotation_id: formData.get('annotation_id'),
     cancer_types: formData.getAll("ctype[]")
   });
 
   if (!validatedFields.success) {
     return {
       ...prevState,
-      success:false,
+      success: false,
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing fields. Failed to create drug query'
     };
   }
 
-  const { variant_analysis_id, cancer_types } = validatedFields.data;
+  const { annotation_id, cancer_types } = validatedFields.data;
 
-//------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------
 
-    const session = await auth();
-    try {
+  const session = await auth();
+  try {
 
-      const formData = new FormData();
-      formData.append("variant_analysis_id", variant_analysis_id);
-      formData.append("cancer_types", JSON.stringify(cancer_types));
+    const formData = new FormData();
+    formData.append("annotation_id", annotation_id);
+    formData.append("cancer_types", JSON.stringify(cancer_types));
 
-      await fetch(process.env.API_BASE_URL + 
-        "/api/drug_query/",
+    await fetch(process.env.API_BASE_URL +
+      "/api/analysis/",
       {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`
-          },
-          body:formData
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        },
+        body: formData
       });
 
-    } catch (error) {
-      console.error('Create drug query error:', error);
-      //throw new Error('Failed to fetch variant analysis.');
-      return {
-        ...prevState,
-        success: false,
-        message: 'Error creating drug query'
-      };
-    }
+  } catch (error) {
+    console.error('Create drug query error:', error);
+    //throw new Error('Failed to fetch variant analysis.');
+    return {
+      ...prevState,
+      success: false,
+      message: 'Error creating drug query'
+    };
+  }
 
-    const redirectPath = `/dashboard/variant-analysis/${variant_analysis_id}/drug-queries`;
-    revalidatePath(redirectPath);
-    redirect(redirectPath);
+  const redirectPath = `/dashboard/histories/${history_id}/studies/${study_id}/annotations/${annotation_id}/analyses/`;
+  revalidatePath(redirectPath);
+  redirect(redirectPath);
 
-//-------------------------------------------------------------------------------------------
+  //-------------------------------------------------------------------------------------------
 
 }
 
@@ -229,48 +467,127 @@ export async function createReport(prevState: ReportState, formData: FormData) {
   if (!validatedFields.success) {
     return {
       ...prevState,
-      success:false,
+      success: false,
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing fields. Failed to create report'
     };
   }
 
-  const { drug_query_id, clinical_report, variant_analysis_id} = validatedFields.data;
+  const { drug_query_id, clinical_report, variant_analysis_id } = validatedFields.data;
 
-//------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------
 
-    const session = await auth();
-    try {
+  const session = await auth();
+  try {
 
-      const formData = new FormData();
-      formData.append("drug_query", drug_query_id);
-      formData.append("clinical_prescription", clinical_report);
-      formData.append("clinical_report", clinical_report);
+    const formData = new FormData();
+    formData.append("drug_query", drug_query_id);
+    formData.append("clinical_prescription", clinical_report);
+    formData.append("clinical_report", clinical_report);
 
-      const result = await fetch(process.env.API_BASE_URL + 
-        "/api/report/new/",
+    const result = await fetch(process.env.API_BASE_URL +
+      "/api/report/new/",
       {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${session?.accessToken}`
-          },
-          body:formData
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        },
+        body: formData
       });
 
-    } catch (error) {
-      console.error('Create report error:', error);
-      return {
-        ...prevState,
-        success: false,
-        message: 'Error creating report'
-      };
-    }
+  } catch (error) {
+    console.error('Create report error:', error);
+    return {
+      ...prevState,
+      success: false,
+      message: 'Error creating report'
+    };
+  }
 
-    const newPath: string = `/dashboard/variant-analysis/${variant_analysis_id}/drug-queries/${drug_query_id}/clinical-reports`;
+  const newPath: string = `/dashboard/variant-analysis/${variant_analysis_id}/drug-queries/${drug_query_id}/clinical-reports`;
+  revalidatePath(newPath);
+  redirect(newPath);
+
+  //-------------------------------------------------------------------------------------------
+
+}
+
+export async function createHistory(prevState: HistoryState, formData: FormData) {
+
+  const validatedFields = CreateHistory.safeParse({
+    patient_id: formData.get('patient_id'),
+    patient_sex: formData.get('patient_sex'),
+    patient_date: formData.get('patient_date'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      ...prevState,
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing fields. Failed to create history',
+    };
+  }
+
+  const { patient_id, patient_sex, patient_date } = validatedFields.data;
+
+  //------------------------------------------------------------------------------------
+
+  const session = await auth();
+
+
+  const newFormData = new FormData();
+  newFormData.append('patient_id', patient_id);
+  newFormData.append('patient_sex', patient_sex);
+  newFormData.append('patient_date', patient_date);
+
+  let result: Response;
+
+  try {
+    result = await fetch(process.env.API_BASE_URL +
+      "/api/history/new/",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        },
+        body: newFormData
+      });
+
+  } catch (error) {
+    console.error('Create history error:', error);
+    return {
+      ...prevState,
+      success: false,
+      message: 'Error creating history',
+    };
+  }
+
+  console.error('Create history error:', result.status);
+
+  if (result.ok) {
+    const history_id: string = (await result.json()).history_id;
+    const newPath: string = `/dashboard/histories/${history_id}/studies`;
     revalidatePath(newPath);
     redirect(newPath);
+  }
+  else {
+    const server_message = await result.json();
+    console.error('Create history error:', server_message);
+    return {
+      ...prevState,
+      success: false,
+      message: 'Error creating history. ' + server_message.message,
+    };
+  }
 
-//-------------------------------------------------------------------------------------------
+
+
+
+
+
+
+  //-------------------------------------------------------------------------------------------
 
 }
 
@@ -291,4 +608,8 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+export async function logoutAction() {
+  await signOut({ redirectTo: '/' });
 }
