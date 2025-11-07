@@ -205,3 +205,11 @@ class drugQuery(models.Model):
     variant_analysis = models.ForeignKey(variantAnalysis, on_delete=models.DO_NOTHING)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     document_id = models.CharField(max_length=60, default="")
+
+class uploadedFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    file_name = models.CharField(max_length=256)
+    original_file_name = models.CharField(max_length=256)
+    checksum = models.CharField(max_length=256)
+    handled = models.BooleanField(default=False, help_text="For detecting orphan files")
+    date = models.DateTimeField(auto_now=True)
