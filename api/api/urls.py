@@ -11,6 +11,7 @@ urlpatterns = [
     path('maintenance-status/', maintenance_status, name='maintenance_status'),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', VerifyToken.as_view(), name='token_refresh'),
     path('api/avatar/', avatar.as_view(), name='avatar'),
     path('api/terms_conditions/', termsConditions.as_view(), name='terms_conditions'),
     path('api/accept_terms_conditions/', termsConditions.as_view(), name='accept_terms_conditions'),

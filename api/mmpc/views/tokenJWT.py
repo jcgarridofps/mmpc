@@ -162,3 +162,14 @@ class termsConditions(APIView):
             refresh['group']['manager'] = False
 
         return Response({'access': str(refresh.access_token), 'refresh': str(refresh)}, status=200)
+    
+class VerifyToken(APIView):
+    """
+    Verifies token is valid, on time and user exists
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        return Response({"user_id": user.id})
