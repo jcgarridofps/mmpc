@@ -2,7 +2,6 @@
 const express = require("express");
 const multer = require("multer");
 const jwt = require("jsonwebtoken");
-const fetch = require("node-fetch");
 const crypto = require("crypto");
 const { randomUUID } = require("crypto");
 const path = require("path");
@@ -10,8 +9,8 @@ const fs = require("fs");
 
 const UPLOAD_DIR = process.env.UPLOAD_DIR || "/usr/src/app/files";
 const JWT_SECRET = process.env.JWT_SECRET || ""; // or use public key if RS256
-const DJANGO_INTERNAL_VERIFY = process.env.DJANGO_VERIFY_URL || "http://django:8000/api/verify-token/";
-const DJANGO_REGISTER = process.env.DJANGO_REGISTER_URL || "http://django:8000/api/register-upload/";
+const DJANGO_INTERNAL_VERIFY = process.env.DJANGO_VERIFY_URL || "http://django:8000/api/token/verify/";
+const DJANGO_REGISTER = process.env.DJANGO_REGISTER_URL || "http://django:8000/api/files/new/";
 const MAX_FILE_BYTES = parseInt(process.env.MAX_FILE_BYTES || `${1024 * 1024 * 1024}`); // 1GB default
 
 
@@ -41,13 +40,7 @@ app.post("/upload", async (req, res, next) => {
   const token = auth.slice(7);
 
   // 2) Option A: local JWT verify
-  /*try {
-    const payload = jwt.verify(token, JWT_SECRET); // throws if invalid
-    req.user = payload; // attach for later
-    // proceed to multer handler below
-  } catch (err) {*/
-    // Option B: fallback to asking Django (uncomment if desired)
-    /*
+  try {
     const verify = await fetch(DJANGO_INTERNAL_VERIFY, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -55,9 +48,12 @@ app.post("/upload", async (req, res, next) => {
     if (!verify.ok) return res.status(401).json({ error: "Invalid token" });
     const payload = await verify.json();
     req.user = payload;
-    */
-    /*return res.status(401).json({ error: "Invalid token" });
-  }*/
+    
+  } catch (err) {
+    // Option B: fallback to asking Django (uncomment if desired)
+    console.log("Internal error trying to check access token");
+    return res.status(401).json({ error: "Invalid token" });
+  }
 
   // Expected SHA256 from client (hex string)
   const expectedSha = req.headers["x-file-sha256"];
@@ -106,8 +102,9 @@ app.post("/upload", async (req, res, next) => {
       };
 
       // 4) Notify Django (internal)
+      console.log(`token: ${token}`);
       try {
-        await fetch(DJANGO_REGISTER, {
+        response = await fetch(DJANGO_REGISTER, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -120,7 +117,7 @@ app.post("/upload", async (req, res, next) => {
         // (optionally) cleanup file or mark for retry
       }
 
-      res.json({ success: true, file: fileRecord });
+      res.json({ success: true, file_id: response.file_id });
     }
     catch (hashErr) {
       console.error("Hash computation failed:", hashErr);

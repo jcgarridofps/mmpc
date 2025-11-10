@@ -36,9 +36,9 @@ class RegisterFile(APIView):
         
         #CHECK ALL NEEDED INFO IS PROVIDED
 
-        file_name = request.data.get('file_name', '')
-        original_file_name = request.POST.get('original_file_name', '')
-        checksum = request.POST.get('checksum', '')
+        file_name = request.data.get('filename', '')
+        original_file_name = request.data.get('originalName', '')
+        checksum = request.data.get('sha256', '')
 
         if(file_name == ''):
             return Response({"message":"Missing original_name"},\
@@ -50,56 +50,17 @@ class RegisterFile(APIView):
             return Response({"message":"Missing checksum"},\
                             status=status.HTTP_400_BAD_REQUEST)
 
-file_name = models.CharField(max_length=256)
-    original_file_name = models.CharField(max_length=256)
-    checksum = models.CharField(max_length=256)
-    handled = models.BooleanField(default=False, help_text="For detecting orphan files")
-    date = models.DateTimeField(auto_now=True)
-
         try:
 
-            new_file = uploadedFile.objects.create( #VOY POR AQUÍ
+            new_file = uploadedFile.objects.create(
                 file_name = file_name,
                 original_file_name = original_file_name,
                 checksum = checksum
             )
-            new_study_procedure.save()
+            new_file.save()
 
-            if not new_study_procedure:
+            if not new_file:
                 return Response({"message": "Error creating new study procedure"},\
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            #TODO: get actual sampleID from vcf file
-            #TODO: add uploader group (uploaderGroup = uploader_group,\)
-            new_study_entry = study.objects.create(\
-                description = description,\
-                sampleId = 'dummySampleID',\
-                history_id = history_id,\
-                uploader = uploader,\
-                studyProcedure = new_study_procedure,\
-                variantsFileRoute = file_path,\
-                )
-            
-            new_study_entry.save()
-
-            if not new_study_entry:
-                return Response({"message": "Error creating new study"},\
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            computation_version = computationVersion.objects.get(id = 1) #N/A
-            computation_status = computationStatus.objects.get(computationStatus = 'PENDING')
-
-            #TODO: check correct computation version. This may need only a string and confirm version some other way
-            new_annotation_entry = annotation.objects.create(\
-                pdComputationId = new_analysis_comp_id,\
-                version = computation_version,\
-                status = computation_status,\
-                study = new_study_entry)
-
-            new_annotation_entry.save()
-
-            if not new_annotation_entry:
-                return Response({"message":"Error creating annotation"},\
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         except Exception as e:
@@ -107,8 +68,8 @@ file_name = models.CharField(max_length=256)
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         data = {
-            "study_id": new_study_entry.id,
+            "file_id": new_file.id,
         }
-        return Response(data, status=new_analysis_response.status_code)
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
