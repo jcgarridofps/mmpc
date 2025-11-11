@@ -102,7 +102,9 @@ app.post("/upload", async (req, res, next) => {
       };
 
       // 4) Notify Django (internal)
-      console.log(`token: ${token}`);
+      //console.log(`token: ${token}`);
+      let response = ''
+
       try {
         response = await fetch(DJANGO_REGISTER, {
           method: "POST",
@@ -117,7 +119,8 @@ app.post("/upload", async (req, res, next) => {
         // (optionally) cleanup file or mark for retry
       }
 
-      res.json({ success: true, file_id: response.file_id });
+      response_data = await response.json();
+      res.json({ success: true, file_id: `${response_data.file_id}` });
     }
     catch (hashErr) {
       console.error("Hash computation failed:", hashErr);
