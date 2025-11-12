@@ -51,10 +51,9 @@ const CreateStudySchema = z.object({
     return file.name.endsWith(".csv");
   }, { message: "Only -csv files are allowed" })
   .optional(),
-  file_vcf: z.custom<File>((file) => {
-    if (!(file instanceof File)) return false;
-    return file.name.endsWith(".vcf");
-  }, { message: "Only -vcf files are allowed" }),
+  file_vcf: z
+    .string({ invalid_type_error: 'Missing file ID.' })
+    .max(128, { message: "File ID too long." }),
   // file_name: z
   //   .string({ invalid_type_error: 'Please insert a description.' })
   //   .max(200, { message: "File name must be at most 200 characters long." }),
@@ -149,7 +148,7 @@ export type StudyState = {
     panel_version?: string[];
     exome_capture?: string[];
     gene_list_file?: string[];
-    file?: string[];
+    file?: string[]; //Only the file ID
   };
   message?: string | null;
   history_id: string;
@@ -254,39 +253,24 @@ export async function createStudy(prevState: StudyState, formData: FormData) {
 
   console.log(">>> FormData entries:");
 for (const [key, value] of formData.entries()) {
-  if (value instanceof File) {
-    console.log(key, "=> FILE:", value.name, value.type, value.size);
-  } else {
-    console.log(key, "=>", value);
-  }
+  console.log(key, "=>", value);
 }
 
   //console.log("Received FormData:", Object.fromEntries(formData.entries()));
-  let vcf_file = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
+  let vcf_file = formData.get("file_vcf"); //The file UUID
   let file_gene = formData.get("gene_list_file"); //This data is loaded as a Blob, not a File instance
 
   console.log("--------------1--------------");
 
-  let filename_vcf = "uploaded.vcf"; // Default name
   let filename_gene = "uploaded.csv"; // Default name
 
   for (const [key, value] of formData.entries()) {
-    if (key === "file_vcf" && value instanceof File) {
-      filename_vcf = value.name; // Extract correct filename
-    }
     if (key === "gene_list_file" && value instanceof File) {
       filename_gene = value.name; // Extract correct filename
     }
   }
 
   console.log("--------------3--------------");
-
-  // Convert Blob to File if needed
-  if (vcf_file instanceof Blob) {
-    vcf_file = new File([vcf_file], filename_vcf, { type: vcf_file.type });
-  }
-
-  console.log("--------------4--------------");
 
   // Convert Blob to File if needed
   if (file_gene instanceof Blob) {
@@ -343,9 +327,8 @@ for (const [key, value] of formData.entries()) {
   newFormData.append("panel_version", panel_version? panel_version : '');
   newFormData.append("exome_capture", exome_capture? exome_capture : '');
   newFormData.append("gene_list_file", gene_list_file? gene_list_file : '');
-  newFormData.append("file", file_vcf, filename_vcf);
+  newFormData.append("sample", file_vcf); //File UUID
   newFormData.append("history_id", prevState.history_id);
-  newFormData.append("file_name", filename_vcf);
   newFormData.append("gene_list_file_name", filename_gene);
 
   const urlSafeDescription = encodeURIComponent(description);

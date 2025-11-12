@@ -134,16 +134,24 @@ class studyProcedure(models.Model):
     exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE, null=True)
     geneList = models.JSONField(default = dict)
 
+class uploadedFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    file_name = models.CharField(max_length=256)
+    original_file_name = models.CharField(max_length=256)
+    checksum = models.CharField(max_length=256)
+    handled = models.BooleanField(default=False, help_text="For detecting orphan files")
+    date = models.DateTimeField(auto_now=True)
+
 class study(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     appId = models.CharField(unique=True, default=generate_study_id, max_length=12, editable=False)
     description = models.CharField(max_length=200)
     studyProcedure = models.ForeignKey(studyProcedure, on_delete=models.CASCADE, null=True)
     date = models.DateField(auto_now=True)
-    variantsFileRoute = models.CharField(max_length=200)
     history = models.ForeignKey(history, on_delete=models.CASCADE, null=True)
     uploader = models.ForeignKey(customUser, null=True, on_delete=models.DO_NOTHING)
     sampleId = models.CharField(max_length=60, null=True)
+    sampleFile = models.ForeignKey(uploadedFile, on_delete=models.DO_NOTHING, null=True)
 
 class annotation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -206,10 +214,3 @@ class drugQuery(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     document_id = models.CharField(max_length=60, default="")
 
-class uploadedFile(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    file_name = models.CharField(max_length=256)
-    original_file_name = models.CharField(max_length=256)
-    checksum = models.CharField(max_length=256)
-    handled = models.BooleanField(default=False, help_text="For detecting orphan files")
-    date = models.DateTimeField(auto_now=True)

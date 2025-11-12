@@ -5,7 +5,7 @@ import os
 import urllib
 from django.conf import settings
 from uuid import UUID
-from mmpc.models import annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
+from mmpc.models import uploadedFile, annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
 from mmpc.serializers import reportSerializer, studySerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
@@ -81,12 +81,10 @@ class Study(APIView):
         panel_version = request.POST.get('panel_version', '')
         procedure_type = request.POST.get('procedure', '')
         sample_kind = request.POST.get('sample_kind', '')
-        vcf_file = request.FILES.get('file')
+        vcf_file = request.POST.get('sample')
         gene_list_file = request.FILES.get('gene_list_file')
         history_id = request.POST.get('history_id', '')
-        file_name = request.POST.get('file_name', '')
         gene_list_file_name = request.POST.get('gene_list_file_name', '')
-        file_name_name = vcf_file.name
 
         if(history_id == ''):
             return Response({"message":"Please identify history ID"},\
@@ -98,27 +96,7 @@ class Study(APIView):
             return Response({"message":"Please add vcf file"},\
                             status=status.HTTP_400_BAD_REQUEST)
         
-        # --- Save VCF file on disk ---
-        file_path = ''
 
-        try:
-            # Ensure target folder exists
-            save_dir = os.path.join(settings.BASE_DIR, "files")
-            os.makedirs(save_dir, exist_ok=True)
-
-            # Use provided file name or fall back to original
-            safe_name = file_name or vcf_file.name
-
-            file_path = os.path.join(save_dir, safe_name)
-
-            # Write file to disk
-            with default_storage.open(file_path, 'wb+') as destination:
-                for chunk in vcf_file.chunks():
-                    destination.write(chunk)
-
-        except Exception as e:
-            return Response({"message": f"Error saving VCF file: {e}"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
         # Ask for a new pandrugs variant analysis
@@ -157,7 +135,7 @@ class Study(APIView):
                     history_id = history_id,\
                     uploader = uploader,\
                     studyProcedure = new_study_procedure,\
-                    variantsFileRoute = file_path,\
+                    sampleFile = vcf_file,\
                     )
                 
                 new_study_entry.save()

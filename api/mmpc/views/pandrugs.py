@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 import requests
 from rest_framework import status
+from django.conf import settings
+from mmpc.models import uploadedFile
 
 class GetAnalysisResult(APIView):
     """
@@ -119,21 +121,40 @@ class NewVariantAnalysis(APIView):
         headers = {"Authorization": os.environ['PANDRUGS_AUTH']}
         pd_url = os.environ['PANDRUGS_BASE_URL'] + 'variantsanalysis/guest'
         param_list = [("name",request_params.get("name"))]
-        vcf_file = request.FILES.get("file", False)
-        file_name = request.data.get("file_name", False)
-
-        if vcf_file is False or file_name is False: #No vcf_file provided
-            return Response(json.loads(json.dumps(\
-                {"message":"No vcf_file or file_name provided"})), status = 400)
+        vcf_file = request.data.get("sample", False)
 
         #vcf_file provided
-        form_data = \
+
+
+
+        base_file_path = settings.UPLOADED_FILES_PATH
+        file = False
+        try:
+            file = uploadedFile.objects.get(id = vcf_file)
+        except:
+            return Response(json.loads(json.dumps(\
+                {"message":"File do not exist"})), status = 400)
+        
+        file_path = settings.UPLOADED_FILES_PATH / file.file_name
+
+        with open(file_path, "rb") as f:
+            form_files = {
+                "vcfFile": (file.file_name, f, "application/octet-stream"),
+            }
+
+            headers = {
+                "Authorization": f"Bearer {os.getenv('THIRD_PARTY_API_TOKEN')}"
+            }
+
+            form_data = \
             {"withPharmcat":"false",\
-            "filename":request.data["file_name"]}
-        form_files = {"vcfFile":(vcf_file.name, vcf_file.file, vcf_file.content_type)}
-        pd_response = requests.post(\
+            "filename":file.file_name}
+
+            pd_response = requests.post(\
             pd_url, headers=headers, params = param_list,\
             data=form_data, files=form_files, timeout=10)
+        
+        
         #endregion
 
         #region response and status

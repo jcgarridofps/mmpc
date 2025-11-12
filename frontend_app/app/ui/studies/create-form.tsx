@@ -106,7 +106,9 @@ export default function Form({
 
   const handleFormAction = async (formData: FormData) => {
     setFileName("");
-    return formAction(formData);
+    let updated_form_data = formData;
+    updated_form_data.append("file_vcf", "06952e51-1764-45c0-a083-485968f4dd74");
+    return formAction(updated_form_data);
   }
 
   return (
@@ -323,7 +325,6 @@ export default function Form({
             <div className="relative w-full">
               <input
                 id="file_name"
-                name="file_name"
                 type="text"
                 placeholder="Upload file"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -336,7 +337,6 @@ export default function Form({
 
               <input
                 type="file"
-                name="file_vcf"
                 accept=".vcf"
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
                 ref={fileInputRef}

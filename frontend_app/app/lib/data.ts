@@ -77,6 +77,9 @@ export async function fetchHistory(query: string) {
    * Fetch history by given history_appId or patient_appId
    */
   // await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  console.log("FETCH HISTORY");
+
   const session = await auth();
 
   try {
