@@ -137,33 +137,40 @@ class NewVariantAnalysis(APIView):
         
         file_path = settings.UPLOADED_FILES_PATH / file.file_name
 
-        with open(file_path, "rb") as f:
-            form_files = {
-                "vcfFile": (file.file_name, f, "application/octet-stream"),
-            }
+        if not file_path.exists():
+            print(f'File path {file_path} : {file_path.Path().resolve()} does not exist')
 
-            headers = {
-                "Authorization": f"Bearer {os.getenv('THIRD_PARTY_API_TOKEN')}"
-            }
+        try:
 
-            form_data = \
-            {"withPharmcat":"false",\
-            "filename":file.file_name}
+            with open(file_path, "rb") as f:
+                form_files = {
+                    "vcfFile": (file.file_name, f, "application/octet-stream"),
+                }
 
-            pd_response = requests.post(\
-            pd_url, headers=headers, params = param_list,\
-            data=form_data, files=form_files, timeout=10)
+                headers = {
+                    "Authorization": os.environ["PANDRUGS_AUTH"]
+                }
+
+                form_data = \
+                {"withPharmcat":"false",\
+                "filename":file.file_name}
+
+                pd_response = requests.post(\
+                pd_url, headers=headers, params = param_list,\
+                data=form_data, files=form_files, timeout=10)
+        except Exception as e:
+            print(f"Exception: {e}")
         
         
         #endregion
 
         #region response and status
         if pd_response.status_code == 201:
-            return Response(json.loads(json.dumps(\
-                {"analysis_id":pd_response.headers["Location"].split('/')[-1]})),\
+            return Response(
+                {"analysis_id":pd_response.headers["Location"].split('/')[-1]},\
                 status = 201)
-        return Response(json.dumps(\
-                {"message": "Unknown error. Please revise your request or try again later."}),\
+        return Response(\
+                {"message": "Unknown error. Please revise your request or try again later."},\
                 status = 500)
         #endregion
 

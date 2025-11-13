@@ -135,7 +135,7 @@ class Study(APIView):
                     history_id = history_id,\
                     uploader = uploader,\
                     studyProcedure = new_study_procedure,\
-                    sampleFile = vcf_file,\
+                    sampleFile_id = vcf_file,\
                     )
                 
                 new_study_entry.save()
