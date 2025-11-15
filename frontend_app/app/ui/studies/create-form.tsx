@@ -13,6 +13,9 @@ import {
 import { Button } from '@/app/ui/button';
 import { createStudy, StudyState } from '@/app/lib/actions';
 import { useActionState, useRef, useState } from 'react';
+import { json } from 'stream/consumers';
+import { startTransition } from "react";
+
 
 export default function Form({
   patient_appId,
@@ -25,6 +28,10 @@ export default function Form({
   const [state, formAction] = useActionState<StudyState, FormData>(createStudy, initialState);
   const [fileName, setFileName] = useState<string>("");
   const [geneFileName, setGeneFileName] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [message, setMessage] = useState("");
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileNameRef = useRef<HTMLInputElement>(null);
@@ -49,10 +56,15 @@ export default function Form({
   //console.log(file?.name);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handle file change");
     if (event.target.files && event.target.files.length > 0) {
       setFileName(event.target.files[0].name);
+      setFile(event.target.files[0]);
+      console.log("file selected");
     } else {// Reset if no file is selected
       setFileName("");
+      setFile(null);
+      console.log("file not selected");
     }
   }
 
@@ -104,11 +116,72 @@ export default function Form({
     }
   }
 
+  async function hashFileSHA256(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+
+    // Convert ArrayBuffer → hex string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+
+    return hashHex;
+  }
+
   const handleFormAction = async (formData: FormData) => {
     setFileName("");
-    let updated_form_data = formData;
-    updated_form_data.append("file_vcf", "152eb8f7-7393-4332-a32b-a6fe4fb9090f");
-    return formAction(updated_form_data);
+
+    // UPLOAD FILE
+    let sha = '';
+
+    if (file) {
+      setIsUploading(true);
+      setMessage("Uploading file...");
+
+      sha = await hashFileSHA256(file);
+    }
+
+
+    let upload_res: Response = new Response();
+    let updated_form_data: FormData = new FormData();
+
+    try {
+      const uploadFormData = new FormData();
+      if (file) uploadFormData.append("file", file);
+      const headers = {
+        "x-file-sha256": sha,
+      }
+
+      upload_res = await fetch("/api/upload-proxy", {
+        method: "POST",
+        body: uploadFormData,
+        headers: headers,
+      });
+
+      let uploaded_file_id = '';
+      if (upload_res.ok) {
+        setMessage("✅ Upload successful!");
+
+        const res_json = await upload_res.json();
+        uploaded_file_id = res_json.file_id;
+      }
+
+      //let updated_form_data = formData;
+      //updated_form_data.append("file_vcf", uploaded_file_id);
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) continue; // do NOT forward files
+        updated_form_data.append(key, value.toString());
+      }
+      updated_form_data.append("file_vcf", uploaded_file_id);
+
+    } catch (err) {
+      setMessage("❌ Upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+
+    startTransition(() => {
+      formAction(updated_form_data);
+    });
   }
 
   return (

@@ -39,20 +39,21 @@ app.post("/upload", async (req, res, next) => {
   }
   const token = auth.slice(7);
 
+  console.log("RECEIVED TOKEN: " + token);
   // 2) Option A: local JWT verify
   try {
     const verify = await fetch(DJANGO_INTERNAL_VERIFY, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     });
-    if (!verify.ok) return res.status(401).json({ error: "Invalid token" });
+    if (!verify.ok) return res.status(401).json({ error: "Invalid token sito" });
     const payload = await verify.json();
     req.user = payload;
     
   } catch (err) {
     // Option B: fallback to asking Django (uncomment if desired)
     console.log("Internal error trying to check access token");
-    return res.status(401).json({ error: "Invalid token" });
+    return res.status(401).json({ error: "Invalid token bro" });
   }
 
   // Expected SHA256 from client (hex string)

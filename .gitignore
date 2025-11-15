@@ -21,6 +21,7 @@
 /api/entrypoint.dev.sh
 /api/api/maintenance_mode_state.txt
 /api/gunicorn.pid
+/api/files
 
 # APP
 /app/.env
