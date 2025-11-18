@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { auth } from '@/auth';
 
 export async function POST(req: Request) {
+  console.log("PROXY: NEW FILE UPLOAD REQUEST");
   // Read HttpOnly token
   const token = (await cookies()).get("authjs.session-token")?.value;
   console.log(token);

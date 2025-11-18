@@ -32,6 +32,7 @@ const upload = multer({
 const app = express();
 
 app.post("/upload", async (req, res, next) => {
+  console.log("NEW UPLOAD REQUEST: " + token);
   // 1) check Authorization header
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith("Bearer ")) {

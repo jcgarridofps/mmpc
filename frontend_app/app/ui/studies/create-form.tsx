@@ -12,7 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createStudy, StudyState } from '@/app/lib/actions';
-import { useActionState, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { json } from 'stream/consumers';
 import { startTransition } from "react";
 
@@ -24,13 +24,24 @@ export default function Form({
   patient_appId: string;
   history_id: string;
 }) {
-  const initialState: StudyState = { success: false, message: null, errors: {}, history_id: history_id };
+  const initialState: StudyState = {
+    success: false,
+    message: null,
+    errors: {},
+    history_id: history_id,
+    sample: "DEFAULT",
+    procedure: "DEFAULT",
+    panel_version: "DEFAULT"
+  };
   const [state, formAction] = useActionState<StudyState, FormData>(createStudy, initialState);
   const [fileName, setFileName] = useState<string>("");
   const [geneFileName, setGeneFileName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const [hydrated, setHydrated] = useState(false);
+  const [reload, setReload] = useState(false);
+  //const [rerender, setRerender] = useState(0);
 
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -49,7 +60,7 @@ export default function Form({
   const [description, setDescription] = useState<string>("");
   const [sampleKind, setSampleKind] = useState("DEFAULT");
   const [procedure, setProcedure] = useState("DEFAULT");
-  const [panelVersion, setPanelVersion] = useState("DEFAULT");
+  const [panelVersion, setPanelVersion] = useState(state.panel_version);
   const [exomeCapture, setExomeCapture] = useState("DEFAULT");
   const [name, setName] = useState("");
 
@@ -128,17 +139,26 @@ export default function Form({
   }
 
   const handleFormAction = async (formData: FormData) => {
-    setFileName("");
+    //setFileName("");
 
     // UPLOAD FILE
     let sha = '';
 
-    if (file) {
-      setIsUploading(true);
-      setMessage("Uploading file...");
+    console.log ("BEFORE RETURN");
 
-      sha = await hashFileSHA256(file);
+    if(!file){
+      setHydrated(false);
+      return;
     }
+
+    setHydrated(true); // ♥ UI now knows it is safe to display values
+
+    console.log ("AFTER RETURN");
+
+    setIsUploading(true);
+    setMessage("Uploading file...");
+
+    sha = await hashFileSHA256(file);
 
 
     let upload_res: Response = new Response();
@@ -160,9 +180,14 @@ export default function Form({
       let uploaded_file_id = '';
       if (upload_res.ok) {
         setMessage("✅ Upload successful!");
+        console.log("UPLOAD SUCCESSFUL");
 
         const res_json = await upload_res.json();
         uploaded_file_id = res_json.file_id;
+      }
+      else{
+        
+        console.log("UPLOAD FAILED " + upload_res.text);
       }
 
       //let updated_form_data = formData;
@@ -184,6 +209,17 @@ export default function Form({
     });
   }
 
+   useEffect(() => {
+    console.log("BABADIBAH-> " + state.procedure + " " + state.panel_version + " " + state.sample)
+    setProcedure(state.procedure);
+    setPanelVersion(state.panel_version);
+    setSampleKind(state.sample);
+
+    setReload(!reload);
+    
+    //setRerender(r => r + 1); // simulates user input
+  }, [state]); 
+
   return (
     <form
       action={handleFormAction}
@@ -193,6 +229,12 @@ export default function Form({
           e.preventDefault();
         }
       }}
+      onSubmit={
+        (e)=> {
+          e.preventDefault();       // stop browser submission
+          handleFormAction(new FormData(e.currentTarget));  // manually call
+        }
+      } 
     >
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
 
@@ -239,6 +281,7 @@ export default function Form({
             <select
               id="sample_kind"
               name="sample_kind"
+              //value={hydrated ? sampleKind : "DEFAULT"}
               value={sampleKind}
               onChange={handleSampleKindChange}
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -340,7 +383,7 @@ export default function Form({
           (
             <div>
               <div className="mb-4">
-                <label htmlFor="file" className="mb-2 block text-sm font-medium">
+                <label htmlFor="gene_list_file_name" className="mb-2 block text-sm font-medium">
                   .csv gene list file
                 </label>
                 <div className="flex items-center space-x-2">
@@ -391,7 +434,7 @@ export default function Form({
 
         {/* VCF file */}
         <div className="mb-4">
-          <label htmlFor="file" className="mb-2 block text-sm font-medium">
+          <label htmlFor="file_name" className="mb-2 block text-sm font-medium">
             .vcf variants file
           </label>
           <div className="flex items-center space-x-2">

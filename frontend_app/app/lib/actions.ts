@@ -33,10 +33,10 @@ const CreateStudySchema = z.object({
     .string({ invalid_type_error: 'Please insert a description.' })
     .max(200, { message: "Description must be at most 200 characters long." }),
   sample_kind: z
-    .string({ invalid_type_error: 'Please select sample kind.' })
+    .string().min(1,'Please select sample kind.' )
     .max(30, { message: "Sample kind must be at most 30 characters long." }),
   procedure: z
-    .string({ invalid_type_error: 'Please select procedure.' })
+    .string().min(1, 'Please select procedure.' )
     .max(30, { message: "Procedure must be at most 30 characters long." }),
   panel_version: z
     .string({ invalid_type_error: 'Please select panel_version.' })
@@ -52,7 +52,7 @@ const CreateStudySchema = z.object({
   }, { message: "Only -csv files are allowed" })
   .optional(),
   file_vcf: z
-    .string({ invalid_type_error: 'Missing file ID.' })
+    .string().min(1, 'Missing file ID.' )
     .max(128, { message: "File ID too long." }),
   // file_name: z
   //   .string({ invalid_type_error: 'Please insert a description.' })
@@ -152,6 +152,9 @@ export type StudyState = {
   };
   message?: string | null;
   history_id: string;
+  sample: string;
+  procedure: string;
+  panel_version: string;
 }
 
 export type State = {
@@ -251,6 +254,8 @@ export async function createAnnotation(prevState: State, formData: FormData) {
 
 export async function createStudy(prevState: StudyState, formData: FormData) {
 
+  console.warn("ACTION CALLED");
+
   console.log(">>> FormData entries:");
 for (const [key, value] of formData.entries()) {
   console.log(key, "=>", value);
@@ -279,6 +284,8 @@ for (const [key, value] of formData.entries()) {
 
   console.log("--------------5--------------");
 
+  
+
   const validatedFields = CreateStudy.safeParse({
     description: formData.get('description'),
     sample_kind: formData.get('sample_kind'),
@@ -291,13 +298,18 @@ for (const [key, value] of formData.entries()) {
 
   console.log("--------------6--------------");
 
+  console.warn("VALIDATION SUCCESS:", validatedFields.success);
+
   if (!validatedFields.success) {
     console.error("Zod validation failed:", validatedFields.error.format());
     return {
       ...prevState,
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Failed to create Study'
+      message: 'Missing fields. Failed to create Study',
+      sample: formData.get("sample_kind") as string ?? prevState.sample,
+      procedure: formData.get("procedure") as string ?? prevState.procedure,
+      panel_version: formData.get("panel_version") as string ?? prevState.panel_version,
     };
   }
 
@@ -353,7 +365,10 @@ for (const [key, value] of formData.entries()) {
     return {
       ...prevState,
       success: false,
-      message: 'Error creating variant analysis'
+      message: 'Error creating variant analysis',
+      sample: prevState.sample,
+      procedure: prevState.procedure,
+      panel_version: prevState.panel_version,
     };
   }
 
@@ -365,13 +380,17 @@ for (const [key, value] of formData.entries()) {
     return {
       ...prevState,
       success: false,
-      message: errorMessage
+      message: errorMessage,
+      sample: prevState.sample,
+      procedure: prevState.procedure,
+      panel_version: prevState.panel_version,
     };
   }
 
   console.log("--------------11--------------");
   
   const study_id: string = (await result.json()).study_id;
+  console.warn("REDIRECTING NOW");
   revalidatePath(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/anotations/`);
   redirect(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/annotations/`);
 
