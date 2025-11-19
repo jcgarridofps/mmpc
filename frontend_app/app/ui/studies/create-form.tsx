@@ -319,64 +319,57 @@ export default function Form({
           </div>
         </div>
 
-        {/**PANEL VERSION (ONLY FOR PANEL) */}
-        {procedure === "PANEL" &&
-          (
-            <div>
-              <label htmlFor="panel_version" className="mb-2 block text-sm font-medium">
-                Panel version
-              </label>
-              <div className="relative mt-2 rounded-md mb-4">
-                <div className="relative">
-                  <select
-                    id="panel_version"
-                    name="panel_version"
-                    value={panelVersion}
-                    onChange={handlePanelVersionChange}
-                    className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    aria-describedby="sample-kind-error"
-                  >
-                    <option value="DEFAULT" disabled>--Select panel version--</option>
-                    <option value="VERSION X1">VERSION X1</option>
-                    <option value="VERSION X2">VERSION X2</option>
-                    <option value="VERSION X3">VERSION X3</option>
-                  </select>
-                  {/* <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
-                </div>
-              </div>
-            </div>
-          )
-        }
+        {/**PHYSICAL CAPTURE */}
+        <label htmlFor="procedure" className="mb-2 block text-sm font-medium">
+          Physical capture
+        </label>
+        <div className="relative mt-2 rounded-md mb-4">
+          <div className="relative">
+            <select
+              id="procedure"
+              name="procedure"
+              value={procedure}
+              onChange={handleProcedureChange}
+              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              aria-describedby="sample-kind-error"
+            >
+              <option value="DEFAULT" disabled>--Select procedure--</option>
+              <option value="KAPA_HYPER_EXOME_ROCHE">Kapa Hyper Exome Roche</option>
+              <option value="XGEN_EXOME_HYB_PANEL_V2">xGen Exome Hyb Panel v2</option>
+              <option value="SOPHIA_WHOLE_EXOME_SOLUTION">Sophia Whole Exome Solution</option>
+            </select>
+            <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+        </div>
+
+        {/**VIRTUAL CAPTURE */}
+        <label htmlFor="procedure" className="mb-2 block text-sm font-medium">
+          Virtual capture
+        </label>
+        <div className="relative mt-2 rounded-md mb-4">
+          <div className="relative">
+            <select
+              id="procedure"
+              name="procedure"
+              value={procedure}
+              onChange={handleProcedureChange}
+              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              aria-describedby="sample-kind-error"
+            >
+              <option value="DEFAULT" disabled>--Select procedure--</option>
+              <option value="GENOME">GENOME</option>
+              <option value="WHOLE_EXOME">WHOLE EXOME</option>
+              <option value="CLINICAL_EXOME">CLINICAL EXOME</option>
+              <option value="PANEL">PANEL</option>
+            </select>
+            <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+        </div>
+
+        
 
 
-        {/**EXOME CAPTURE (ONLY FOR WHOLE EXOME AND CLINICAL EXOME) */}
-        {(procedure === "WHOLE_EXOME" || procedure === "CLINICAL_EXOME") &&
-          (
-            <div>
-              <label htmlFor="exome_capture" className="mb-2 block text-sm font-medium">
-                Exome capture
-              </label>
-              <div className="relative mt-2 rounded-md mb-4">
-                <div className="relative">
-                  <select
-                    id="exome_capture"
-                    name="exome_capture"
-                    value={exomeCapture}
-                    onChange={handleExomeCaptureChange}
-                    className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    aria-describedby="sample-kind-error"
-                  >
-                    <option value="DEFAULT" disabled>--Select procedure--</option>
-                    <option value="OPT1">OPT1</option>
-                    <option value="OPT2">OPT2</option>
-                    <option value="OPT3">OPT3</option>
-                  </select>
-                  {/* <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
-                </div>
-              </div>
-            </div>
-          )
-        }
+        
 
         {/* CSV GENE LIST FILE (ONLY FOR CLINICAL EXOME AND PANEL) */}
         {(procedure === "CLINICAL_EXOME" || procedure === "PANEL") &&
