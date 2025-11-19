@@ -284,9 +284,7 @@ for (const [key, value] of formData.entries()) {
 
   console.log("--------------5--------------");
 
-  
-
-  const validatedFields = CreateStudy.safeParse({
+  const data2validate = {
     description: formData.get('description'),
     sample_kind: formData.get('sample_kind'),
     procedure: formData.get('procedure'),
@@ -294,7 +292,11 @@ for (const [key, value] of formData.entries()) {
     exome_capture: formData.get('exome_capture') ?? undefined,
     gene_list_file: file_gene ?? undefined,
     file_vcf: vcf_file,
-  });
+  }
+
+  console.log(JSON.stringify(data2validate));
+
+  const validatedFields = CreateStudy.safeParse(data2validate);
 
   console.log("--------------6--------------");
 
@@ -361,7 +363,7 @@ for (const [key, value] of formData.entries()) {
         body: newFormData
       });
   } catch (error) {
-    console.error('Create study error:', error);
+    //console.error('Create study error:', error);
     return {
       ...prevState,
       success: false,

@@ -32,7 +32,7 @@ const upload = multer({
 const app = express();
 
 app.post("/upload", async (req, res, next) => {
-  console.log("NEW UPLOAD REQUEST: " + token);
+  console.log("NEW UPLOAD REQUEST: ");
   // 1) check Authorization header
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith("Bearer ")) {
@@ -116,15 +116,19 @@ app.post("/upload", async (req, res, next) => {
           },
           body: JSON.stringify(fileRecord),
         });
+        console.log("FILE RECORD: " + JSON.stringify(fileRecord));
       } catch (notifyErr) {
         console.error("Failed to notify Django:", notifyErr);
         // (optionally) cleanup file or mark for retry
       }
 
       response_data = await response.json();
-      res.json({ success: true, file_id: `${response_data.file_id}` });
+      //res.json({ success: true, file_id: `${response_data.file_id}` });
+      console.log("NEW FILE REGISTERED");
+      return res.status(201).json({ success: true, file_id: `${response_data.file_id}` })
     }
     catch (hashErr) {
+      console.log("NEW FILE REGISTRATION ERROR");
       console.error("Hash computation failed:", hashErr);
       return res.status(500).json({ error: "Server error computing hash" });
     }

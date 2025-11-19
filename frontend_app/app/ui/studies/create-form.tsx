@@ -186,8 +186,8 @@ export default function Form({
         uploaded_file_id = res_json.file_id;
       }
       else{
-        
-        console.log("UPLOAD FAILED " + upload_res.text);
+        const text = await upload_res.text();
+        console.log("UPLOAD FAILED " + text);
       }
 
       //let updated_form_data = formData;

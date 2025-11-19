@@ -137,8 +137,8 @@ class NewVariantAnalysis(APIView):
         
         file_path = settings.UPLOADED_FILES_PATH / file.file_name
 
-        if not file_path.exists():
-            print(f'File path {file_path} : {file_path.Path().resolve()} does not exist')
+        #if not file_path.exists():
+        #    print(f'File path {file_path} : {file_path.Path().resolve()} does not exist')
 
         try:
 
