@@ -99,7 +99,19 @@ class computationStatus(models.Model):
     computationStatus = models.CharField(max_length=20, unique=True)
 
 class studyProcedureType(models.Model):
-    type = models.CharField(max_length=25, unique=True)
+    type = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True)
+
+class studyPhysicalCapture(models.Model):
+    type = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True)
+    procedure = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
+
+class studyVirtualCapture(models.Model):
+    type = models.CharField(max_length=64, unique=True)
+    name = models.CharField(max_length=64, unique=True)
+    physicalCapture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE)
+    geneList = models.JSONField(default=dict)
 
 class studySample(models.Model):
     sample = models.CharField(max_length=20, unique=True)

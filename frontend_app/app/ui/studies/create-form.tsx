@@ -366,65 +366,6 @@ export default function Form({
           </div>
         </div>
 
-        
-
-
-        
-
-        {/* CSV GENE LIST FILE (ONLY FOR CLINICAL EXOME AND PANEL) */}
-        {(procedure === "CLINICAL_EXOME" || procedure === "PANEL") &&
-          (
-            <div>
-              <div className="mb-4">
-                <label htmlFor="gene_list_file_name" className="mb-2 block text-sm font-medium">
-                  .csv gene list file
-                </label>
-                <div className="flex items-center space-x-2">
-                  <div className="relative w-full">
-                    <input
-                      id="gene_list_file_name"
-                      name="gene_list_file_name"
-                      type="text"
-                      placeholder="Upload file"
-                      className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                      aria-describedby="file-error"
-                      readOnly
-                      ref={geneFileNameRef}
-                      value={geneFileName}
-
-                    />
-
-                    <input
-                      type="file"
-                      name="gene_list_file"
-                      accept=".csv"
-                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
-                      ref={geneFileInputRef}
-                      onChange={handleGeneFileChange}
-                    />
-
-                    <DocumentArrowUpIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                  </div>
-                  <div className="relative">
-                    <button
-                      type="button"
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-                      onClick={handleGENEFileButton}
-                    >
-                      <FolderIcon className="h-5" />
-                      <span className="mr-2">
-                      </span> Browse...
-                    </button>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          )
-        }
-
-
         {/* VCF file */}
         <div className="mb-4">
           <label htmlFor="file_name" className="mb-2 block text-sm font-medium">

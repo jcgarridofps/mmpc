@@ -1,0 +1,65 @@
+[
+  {
+    "model": "mmpc.studyPhysicalCapture",
+    "pk": 1,
+    "fields": {
+      "type": "GENOME",
+      "name": "Genome",
+      "procedure": 1
+    }
+  },
+  {
+    "model": "mmpc.studyPhysicalCapture",
+    "pk": 2,
+    "fields": {
+      "type": "KAPA_HYPER_EXOME_ROCHE",
+      "name": "Kapa Hyper Exome Roche",
+      "procedure": 2
+    }
+  },
+  {
+    "model": "mmpc.studyPhysicalCapture",
+    "pk": 3,
+    "fields": {
+      "type": "XGEN_EXOME_HYB_PANEL_V2",
+      "name": "xGen Exome Hyb Panel v2",
+      "procedure": 2
+    }
+  },
+  {
+    "model": "mmpc.studyPhysicalCapture",
+    "pk": 4,
+    "fields": {
+      "type": "SOPHIA_WHOLE_EXOME_SOLUTION",
+      "name": "Sophia Whole Exome Solution",
+      "procedure": 2
+    }
+  },
+  {
+    "model": "mmpc.studyPhysicalCapture",
+    "pk": 5,
+    "fields": {
+      "type": "SOPHIA_CLINICAL_EXOME_SOLUTION_V2",
+      "name": "Sophia Clinical Exome Solution v2",
+      "procedure": 3
+    }
+  },
+  {
+    "model": "mmpc.studyPhysicalCapture",
+    "pk": 6,
+    "fields": {
+      "type": "ROCHE_KAPA_HYPERCHOICE_NEUM_V3_PANEL",
+      "name": "Roche Kapa HyperChoice Neum V3 Panel",
+      "procedure": 4
+    }
+  },
+  {
+    "model": "mmpc.studyPhysicalCapture",
+    "pk": 7,
+    "fields": {
+      "type": "ACTION_ONCOKITDX_IMEGEN_AUTOMATIC",
+      "name": "Action OncoKitDx Imegen Automatic",
+      "procedure": 4
+    }
+  }
+]
