@@ -110,7 +110,7 @@ class studyPhysicalCapture(models.Model):
 class studyVirtualCapture(models.Model):
     type = models.CharField(max_length=64, unique=True)
     name = models.CharField(max_length=64, unique=True)
-    physicalCapture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE)
+    physical_capture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE)
     geneList = models.JSONField(default=dict)
 
 class studySample(models.Model):
@@ -140,11 +140,11 @@ class history(models.Model):
 
 class studyProcedure(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
     sampleKind = models.ForeignKey(studySample, on_delete=models.CASCADE, null=True)
-    panelVersion = models.ForeignKey(studyPanelVersion, on_delete=models.CASCADE, null=True),
-    exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE, null=True)
-    geneList = models.JSONField(default = dict)
+    procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
+    physicalCapture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE)
+    virtualCapture = models.ForeignKey(studyVirtualCapture, on_delete=models.CASCADE)
+    
 
 class uploadedFile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

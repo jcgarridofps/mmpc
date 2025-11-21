@@ -5,8 +5,8 @@ import os
 import urllib
 from django.conf import settings
 from uuid import UUID
-from mmpc.models import uploadedFile, annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
-from mmpc.serializers import reportSerializer, studySerializer
+from mmpc.models import uploadedFile, annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, studyPhysicalCapture, studyVirtualCapture, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
+from mmpc.serializers import reportSerializer, studySerializer, studyProcedureTypeSerializer, studyPhysicalCaptureSerializer, studyProcedureVirtualCaptureSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
 from mmpc.views.analysis import CreateAnalysis
@@ -20,6 +20,10 @@ from django.db import models
 import json
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+
+def getStudyProcedureTypeEntries():return studyProcedureType.objects.all()
+def getStudyPhysicalCaptureEntries():return studyPhysicalCapture.objects.all()
+def getStudyVirtualCaptureEntries():return studyVirtualCapture.objects.all()
     
 class Study(APIView):
     """
@@ -252,3 +256,32 @@ class StudiesCount(APIView):
         r_data = {'entry_count':db_entry_count}
         return Response(data = r_data, status = status.HTTP_200_OK)
         #endregion
+
+class StudyProcedureDictionary(APIView):
+    """
+    Get procedure type, physical capture and virtual capture entries
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve data from DDBB
+        """
+        #Fetch DDBB entries
+        
+        try:
+            procedure_type_entries = getStudyProcedureTypeEntries()
+            procedure_physical_capture_entries = getStudyPhysicalCaptureEntries()
+            procedure_virtual_capture_entries = getStudyVirtualCaptureEntries()
+        except:
+            return Response(data = r_data, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        #format response object
+        response = {
+            "procedure_type_entries": studyProcedureTypeSerializer(procedure_type_entries, many=True),
+            "procedure_physical_capture_entries": studyPhysicalCaptureSerializer(procedure_physical_capture_entries, many=True),
+            "procedure_virtual_capture_entries": studyProcedureVirtualCaptureSerializer(procedure_virtual_capture_entries, many=True)
+        }
+
+        return Response(data = response, status = status.HTTP_200_OK)
+        

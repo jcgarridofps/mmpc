@@ -8,3 +8,27 @@ export type User = {
   email: string;
   password: string;
 };
+
+export type ProcedureType = {
+  type: string;
+  name: string;
+};
+
+export type ProcedurePhysicalCapture = {
+  type: string;
+  name: string;
+  procedure: ProcedureType;
+}
+
+export type ProcedureVirtualCapture = {
+  type: string;
+  name: string;
+  physical_capture: ProcedurePhysicalCapture;
+  geneList: string[];
+}
+
+export type StudyDataDictionary ={
+  procedure_type_entries: ProcedureType[],
+  procedure_physical_capture_entries: ProcedurePhysicalCapture[],
+  procedure_virtual_capture_entries: ProcedureVirtualCapture[]
+}
