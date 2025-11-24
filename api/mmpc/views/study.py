@@ -274,7 +274,7 @@ class StudyProcedureDictionary(APIView):
             procedure_physical_capture_entries = getStudyPhysicalCaptureEntries()
             procedure_virtual_capture_entries = getStudyVirtualCaptureEntries()
         except:
-            return Response(data = r_data, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(data = {"message":"Internal server error"}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         #format response object
         response = {

@@ -15,6 +15,8 @@ import { createStudy, StudyState } from '@/app/lib/actions';
 import { useActionState, useEffect, useRef, useState } from 'react';
 import { json } from 'stream/consumers';
 import { startTransition } from "react";
+import { fetchStudyProcedureDictionary } from '@/app/lib/data';
+import { StudyDataDictionary } from '@/app/lib/definitions';
 
 
 export default function Form({
@@ -63,6 +65,15 @@ export default function Form({
   const [panelVersion, setPanelVersion] = useState(state.panel_version);
   const [exomeCapture, setExomeCapture] = useState("DEFAULT");
   const [name, setName] = useState("");
+  const [formDictionary, setFormDictionary] = useState<StudyDataDictionary>();
+
+  useEffect(() => {
+    (async () => {
+      const dictionary = await fetchStudyProcedureDictionary();
+      setFormDictionary(dictionary);
+    })();
+    console.log(JSON.stringify(formDictionary));
+  }, []);
 
   //console.log(file?.name);
 
@@ -144,16 +155,16 @@ export default function Form({
     // UPLOAD FILE
     let sha = '';
 
-    console.log ("BEFORE RETURN");
+    console.log("BEFORE RETURN");
 
-    if(!file){
+    if (!file) {
       setHydrated(false);
       return;
     }
 
     setHydrated(true); // ♥ UI now knows it is safe to display values
 
-    console.log ("AFTER RETURN");
+    console.log("AFTER RETURN");
 
     setIsUploading(true);
     setMessage("Uploading file...");
@@ -185,7 +196,7 @@ export default function Form({
         const res_json = await upload_res.json();
         uploaded_file_id = res_json.file_id;
       }
-      else{
+      else {
         const text = await upload_res.text();
         console.log("UPLOAD FAILED " + text);
       }
@@ -209,16 +220,16 @@ export default function Form({
     });
   }
 
-   useEffect(() => {
+  useEffect(() => {
     console.log("BABADIBAH-> " + state.procedure + " " + state.panel_version + " " + state.sample)
     setProcedure(state.procedure);
     setPanelVersion(state.panel_version);
     setSampleKind(state.sample);
 
     setReload(!reload);
-    
+
     //setRerender(r => r + 1); // simulates user input
-  }, [state]); 
+  }, [state]);
 
   return (
     <form
@@ -230,11 +241,11 @@ export default function Form({
         }
       }}
       onSubmit={
-        (e)=> {
+        (e) => {
           e.preventDefault();       // stop browser submission
           handleFormAction(new FormData(e.currentTarget));  // manually call
         }
-      } 
+      }
     >
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
 

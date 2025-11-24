@@ -8,6 +8,7 @@ import { auth } from '@/auth';
 import { signOut } from '@/auth';
 import { Result } from 'postcss';
 import { json } from 'stream/consumers';
+import { StudyDataDictionary } from './definitions';
 
 const CreateAnnotationSchema = z.object({
   id: z.string(),
@@ -250,32 +251,6 @@ export async function createAnnotation(prevState: State, formData: FormData) {
 
   //-------------------------------------------------------------------------------------------
 
-}
-
-export async function getStudyProcedureDictionary() {
-  console.log("GET_STUDY_PROCEDURE_DICTIONARY");
-
-  const session = await auth();
-
-  let data_dictionary = {}
-  try {
-    const result = await fetch(process.env.API_BASE_URL +
-      "/api/study/procedure/dictionary/",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${session?.accessToken}`
-        }
-      });
-    
-      data_dictionary = await result.json();
-
-  } catch (error) {
-    //console.error('Get study procedure dictionary error:', error);
-    return data_dictionary;
-  }
-
-  console.log("STUDY_PROCEDURE_DICTIONARY: " + data_dictionary);
 }
 
 
