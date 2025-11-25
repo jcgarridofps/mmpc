@@ -99,18 +99,18 @@ class computationStatus(models.Model):
     computationStatus = models.CharField(max_length=20, unique=True)
 
 class studyProcedureType(models.Model):
-    type = models.CharField(max_length=64, unique=True)
-    name = models.CharField(max_length=64, unique=True)
+    type = models.CharField(max_length=64, unique=True, null=True)
+    name = models.CharField(max_length=64, unique=True, null=True)
 
 class studyPhysicalCapture(models.Model):
-    type = models.CharField(max_length=64, unique=True)
-    name = models.CharField(max_length=64, unique=True)
-    procedure = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
+    type = models.CharField(max_length=64, unique=True, null=True)
+    name = models.CharField(max_length=64, unique=True, null=True)
+    procedure = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE, null=True)
 
 class studyVirtualCapture(models.Model):
-    type = models.CharField(max_length=64, unique=True)
-    name = models.CharField(max_length=64, unique=True)
-    physical_capture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE)
+    type = models.CharField(max_length=64, unique=True, null=True)
+    name = models.CharField(max_length=64, unique=True, null=True)
+    physical_capture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE, null=True)
     geneList = models.JSONField(default=dict)
 
 class studySample(models.Model):
@@ -141,9 +141,9 @@ class history(models.Model):
 class studyProcedure(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     sampleKind = models.ForeignKey(studySample, on_delete=models.CASCADE, null=True)
-    procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
-    physicalCapture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE)
-    virtualCapture = models.ForeignKey(studyVirtualCapture, on_delete=models.CASCADE)
+    procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE, null=True)
+    physicalCapture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE, null=True)
+    virtualCapture = models.ForeignKey(studyVirtualCapture, on_delete=models.CASCADE, null=True)
     
 
 class uploadedFile(models.Model):

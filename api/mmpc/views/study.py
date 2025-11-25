@@ -278,10 +278,12 @@ class StudyProcedureDictionary(APIView):
         
         #format response object
         response = {
-            "procedure_type_entries": studyProcedureTypeSerializer(procedure_type_entries, many=True),
-            "procedure_physical_capture_entries": studyPhysicalCaptureSerializer(procedure_physical_capture_entries, many=True),
-            "procedure_virtual_capture_entries": studyProcedureVirtualCaptureSerializer(procedure_virtual_capture_entries, many=True)
+            "procedure_type_entries": studyProcedureTypeSerializer(procedure_type_entries, many=True).data,
+            "procedure_physical_capture_entries": studyPhysicalCaptureSerializer(procedure_physical_capture_entries, many=True).data,
+            "procedure_virtual_capture_entries": studyProcedureVirtualCaptureSerializer(procedure_virtual_capture_entries, many=True).data
         }
+
+        print(response)
 
         return Response(data = response, status = status.HTTP_200_OK)
         

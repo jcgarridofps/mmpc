@@ -20,27 +20,3 @@ export type Analysis = {
   status: string;
   version: string;
 };
-
-export type StudyProcedureType = {
-  type: string;
-  name: string;
-}
-
-export type StudyPhysicalCapture = {
-  type: string;
-  name: string;
-  procedure: StudyProcedureType;
-}
-
-export type StudyVirtualCapture = {
-  type: string;
-  name: string;
-  physical_capture: StudyPhysicalCapture;
-  geneList: string;
-}
-
-export type StudyProcedureDictionary = {
-  studyProcedureType: StudyProcedureType;
-  studyPhysicalCapture: StudyPhysicalCapture;
-  studyVirtualCapture: StudyVirtualCapture;
-}

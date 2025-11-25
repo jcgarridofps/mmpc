@@ -16,7 +16,7 @@ import { useActionState, useEffect, useRef, useState } from 'react';
 import { json } from 'stream/consumers';
 import { startTransition } from "react";
 import { fetchStudyProcedureDictionary } from '@/app/lib/data';
-import { StudyDataDictionary } from '@/app/lib/definitions';
+import { StudyProcedureDictionary } from '@/app/lib/definitions';
 
 
 export default function Form({
@@ -61,19 +61,27 @@ export default function Form({
 
   const [description, setDescription] = useState<string>("");
   const [sampleKind, setSampleKind] = useState("DEFAULT");
-  const [procedure, setProcedure] = useState("DEFAULT");
+  const [procedure, setProcedure] = useState('0');
+  const [physicalCapture, setPhysicalCapture] = useState('0');
+  const [virtualCapture, setVirtualCapture] = useState('0');
   const [panelVersion, setPanelVersion] = useState(state.panel_version);
   const [exomeCapture, setExomeCapture] = useState("DEFAULT");
   const [name, setName] = useState("");
-  const [formDictionary, setFormDictionary] = useState<StudyDataDictionary>();
+  const [formDictionary, setFormDictionary] = useState<StudyProcedureDictionary>();
 
   useEffect(() => {
     (async () => {
-      const dictionary = await fetchStudyProcedureDictionary();
+      const dictionary: StudyProcedureDictionary = await fetchStudyProcedureDictionary() as StudyProcedureDictionary;
       setFormDictionary(dictionary);
+      console.log("DICTIONARY: " + JSON.stringify(dictionary));
     })();
-    console.log(JSON.stringify(formDictionary));
   }, []);
+
+    useEffect(() => {
+    (async () => {
+      console.log("DICTIONARY: " + JSON.stringify(formDictionary));
+    })();
+  }, [formDictionary]);
 
   //console.log(file?.name);
 
@@ -135,6 +143,18 @@ export default function Form({
   const handleProcedureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value) {
       setProcedure(event.target.value);
+    }
+  }
+
+  const handlePhysicalCaptureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (event.target.value) {
+      setPhysicalCapture(event.target.value);
+    }
+  }
+
+  const handleVirtualCaptureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (event.target.value) {
+      setVirtualCapture(event.target.value);
     }
   }
 
@@ -320,58 +340,58 @@ export default function Form({
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="sample-kind-error"
             >
-              <option value="DEFAULT" disabled>--Select procedure--</option>
-              <option value="GENOME">GENOME</option>
-              <option value="WHOLE_EXOME">WHOLE EXOME</option>
-              <option value="CLINICAL_EXOME">CLINICAL EXOME</option>
-              <option value="PANEL">PANEL</option>
+              <option value="0" disabled>--Select procedure--</option>
+              {formDictionary?.procedure_type_entries?.map(element => {
+                return <option key={element.id} value={element.id}>{element.name}</option>;
+              })}
             </select>
             <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
 
         {/**PHYSICAL CAPTURE */}
-        <label htmlFor="procedure" className="mb-2 block text-sm font-medium">
+        <label htmlFor="physical_capture" className="mb-2 block text-sm font-medium">
           Physical capture
         </label>
         <div className="relative mt-2 rounded-md mb-4">
           <div className="relative">
             <select
-              id="procedure"
-              name="procedure"
-              value={procedure}
-              onChange={handleProcedureChange}
+              id="physical_capture"
+              name="physical_capture"
+              value={physicalCapture}
+              onChange={handlePhysicalCaptureChange}
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="sample-kind-error"
             >
               <option value="DEFAULT" disabled>--Select procedure--</option>
-              <option value="KAPA_HYPER_EXOME_ROCHE">Kapa Hyper Exome Roche</option>
-              <option value="XGEN_EXOME_HYB_PANEL_V2">xGen Exome Hyb Panel v2</option>
-              <option value="SOPHIA_WHOLE_EXOME_SOLUTION">Sophia Whole Exome Solution</option>
+              {formDictionary?.procedure_physical_capture_entries?.map(element => {
+                if (element.procedure == procedure)
+                return <option key={element.id} value={element.id}>{element.name}</option>;
+              })}
             </select>
             <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
 
         {/**VIRTUAL CAPTURE */}
-        <label htmlFor="procedure" className="mb-2 block text-sm font-medium">
+        <label htmlFor="virtual_capture" className="mb-2 block text-sm font-medium">
           Virtual capture
         </label>
         <div className="relative mt-2 rounded-md mb-4">
           <div className="relative">
             <select
-              id="procedure"
-              name="procedure"
-              value={procedure}
-              onChange={handleProcedureChange}
+              id="virtual_capture"
+              name="virtual_capture"
+              value={virtualCapture}
+              onChange={handleVirtualCaptureChange}
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="sample-kind-error"
             >
               <option value="DEFAULT" disabled>--Select procedure--</option>
-              <option value="GENOME">GENOME</option>
-              <option value="WHOLE_EXOME">WHOLE EXOME</option>
-              <option value="CLINICAL_EXOME">CLINICAL EXOME</option>
-              <option value="PANEL">PANEL</option>
+              {formDictionary?.procedure_virtual_capture_entries?.map(element => {
+                if (element.physical_capture == physicalCapture)
+                return <option key={element.id} value={element.type}>{element.name}</option>;
+              })}
             </select>
             <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>

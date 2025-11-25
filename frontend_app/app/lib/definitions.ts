@@ -9,26 +9,29 @@ export type User = {
   password: string;
 };
 
-export type ProcedureType = {
+export type StudyProcedureType = {
+  id: number;
   type: string;
   name: string;
-};
-
-export type ProcedurePhysicalCapture = {
-  type: string;
-  name: string;
-  procedure: ProcedureType;
 }
 
-export type ProcedureVirtualCapture = {
+export type StudyPhysicalCapture = {
+  id: number;
   type: string;
   name: string;
-  physical_capture: ProcedurePhysicalCapture;
-  geneList: string[];
+  procedure: string; // id
 }
 
-export type StudyDataDictionary ={
-  procedure_type_entries: ProcedureType[],
-  procedure_physical_capture_entries: ProcedurePhysicalCapture[],
-  procedure_virtual_capture_entries: ProcedureVirtualCapture[]
+export type StudyVirtualCapture = {
+  id: number;
+  type: string;
+  name: string;
+  physical_capture: string; // id
+  geneList: string;
+}
+
+export type StudyProcedureDictionary = {
+  procedure_type_entries: StudyProcedureType[];
+  procedure_physical_capture_entries: StudyPhysicalCapture[];
+  procedure_virtual_capture_entries: StudyVirtualCapture[];
 }

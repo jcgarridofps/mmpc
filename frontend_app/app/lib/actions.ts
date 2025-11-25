@@ -8,7 +8,7 @@ import { auth } from '@/auth';
 import { signOut } from '@/auth';
 import { Result } from 'postcss';
 import { json } from 'stream/consumers';
-import { StudyDataDictionary } from './definitions';
+import { StudyProcedureDictionary } from './definitions';
 
 const CreateAnnotationSchema = z.object({
   id: z.string(),

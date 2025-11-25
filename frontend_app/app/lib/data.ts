@@ -2,7 +2,7 @@
 
 import postgres from 'postgres';
 import { auth } from '@/auth';
-import { StudyDataDictionary } from './definitions';
+import { StudyProcedureDictionary } from './definitions';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -722,7 +722,7 @@ export async function fetchStudyProcedureDictionary() {
 
   const session = await auth();
 
-  let data_dictionary: StudyDataDictionary = {} as StudyDataDictionary;
+  let data_dictionary: StudyProcedureDictionary = {} as StudyProcedureDictionary;
   try {
     const result = await fetch(process.env.API_BASE_URL +
       "/api/study/procedure/dictionary/",
@@ -736,9 +736,9 @@ export async function fetchStudyProcedureDictionary() {
       data_dictionary = await result.json();
 
   } catch (error) {
-    //console.error('Get study procedure dictionary error:', error);
-    return data_dictionary;
+    console.error('Get study procedure dictionary error:', error);
   }
 
-  console.log("STUDY_PROCEDURE_DICTIONARY: " + data_dictionary);
+  console.log("STUDY_PROCEDURE_DICTIONARY: " + JSON.stringify(data_dictionary));
+  return data_dictionary;
 }
