@@ -80,15 +80,12 @@ class Study(APIView):
         #CHECK ALL NEEDED INFO IS PROVIDED
 
         description = request.POST.get('description', '')
-        gene_list = request.POST.get('gene_list_file', '')
-        exome_capture = request.POST.get('exome_capture', '')
-        panel_version = request.POST.get('panel_version', '')
         procedure_type = request.POST.get('procedure', '')
+        physical_capture = request.POST.get('physical_capture', '')
+        virtual_capture = request.POST.get('virtual_capture', '')
         sample_kind = request.POST.get('sample_kind', '')
         vcf_file = request.POST.get('sample')
-        gene_list_file = request.FILES.get('gene_list_file')
         history_id = request.POST.get('history_id', '')
-        gene_list_file_name = request.POST.get('gene_list_file_name', '')
 
         if(history_id == ''):
             return Response({"message":"Please identify history ID"},\
@@ -119,11 +116,13 @@ class Study(APIView):
 
                 # exome_capture = studyExomeCapture.objects.get()
                 # panel_version
-                procedure_type = studyProcedureType.objects.get(type = procedure_type)
+                #procedure_type = studyProcedureType.objects.get(type = procedure_type)
                 #sample_kind = studySample.objects.get()
 
                 new_study_procedure = studyProcedure.objects.create(
-                    procedureType = procedure_type
+                    procedureType_id = procedure_type,
+                    physicalCapture_id = physical_capture,
+                    virtualCapture_id = virtual_capture
                 )
                 new_study_procedure.save()
 

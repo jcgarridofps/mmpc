@@ -2,7 +2,7 @@ import Form from '@/app/ui/studies/create-form';
 import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Metadata } from 'next';
-import { fetchPatientByHistoryAppId } from '@/app/lib/data';
+import { fetchPatientByHistoryId } from '@/app/lib/data';
 
 export const metadata: Metadata = {
   title: 'Create study',
@@ -12,16 +12,16 @@ export default async function Page(props: {params: Promise<{ history_id: string 
 ) {
 
   const params = await props.params;
-  const patient_appId = await fetchPatientByHistoryAppId(params.history_id);
+  const patient_appId = await fetchPatientByHistoryId(params.history_id);
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: `Patient: ${patient_appId}`, href: '/dashboard/' },
+          { label: `Patient: ${patient_appId}`, href: `/dashboard/histories/${params.history_id}/studies` },
           {
             label: 'New study',
-            href: '/dashboard2/',
+            href: `/dashboard/histories/${params.history_id}/studies/create`,
             active: true,
           },
         ]}
@@ -32,7 +32,7 @@ export default async function Page(props: {params: Promise<{ history_id: string 
         <p className="text-left w-full ml-4">Start a new study for the patient.</p>
       </div>
 
-      <Form patient_appId={patient_appId} history_id={params.history_id}/>
+      <Form patient_appId={patient_appId} history_id={params.history_id }/>
     </main>
   );
 }

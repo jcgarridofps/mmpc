@@ -32,8 +32,9 @@ export default function Form({
     errors: {},
     history_id: history_id,
     sample: "DEFAULT",
-    procedure: "DEFAULT",
-    panel_version: "DEFAULT"
+    procedure: "0",
+    physical_capture: "0",
+    virtual_capture: "0"
   };
   const [state, formAction] = useActionState<StudyState, FormData>(createStudy, initialState);
   const [fileName, setFileName] = useState<string>("");
@@ -64,8 +65,6 @@ export default function Form({
   const [procedure, setProcedure] = useState('0');
   const [physicalCapture, setPhysicalCapture] = useState('0');
   const [virtualCapture, setVirtualCapture] = useState('0');
-  const [panelVersion, setPanelVersion] = useState(state.panel_version);
-  const [exomeCapture, setExomeCapture] = useState("DEFAULT");
   const [name, setName] = useState("");
   const [formDictionary, setFormDictionary] = useState<StudyProcedureDictionary>();
 
@@ -98,14 +97,6 @@ export default function Form({
     }
   }
 
-  const handleGeneFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setGeneFileName(event.target.files[0].name);
-    } else {// Reset if no file is selected
-      setGeneFileName("");
-    }
-  }
-
   const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (event.target.value && event.target.value.length > 0) {
       setDescription(event.target.value);
@@ -128,27 +119,18 @@ export default function Form({
     }
   }
 
-  const handlePanelVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value) {
-      setPanelVersion(event.target.value);
-    }
-  }
-
-  const handleExomeCaptureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value) {
-      setExomeCapture(event.target.value);
-    }
-  }
-
   const handleProcedureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value) {
       setProcedure(event.target.value);
+      setPhysicalCapture("0");
+      setVirtualCapture("0");
     }
   }
 
   const handlePhysicalCaptureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value) {
       setPhysicalCapture(event.target.value);
+      setVirtualCapture("0");
     }
   }
 
@@ -182,7 +164,7 @@ export default function Form({
       return;
     }
 
-    setHydrated(true); // ♥ UI now knows it is safe to display values
+    setHydrated(true); // UI now knows it is safe to display values
 
     console.log("AFTER RETURN");
 
@@ -241,11 +223,10 @@ export default function Form({
   }
 
   useEffect(() => {
-    console.log("BABADIBAH-> " + state.procedure + " " + state.panel_version + " " + state.sample)
     setProcedure(state.procedure);
-    setPanelVersion(state.panel_version);
     setSampleKind(state.sample);
-
+    setPhysicalCapture(state.physical_capture);
+    setVirtualCapture(state.virtual_capture);
     setReload(!reload);
 
     //setRerender(r => r + 1); // simulates user input
@@ -363,7 +344,7 @@ export default function Form({
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="sample-kind-error"
             >
-              <option value="DEFAULT" disabled>--Select procedure--</option>
+              <option value="0" disabled>--Select physical capture--</option>
               {formDictionary?.procedure_physical_capture_entries?.map(element => {
                 if (element.procedure == procedure)
                 return <option key={element.id} value={element.id}>{element.name}</option>;
@@ -387,10 +368,10 @@ export default function Form({
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="sample-kind-error"
             >
-              <option value="DEFAULT" disabled>--Select procedure--</option>
+              <option value="0" disabled>--Select virtual capture--</option>
               {formDictionary?.procedure_virtual_capture_entries?.map(element => {
                 if (element.physical_capture == physicalCapture)
-                return <option key={element.id} value={element.type}>{element.name}</option>;
+                return <option key={element.id} value={element.id}>{element.name}</option>;
               })}
             </select>
             <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
