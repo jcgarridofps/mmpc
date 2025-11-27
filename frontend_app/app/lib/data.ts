@@ -15,7 +15,7 @@ export async function newAnnotation(studyId: string) {
   try {
 
     const res = await fetch(process.env.API_BASE_URL +
-      "/api/annotation/", {
+      "/api/annotation/new/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
@@ -27,15 +27,15 @@ export async function newAnnotation(studyId: string) {
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch external data`);
+      throw new Error(`Failed to fetch external data. study_id:${studyId}`);
     }
 
     const data = await res.json();
     return data;
 
   } catch (error) {
-    console.error('Annotation could not be created: ', error);
-    throw new Error('Annotation could not be created.');
+    console.error('Annotation could not be created. study_id:${studyId}.  ', error);
+    throw new Error('Annotation could not be created.study_id:${studyId}');
   }
 
 

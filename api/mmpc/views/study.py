@@ -20,6 +20,7 @@ from django.db import models
 import json
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from mmpc.views import new_variant_analysis
 
 def getStudyProcedureTypeEntries():return studyProcedureType.objects.all()
 def getStudyPhysicalCaptureEntries():return studyPhysicalCapture.objects.all()
@@ -101,8 +102,7 @@ class Study(APIView):
         
 
         # Ask for a new pandrugs variant analysis
-        new_analysis_view = pandrugs.NewVariantAnalysis.as_view() #pandrugs variant analysis
-        new_analysis_response = new_analysis_view(request._request)
+        new_analysis_response = new_variant_analysis(sample_file_id=vcf_file)
 
 
         # CREATE STUDY
