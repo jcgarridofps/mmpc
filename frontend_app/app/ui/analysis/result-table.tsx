@@ -53,7 +53,7 @@ export default function DrugQueryResultTable(
         </div>
 
         {/*DRUGS RESULT HEADER*/}
-        <div className="p-4 pt-0 pb-0 h-14 bg-gray-50 rounded-xl mb-4 ml-4 mr-4 flex items-center">
+        <div className="p-[1rem] pt-0 pb-0 h-14 bg-gray-50 rounded-xl mb-4 ml-[1rem] mr-[1rem] flex items-center justify-center">
           <div className='w-[4rem] h-full justify-center flex items-center'>
             <input
               className="rounded-sm w-7 h-7 aspect-square flex items-center justify-center"
@@ -97,7 +97,7 @@ export default function DrugQueryResultTable(
         {/*TODO: DO FILTERS HERE*/}
 
         {enableFiltersView &&
-          <div className="p-4 pt-[1rem] pb-[1rem] h-[20rem] bg-gray-50 rounded-xl mb-4 ml-4 mr-4 flex">
+          <div className="p-[1rem] pt-[1rem] pb-[1rem] h-[20rem] bg-gray-50 rounded-xl mb-4 ml-[1rem] mr-[1rem] flex items-center justify-center">
             <div className='w-[4rem] h-full justify-center flex items-center'>
             </div>
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
@@ -314,7 +314,7 @@ export default function DrugQueryResultTable(
         {/*END TODO FILTERS*/}
 
 
-        <div className="h-full w-full flex-row rounded-lg bg-green-100 p-4 mb-4">
+        <div id='sensitivity' className="h-full w-full flex-row rounded-lg bg-green-100 p-[1rem]  mb-4 ">
           <p className="font-medium ml-4 mb-4 ">Drug response: Sensitivity</p>
 
 
@@ -324,7 +324,7 @@ export default function DrugQueryResultTable(
               .filter((drug: any) => drug.geneDrugInfo.every((info: any) => info.sensitivity.includes("SENSITIVITY")))
               .map((drug: any, index: number) => (
 
-                <div key={drug.standardDrugName} className={`pl-4 pr-4 w-full h-[9rem] 
+                <div key={drug.standardDrugName} className={`pl-[1rem] pr-[1rem] w-full h-auto min-h-[9rem] 
               ${index % 2 === 1 ? "bg-green-100" : "bg-green-50"} 
               flex items-center pt-[1rem] pb-[1rem] justify-center`}> {/* (h-3*nlines) */}
 
@@ -489,7 +489,7 @@ export default function DrugQueryResultTable(
 
 
 
-        <div className="h-full w-full flex-row rounded-lg bg-orange-100 p-4 mb-4">
+        <div id='resistance' className="h-full w-full flex-row rounded-lg bg-orange-100 p-4 mb-4">
           <p className="font-medium ml-4 mb-4 ">Drug response: Resistance / mixed</p>
 
 
