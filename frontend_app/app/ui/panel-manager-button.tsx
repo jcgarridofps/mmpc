@@ -1,22 +1,25 @@
+'use client'
+
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
 import { lusitana } from './fonts';
-import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/20/solid';
-import { logoutAction } from '../lib/actions';
+import { WalletIcon } from '@heroicons/react/20/solid';
 
 
-export default function LogoutButton() {
+const buttonAction = ()=>{alert("Define and manage custom panels.\nThis capability will be available after future updates.");}
+
+export default function PanelManagerButton() {
   return (
     <div
       className={`${lusitana.className} w-full h-full flex flex-col items-center justify-center leading-none text-white`}
     >
       <form className="w-full h-full"
-          action={logoutAction}
+          onClick={buttonAction}
         >
           <button
         className="bg-blue-600 w-full h-full text-sm text-white transition-colors hover:bg-blue-400 flex flex-col items-center justify-center"
-        title='Logout'
+        title='Panel manager'
       >
-        <ArrowRightStartOnRectangleIcon className="h-[60%] w-[60%]"/>
+        <WalletIcon className="h-[60%] w-[60%]"/>
       </button>
         </form>
       
