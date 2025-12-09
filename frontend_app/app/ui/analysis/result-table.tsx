@@ -2,8 +2,9 @@
 
 import { EyeIcon, InformationCircleIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import Search from '../search';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { title } from 'process';
+import { list } from 'postcss';
 
 {/**
   
@@ -24,9 +25,30 @@ export default function DrugQueryResultTable(
 
   const [enableFiltersView, setEnableFiltersView] = useState<boolean>(false);
 
+  const [drug_family, setDrugFamily] = useState("");
+  const [drug_status, setDrugStatus] = useState("");
+  const [type_of_therapy, setTypeOfTherapy] = useState("");
+  const [genes, setGenes] = useState("");
+
   if (!query_result.drug_query_result || !query_result.drug_query_result.geneDrugGroup) {
     return <p>No drug data available.</p>;
   }
+
+  useEffect(() => {
+    let drug_families: Set<string> = new Set();
+    let drug_status: Set<string> = new Set();
+    let clinical_trials = 0;
+    query_result.drug_query_result.geneDrugGroup
+      .map((drug: any, index: number) => {
+        drug_families.add(drug.standardDrugName);
+        if(drug.statusDescription) drug_status.add(drug.statusDescription);
+        //if(drug.dScore > 0.5 && drug.gScore > 0.4) clinical_trials = ++clinical_trials;
+        if(drug.status == "APPROVED") clinical_trials = ++clinical_trials;
+      })
+    console.log(drug_families);
+    console.log(drug_status);
+    console.log("CLINICAL TRIAL ENTRIES: " + clinical_trials);
+  }, []);
 
   return (
 
