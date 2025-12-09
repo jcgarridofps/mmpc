@@ -5,19 +5,23 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import { signOut } from '@/auth';
 import HomeButton from '../home-button';
 import LogoutButton from '../logout-button';
+import PanelManagerButton from '../panel-manager-button';
 
 export default function SideNav() {
   return (
     <div className="flex justify-between h-12 bg-blue-600">
       <div className=" aspect-square w-12 h:full text-white flex items-center justify-center">
-          <HomeButton />
-        </div>
+        <HomeButton />
+      </div>
       <div className="w-full h:full text-white flex items-center justify-center">
-          <AcmeLogo />
-        </div>
+        <AcmeLogo />
+      </div>
       <div className=" aspect-square w-12 h:full text-white flex items-center justify-center">
-          <LogoutButton />
-        </div>
+        <PanelManagerButton />
+      </div>
+      <div className=" aspect-square w-12 h:full text-white flex items-center justify-center">
+        <LogoutButton />
+      </div>
     </div>
   );
 }

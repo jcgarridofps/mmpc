@@ -512,7 +512,7 @@ export default function DrugQueryResultTable(
 
 
         <div id='resistance' className="h-full w-full flex-row rounded-lg bg-orange-100 p-4 mb-4">
-          <p className="font-medium ml-4 mb-4 ">Drug response: Resistance / mixed</p>
+          <p className="font-medium ml-4 mb-4 ">Drug response: Resistance / both</p>
 
 
 
