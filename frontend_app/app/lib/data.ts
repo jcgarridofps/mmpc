@@ -696,6 +696,27 @@ export async function fetchAnalysisByAnalysisId(analysis_id: string) {
   }
 }
 
+export async function fetchAnalysisObjectByAnalysisId(analysis_id: string) {
+  const session = await auth();
+  try {
+    const analysis = await fetch(process.env.API_BASE_URL +
+      `/api/analysis/?analysis_id=${analysis_id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json",
+        },
+      });
+
+    let res = await analysis.json();
+    return res;
+  } catch (error) {
+    console.error('Fetch analysis by analysis id error:', error);
+    throw new Error('Failed to fetch analysis by analysis id.');
+  }
+}
+
 export async function fetchPatientByHistoryAppId(history_appId: string) {
   const session = await auth();
   try {

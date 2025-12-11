@@ -1,4 +1,4 @@
-import { fetchDrugQueryResult, fetchVariantAnalysisResult, fetchPresence } from '@/app/lib/data';
+import { fetchDrugQueryResult, fetchVariantAnalysisResult, fetchPresence, fetchAnalysisObjectByAnalysisId } from '@/app/lib/data';
 import { EyeIcon, InformationCircleIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import Search from '../search';
 import DrugQueryResultTable from './result-table';
@@ -9,11 +9,12 @@ import DrugQueryResultGenesPanel from './result-genes-panel';
 export default async function DrugQueryResult(
   { analysis_id, annotation_id }: { analysis_id: string, annotation_id: string }) {
   const analysis_result: any = await fetchDrugQueryResult(analysis_id);
+  const analysis_object: any = await fetchAnalysisObjectByAnalysisId(analysis_id);
   const annotation_result: any = await fetchVariantAnalysisResult(annotation_id);
   const affected_genes: string[] = annotation_result.affectedGenes;
   const n_variants: Number = annotation_result.variantsInInput;
   const presence = await fetchPresence(affected_genes);
-  const cancer_types: string = "Breast, Colon";
+  const cancer_types: string[] = analysis_object.cancerTypes;
 
   return (
 
@@ -27,7 +28,7 @@ export default async function DrugQueryResult(
         <p className="text-left w-full">{`Selected cancer types: ${cancer_types}`}.</p>
       </div>
 
-      <DrugQueryResultTable query_result={{ "drug_query_result": analysis_result, "variant_analysis_result": annotation_result, "presence": presence }} />
+      <DrugQueryResultTable query_result={{ "drug_query_result": analysis_result, "variant_analysis_result": annotation_result, "presence": presence }} cancer_types={cancer_types}/>
 
 {/*       <div className='mt-16'>
         <pre>

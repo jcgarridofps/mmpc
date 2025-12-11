@@ -21,14 +21,14 @@ import { list } from 'postcss';
   */}
 
 export default function DrugQueryResultTable(
-  { query_result }: { query_result: any }) {
+  { query_result, cancer_types }: { query_result: any, cancer_types: string[] }) {
 
   const [enableFiltersView, setEnableFiltersView] = useState<boolean>(false);
 
-  const [drug_family, setDrugFamily] = useState("");
-  const [drug_status, setDrugStatus] = useState("");
-  const [type_of_therapy, setTypeOfTherapy] = useState("");
-  const [genes, setGenes] = useState("");
+  const [drug_family_list, setDrugFamilyList] = useState(new Set());
+  const [drug_status_list, setDrugStatusList] = useState(new Set());
+  const [type_of_therapy_list, setTypeOfTherapyList] = useState(new Set());
+  const [gene_list, setGeneList] = useState(new Set());
 
   if (!query_result.drug_query_result || !query_result.drug_query_result.geneDrugGroup) {
     return <p>No drug data available.</p>;
@@ -37,18 +37,32 @@ export default function DrugQueryResultTable(
   useEffect(() => {
     let drug_families: Set<string> = new Set();
     let drug_status: Set<string> = new Set();
-    let clinical_trials = 0;
+    let type_of_therapy: Set<string> = new Set();
+    let gene_list: Set<string> = new Set();
+
     query_result.drug_query_result.geneDrugGroup
       .map((drug: any, index: number) => {
-        drug_families.add(drug.standardDrugName);
-        if(drug.statusDescription) drug_status.add(drug.statusDescription);
+        if (drug.standardDrugName) drug_families.add(drug.standardDrugName);
+        if (drug.status) drug_status.add(drug.status);
+        if (drug.therapy) type_of_therapy.add(drug.therapy);
+        if (drug.gene) drug.gene.map((gene: any) => {
+          if (gene.geneSymbol) gene_list.add(gene.geneSymbol);
+        });
         //if(drug.dScore > 0.5 && drug.gScore > 0.4) clinical_trials = ++clinical_trials;
-        if(drug.status == "APPROVED") clinical_trials = ++clinical_trials;
+        //if(drug.status == "CLINICAL_TRIALS" || drug.status == "EXPERIMENTAL") clinical_trials = ++clinical_trials;
+        //if(drug.status == "APPROVED" && drug.cancer.includes("COLON")) clinical_trials = ++clinical_trials;
       })
-    console.log(drug_families);
-    console.log(drug_status);
-    console.log("CLINICAL TRIAL ENTRIES: " + clinical_trials);
+    setDrugFamilyList(drug_families);
+    setDrugStatusList(drug_status);
+    setTypeOfTherapyList(type_of_therapy);
+    setGeneList(gene_list);
   }, []);
+
+  const mustBeVisible = (gene_drug_group: any) => {
+    if (gene_drug_group.status === "CLINICAL_TRIALS" || gene_drug_group.status === "EXPERIMENTAL") return true;
+    if (gene_drug_group.status === "APPROVED" && cancer_types.some(cancer => (gene_drug_group.cancer as string[]).includes(cancer))) return true;
+    return false;
+  }
 
   return (
 
@@ -344,8 +358,8 @@ export default function DrugQueryResultTable(
           {
             query_result.drug_query_result.geneDrugGroup
               .filter((drug: any) => drug.geneDrugInfo.every((info: any) => info.sensitivity.includes("SENSITIVITY")))
-              .map((drug: any, index: number) => (
-
+              .map((drug: any, index: number) => (mustBeVisible(drug) &&
+                
                 <div key={drug.standardDrugName} className={`pl-[1rem] pr-[1rem] w-full h-auto min-h-[9rem] 
               ${index % 2 === 1 ? "bg-green-100" : "bg-green-50"} 
               flex items-center pt-[1rem] pb-[1rem] justify-center`}> {/* (h-3*nlines) */}
