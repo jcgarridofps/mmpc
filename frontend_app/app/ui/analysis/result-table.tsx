@@ -2,6 +2,7 @@
 
 import { EyeIcon, InformationCircleIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import Search from '../search';
+import SearchFilter from '../search-filter';
 import { useState, useEffect } from 'react';
 import { title } from 'process';
 import { list } from 'postcss';
@@ -25,13 +26,32 @@ export default function DrugQueryResultTable(
 
   const [enableFiltersView, setEnableFiltersView] = useState<boolean>(false);
 
-  const [drug_family_list, setDrugFamilyList] = useState(new Set());
-  const [drug_status_list, setDrugStatusList] = useState(new Set());
-  const [type_of_therapy_list, setTypeOfTherapyList] = useState(new Set());
-  const [gene_list, setGeneList] = useState(new Set());
+  // Search region lists
+  const [drug_family_list, setDrugFamilyList] = useState(new Set<string>());
+  const [drug_status_list, setDrugStatusList] = useState(new Set<string>());
+  const [type_of_therapy_list, setTypeOfTherapyList] = useState(new Set<string>());
+  const [gene_list, setGeneList] = useState(new Set<string>());
+
+  // Filtered entries lists
+  const [drug_family_filter, setDrugFamilyFilter] = useState(new Set<string>());
+  const [drug_status_filter, setDrugStatusFilter] = useState(new Set<string>());
+  const [type_of_therapy_filter, setTypeOfTherapyFilter] = useState(new Set<string>());
+  const [gene_filter, setGeneFilter] = useState(new Set<string>());
+
+  // Filter search current value
+  const [drug_family_filter_search, setDrugFamilyFilterSearch] = useState("");
+  const [drug_status_filter_search, setDrugStatusFilterSearch] = useState("");
+  const [type_of_therapy_filter_search, setTypeOfTherapyFilterSearch] = useState("");
+  const [gene_filter_search, setGeneFilterSearch] = useState("");
 
   if (!query_result.drug_query_result || !query_result.drug_query_result.geneDrugGroup) {
     return <p>No drug data available.</p>;
+  }
+
+  const mustBeVisible = (gene_drug_group: any) => {
+    if (gene_drug_group.status === "CLINICAL_TRIALS" || gene_drug_group.status === "EXPERIMENTAL") return true;
+    if (gene_drug_group.status === "APPROVED" && cancer_types.some(cancer => (gene_drug_group.cancer as string[]).includes(cancer))) return true;
+    return false;
   }
 
   useEffect(() => {
@@ -42,27 +62,28 @@ export default function DrugQueryResultTable(
 
     query_result.drug_query_result.geneDrugGroup
       .map((drug: any, index: number) => {
-        if (drug.standardDrugName) drug_families.add(drug.standardDrugName);
-        if (drug.status) drug_status.add(drug.status);
-        if (drug.therapy) type_of_therapy.add(drug.therapy);
-        if (drug.gene) drug.gene.map((gene: any) => {
-          if (gene.geneSymbol) gene_list.add(gene.geneSymbol);
-        });
-        //if(drug.dScore > 0.5 && drug.gScore > 0.4) clinical_trials = ++clinical_trials;
-        //if(drug.status == "CLINICAL_TRIALS" || drug.status == "EXPERIMENTAL") clinical_trials = ++clinical_trials;
-        //if(drug.status == "APPROVED" && drug.cancer.includes("COLON")) clinical_trials = ++clinical_trials;
+        if (mustBeVisible(drug)) {
+          if (drug.standardDrugName) drug_families.add(drug.standardDrugName);
+          if (drug.status) drug_status.add(drug.status);
+          if (drug.therapy) type_of_therapy.add(drug.therapy);
+          if (drug.gene) drug.gene.map((gene: any) => {
+            if (gene.geneSymbol) gene_list.add(gene.geneSymbol);
+          });
+          //if(drug.dScore > 0.5 && drug.gScore > 0.4) clinical_trials = ++clinical_trials;
+          //if(drug.status == "CLINICAL_TRIALS" || drug.status == "EXPERIMENTAL") clinical_trials = ++clinical_trials;
+          //if(drug.status == "APPROVED" && drug.cancer.includes("COLON")) clinical_trials = ++clinical_trials;
+        }
+
       })
     setDrugFamilyList(drug_families);
     setDrugStatusList(drug_status);
     setTypeOfTherapyList(type_of_therapy);
     setGeneList(gene_list);
+
+    console.log("DRUG_COUNT: " + drug_families.size);
   }, []);
 
-  const mustBeVisible = (gene_drug_group: any) => {
-    if (gene_drug_group.status === "CLINICAL_TRIALS" || gene_drug_group.status === "EXPERIMENTAL") return true;
-    if (gene_drug_group.status === "APPROVED" && cancer_types.some(cancer => (gene_drug_group.cancer as string[]).includes(cancer))) return true;
-    return false;
-  }
+  
 
   return (
 
@@ -139,42 +160,84 @@ export default function DrugQueryResultTable(
             <div className='w-[12rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
-                  <Search placeholder="" />
+                  <SearchFilter onChange={(value) => setDrugFamilyFilterSearch(value)} />
                 </div>
                 <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='w-[2rem] truncate flex-1' title='EVEROLIMUS (inhibitor mTO)'>EVEROLIMUS (inhibitor mTO)</p>
-                    <div className='w-[1rem] h-full flex justify-center items-center'>
-                      <input
-                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
+                  {
+                    [...drug_family_list]
+                      .filter(item => (item as string).includes(drug_family_filter_search))
+                      .sort().map(item => (
+                        <div key={item as string} className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                          <p className='w-[2rem] truncate flex-1' title={item as string}>{item as string}</p>
+                          <div className='w-[1rem] h-full flex justify-center items-center'>
+                            <input
+                              className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                              type="checkbox"
+                              id="chb1"
+                              name="chb1"
+                              checked={drug_family_filter.has(item)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+
+                                setDrugFamilyFilter(prev => {
+                                  const newSet: Set<string> = new Set(prev);
+                                  if (checked) {
+                                    newSet.add(item);
+                                  }
+                                  else {
+                                    newSet.delete(item);
+                                  }
+
+                                  return newSet;
+                                })
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))
+                  }
                 </div>
               </div>
             </div>
             <div className='w-[11rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
-                  <Search placeholder="" />
+                  <SearchFilter onChange={(value) => setDrugStatusFilterSearch(value)} />
                 </div>
                 <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='w-[2rem] truncate flex-1' title='Approved for lung cancer'>Approved for lung cancer</p>
-                    <div className='w-[1rem] h-full flex justify-center items-center'>
-                      <input
-                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
+                  {
+                    [...drug_status_list]
+                      .filter(item => (item as string).includes(drug_status_filter_search))
+                      .sort().map(item => (
+                        <div key={item as string} className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                          <p className='w-[2rem] truncate flex-1' title={item as string}>{item as string}</p>
+                          <div className='w-[1rem] h-full flex justify-center items-center'>
+                            <input
+                              className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                              type="checkbox"
+                              id="chb1"
+                              name="chb1"
+                              checked={drug_status_filter.has(item)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+
+                                setDrugStatusFilter(prev => {
+                                  const newSet: Set<string> = new Set(prev);
+                                  if (checked) {
+                                    newSet.add(item);
+                                  }
+                                  else {
+                                    newSet.delete(item);
+                                  }
+
+                                  return newSet;
+                                })
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))
+                  }
                 </div>
               </div>
             </div>
@@ -357,9 +420,12 @@ export default function DrugQueryResultTable(
 
           {
             query_result.drug_query_result.geneDrugGroup
+              .filter((drug: any) => mustBeVisible(drug))
               .filter((drug: any) => drug.geneDrugInfo.every((info: any) => info.sensitivity.includes("SENSITIVITY")))
-              .map((drug: any, index: number) => (mustBeVisible(drug) &&
-                
+              .filter((drug: any) => drug_family_filter.size == 0 ? true : drug_family_filter.has(drug.standardDrugName))
+              .filter((drug: any) => drug_status_filter.size == 0 ? true : drug_status_filter.has(drug.status))
+              .map((drug: any, index: number) => (
+
                 <div key={drug.standardDrugName} className={`pl-[1rem] pr-[1rem] w-full h-auto min-h-[9rem] 
               ${index % 2 === 1 ? "bg-green-100" : "bg-green-50"} 
               flex items-center pt-[1rem] pb-[1rem] justify-center`}> {/* (h-3*nlines) */}
