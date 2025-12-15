@@ -59,10 +59,10 @@ export default async function Page(props: {
         </div>
       </div>
 
-      <div className="p-4 pl-4 w-full h-14 bg-yellow-100 rounded-xl mb-4 flex justify-between items-center">
+      {/* <div className="p-4 pl-4 w-full h-14 bg-yellow-100 rounded-xl mb-4 flex justify-between items-center">
         <ExclamationTriangleIcon className="h-[30] w-[30] text-gray-500"/>
         <p className="text-left w-full ml-4">Current variant annotations are outdated. Requesting a new one is recommended</p>
-      </div>
+      </div> */}
 
       <Search placeholder="Search variant annotation by ID, date or state. Separate filters by comma." />
 

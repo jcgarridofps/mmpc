@@ -244,46 +244,88 @@ export default function DrugQueryResultTable(
             <div className='w-[10rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
-                  <Search placeholder="" />
+                  <SearchFilter onChange={(value) => setTypeOfTherapyFilterSearch(value)} />
                 </div>
                 <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='w-[2rem] truncate flex-1' title='Targeted'>Targeted</p>
-                    <div className='w-[1rem] h-full flex justify-center items-center'>
-                      <input
-                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
+                  {
+                    [...type_of_therapy_list]
+                      .filter(item => (item as string).includes(type_of_therapy_filter_search))
+                      .sort().map(item => (
+                        <div key={item as string} className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                          <p className='w-[2rem] truncate flex-1' title={item as string}>{item as string}</p>
+                          <div className='w-[1rem] h-full flex justify-center items-center'>
+                            <input
+                              className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                              type="checkbox"
+                              id="chb1"
+                              name="chb1"
+                              checked={type_of_therapy_filter.has(item)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+
+                                setTypeOfTherapyFilter(prev => {
+                                  const newSet: Set<string> = new Set(prev);
+                                  if (checked) {
+                                    newSet.add(item);
+                                  }
+                                  else {
+                                    newSet.delete(item);
+                                  }
+
+                                  return newSet;
+                                })
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))
+                  }
                 </div>
               </div>
             </div>
-            <div className='w-[6rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[10rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='h-full w-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
-                  <Search placeholder="" />
+                  <SearchFilter onChange={(value) => setGeneFilterSearch(value)} />
                 </div>
                 <div className='flex-1 flex-row h-[9.5rem] overflow-y-auto'>
-                  <div className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
-                    <p className='w-[2rem] truncate flex-1' title='KRAS'>KRAS</p>
-                    <div className='w-[1rem] h-full flex justify-center items-center'>
-                      <input
-                        className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
-                        type="checkbox"
-                        id="chb1"
-                        name="chb1"
-                        value="chb1"
-                      />
-                    </div>
-                  </div>
+                  {
+                    [...gene_list]
+                      .filter(item => (item as string).includes(gene_filter_search))
+                      .sort().map(item => (
+                        <div key={item as string} className='pl-[1rem] pr-[1rem] flex justify-center items-center'>
+                          <p className='w-[2rem] truncate flex-1' title={item as string}>{item as string}</p>
+                          <div className='w-[1rem] h-full flex justify-center items-center'>
+                            <input
+                              className="rounded-sm w-[1rem] h-[1rem] aspect-square flex items-center justify-center"
+                              type="checkbox"
+                              id="chb1"
+                              name="chb1"
+                              checked={gene_filter.has(item)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+
+                                setGeneFilter(prev => {
+                                  const newSet: Set<string> = new Set(prev);
+                                  if (checked) {
+                                    newSet.add(item);
+                                  }
+                                  else {
+                                    newSet.delete(item);
+                                  }
+
+                                  return newSet;
+                                })
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))
+                  }
                 </div>
               </div>
             </div>
-            <div className='w-[18rem] border-l-[2px] border-white h-full justify-center flex items-center'>
+            <div className='w-[14rem] border-l-[2px] border-white h-full justify-center flex items-center'>
               <div className='w-full h-full flex-row items-center justify-center'>
                 <div className="w-full pl-[1rem] pr-[1rem] mb-[1rem]">
                   <Search placeholder="" />
@@ -424,6 +466,8 @@ export default function DrugQueryResultTable(
               .filter((drug: any) => drug.geneDrugInfo.every((info: any) => info.sensitivity.includes("SENSITIVITY")))
               .filter((drug: any) => drug_family_filter.size == 0 ? true : drug_family_filter.has(drug.standardDrugName))
               .filter((drug: any) => drug_status_filter.size == 0 ? true : drug_status_filter.has(drug.status))
+              .filter((drug: any) => type_of_therapy_filter.size == 0 ? true : type_of_therapy_filter.has(drug.therapy))
+              .filter((drug: any) => gene_filter.size == 0? true : drug.gene.some((info: any) => gene_filter.has(info.geneSymbol)))
               .map((drug: any, index: number) => (
 
                 <div key={drug.standardDrugName} className={`pl-[1rem] pr-[1rem] w-full h-auto min-h-[9rem] 
@@ -459,26 +503,26 @@ export default function DrugQueryResultTable(
                     <div className='flex items-center break-all line-clamp-3 text-center'>
                       <p
                         title={
-                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
-                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                          drug.therapy?.includes('TARGETED') ? 'TARGETED' :
+                            drug.therapy?.includes('COMBINATION') ? 'COMBINATION' :
                               drug.therapy ? drug.therapy :
                                 'no data'
                         }
                       >{
-                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
-                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                          drug.therapy?.includes('TARGETED') ? 'TARGETED' :
+                            drug.therapy?.includes('COMBINATION') ? 'COMBINATION' :
                               drug.therapy ? drug.therapy :
                                 'no data'}</p>
                     </div>
                   </div>
-                  <div className='w-[6rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                  <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center break-all text-center'>
                       {drug.gene.map((gene: any) => (
                         <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
                       ))}
                     </div>
                   </div>
-                  <div className='w-[18rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                  <div className='w-[14rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
@@ -573,20 +617,6 @@ export default function DrugQueryResultTable(
               ))
           }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
 
 
@@ -598,10 +628,15 @@ export default function DrugQueryResultTable(
 
           {
             query_result.drug_query_result.geneDrugGroup
+              .filter((drug: any) => mustBeVisible(drug))
               .filter((drug: any) => drug.geneDrugInfo.some((info: any) => info.sensitivity.includes("RESISTANCE")))
+              .filter((drug: any) => drug_family_filter.size == 0 ? true : drug_family_filter.has(drug.standardDrugName))
+              .filter((drug: any) => drug_status_filter.size == 0 ? true : drug_status_filter.has(drug.status))
+              .filter((drug: any) => type_of_therapy_filter.size == 0 ? true : type_of_therapy_filter.has(drug.therapy))
+              .filter((drug: any) => gene_filter.size == 0? true : drug.gene.some((info: any) => gene_filter.has(info.geneSymbol)))
               .map((drug: any, index: number) => (
 
-                <div key={drug.standardDrugName} className={`pl-4 pr-4 w-full h-[9rem] 
+                <div key={drug.standardDrugName} className={`pl-[1rem] pr-[1rem] w-full h-auto min-h-[9rem] 
               ${index % 2 === 1 ? "bg-orange-100" : "bg-orange-50"} 
               flex items-center pt-[1rem] pb-[1rem] justify-center`}> {/* (h-3*nlines) */}
 
@@ -634,26 +669,26 @@ export default function DrugQueryResultTable(
                     <div className='flex items-center break-all line-clamp-3 text-center'>
                       <p
                         title={
-                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
-                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                          drug.therapy?.includes('TARGETED') ? 'TARGETED' :
+                            drug.therapy?.includes('COMBINATION') ? 'COMBINATION' :
                               drug.therapy ? drug.therapy :
                                 'no data'
                         }
                       >{
-                          drug.therapy?.includes('TARGETED') ? 'Targeted' :
-                            drug.therapy?.includes('COMBINATION') ? 'Combination' :
+                          drug.therapy?.includes('TARGETED') ? 'TARGETED' :
+                            drug.therapy?.includes('COMBINATION') ? 'COMBINATION' :
                               drug.therapy ? drug.therapy :
                                 'no data'}</p>
                     </div>
                   </div>
-                  <div className='w-[6rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                  <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center break-all text-center'>
                       {drug.gene.map((gene: any) => (
                         <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
                       ))}
                     </div>
                   </div>
-                  <div className='w-[18rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
+                  <div className='w-[14rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
