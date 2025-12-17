@@ -20,7 +20,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right column */}
-      <div className="w-[30%] flex items-center justify-center">
+      <div className="w-[30%] min-w-[500px] flex items-center justify-center">
         <div className="flex flex-col items-center justify-center space-y-4">
           {/* SVG logo */}
           <img src="/logo.svg" alt="Logo" className="h-32 w-32"/>
