@@ -1,0 +1,11 @@
+[
+  {
+    "model": "mmpc.studyVirtualCapture",
+    "pk": 1,
+    "fields": {
+      "type": "ACTION_ONCOKITDX_IMEGEN_AUTOMATIC",
+      "name": "Action OncoKitDx Imegen Automatic",
+      "physical_capture":7
+    }
+  }
+]

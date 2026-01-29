@@ -12,7 +12,12 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createStudy, StudyState } from '@/app/lib/actions';
-import { useActionState, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
+import { json } from 'stream/consumers';
+import { startTransition } from "react";
+import { fetchStudyProcedureDictionary } from '@/app/lib/data';
+import { StudyProcedureDictionary } from '@/app/lib/definitions';
+
 
 export default function Form({
   patient_appId,
@@ -21,10 +26,26 @@ export default function Form({
   patient_appId: string;
   history_id: string;
 }) {
-  const initialState: StudyState = { success: false, message: null, errors: {}, history_id: history_id };
+  const initialState: StudyState = {
+    success: false,
+    message: null,
+    errors: {},
+    history_id: history_id,
+    sample: "DEFAULT",
+    procedure: "0",
+    physical_capture: "0",
+    virtual_capture: "0"
+  };
   const [state, formAction] = useActionState<StudyState, FormData>(createStudy, initialState);
   const [fileName, setFileName] = useState<string>("");
   const [geneFileName, setGeneFileName] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [hydrated, setHydrated] = useState(false);
+  const [reload, setReload] = useState(false);
+  //const [rerender, setRerender] = useState(0);
+
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileNameRef = useRef<HTMLInputElement>(null);
@@ -41,26 +62,38 @@ export default function Form({
 
   const [description, setDescription] = useState<string>("");
   const [sampleKind, setSampleKind] = useState("DEFAULT");
-  const [procedure, setProcedure] = useState("DEFAULT");
-  const [panelVersion, setPanelVersion] = useState("DEFAULT");
-  const [exomeCapture, setExomeCapture] = useState("DEFAULT");
+  const [procedure, setProcedure] = useState('0');
+  const [physicalCapture, setPhysicalCapture] = useState('0');
+  const [virtualCapture, setVirtualCapture] = useState('0');
   const [name, setName] = useState("");
+  const [formDictionary, setFormDictionary] = useState<StudyProcedureDictionary>();
+
+  useEffect(() => {
+    (async () => {
+      const dictionary: StudyProcedureDictionary = await fetchStudyProcedureDictionary() as StudyProcedureDictionary;
+      setFormDictionary(dictionary);
+      console.log("DICTIONARY: " + JSON.stringify(dictionary));
+    })();
+  }, []);
+
+    useEffect(() => {
+    (async () => {
+      console.log("DICTIONARY: " + JSON.stringify(formDictionary));
+    })();
+  }, [formDictionary]);
 
   //console.log(file?.name);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handle file change");
     if (event.target.files && event.target.files.length > 0) {
       setFileName(event.target.files[0].name);
+      setFile(event.target.files[0]);
+      console.log("file selected");
     } else {// Reset if no file is selected
       setFileName("");
-    }
-  }
-
-  const handleGeneFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setGeneFileName(event.target.files[0].name);
-    } else {// Reset if no file is selected
-      setGeneFileName("");
+      setFile(null);
+      console.log("file not selected");
     }
   }
 
@@ -86,28 +119,118 @@ export default function Form({
     }
   }
 
-  const handlePanelVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value) {
-      setPanelVersion(event.target.value);
-    }
-  }
-
-  const handleExomeCaptureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value) {
-      setExomeCapture(event.target.value);
-    }
-  }
-
   const handleProcedureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value) {
       setProcedure(event.target.value);
+      setPhysicalCapture("0");
+      setVirtualCapture("0");
     }
   }
 
-  const handleFormAction = async (formData: FormData) => {
-    setFileName("");
-    return formAction(formData);
+  const handlePhysicalCaptureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (event.target.value) {
+      setPhysicalCapture(event.target.value);
+      setVirtualCapture("0");
+    }
   }
+
+  const handleVirtualCaptureChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (event.target.value) {
+      setVirtualCapture(event.target.value);
+    }
+  }
+
+  async function hashFileSHA256(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+
+    // Convert ArrayBuffer → hex string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+
+    return hashHex;
+  }
+
+  const handleFormAction = async (formData: FormData) => {
+    //setFileName("");
+
+    // UPLOAD FILE
+    let sha = '';
+
+    console.log("BEFORE RETURN");
+
+    if (!file) {
+      setHydrated(false);
+      return;
+    }
+
+    setHydrated(true); // UI now knows it is safe to display values
+
+    console.log("AFTER RETURN");
+
+    setIsUploading(true);
+    setMessage("Uploading file...");
+
+    sha = await hashFileSHA256(file);
+
+
+    let upload_res: Response = new Response();
+    let updated_form_data: FormData = new FormData();
+
+    try {
+      const uploadFormData = new FormData();
+      if (file) uploadFormData.append("file", file);
+      const headers = {
+        "x-file-sha256": sha,
+      }
+
+      upload_res = await fetch("/api/upload-proxy", {
+        method: "POST",
+        body: uploadFormData,
+        headers: headers,
+      });
+
+      let uploaded_file_id = '';
+      if (upload_res.ok) {
+        setMessage("✅ Upload successful!");
+        console.log("UPLOAD SUCCESSFUL");
+
+        const res_json = await upload_res.json();
+        uploaded_file_id = res_json.file_id;
+      }
+      else {
+        const text = await upload_res.text();
+        console.log("UPLOAD FAILED " + text);
+      }
+
+      //let updated_form_data = formData;
+      //updated_form_data.append("file_vcf", uploaded_file_id);
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) continue; // do NOT forward files
+        updated_form_data.append(key, value.toString());
+      }
+      updated_form_data.append("file_vcf", uploaded_file_id);
+
+    } catch (err) {
+      setMessage("❌ Upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+
+    startTransition(() => {
+      formAction(updated_form_data);
+    });
+  }
+
+  useEffect(() => {
+    setProcedure(state.procedure);
+    setSampleKind(state.sample);
+    setPhysicalCapture(state.physical_capture);
+    setVirtualCapture(state.virtual_capture);
+    setReload(!reload);
+
+    //setRerender(r => r + 1); // simulates user input
+  }, [state]);
 
   return (
     <form
@@ -118,6 +241,12 @@ export default function Form({
           e.preventDefault();
         }
       }}
+      onSubmit={
+        (e) => {
+          e.preventDefault();       // stop browser submission
+          handleFormAction(new FormData(e.currentTarget));  // manually call
+        }
+      }
     >
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
 
@@ -164,6 +293,7 @@ export default function Form({
             <select
               id="sample_kind"
               name="sample_kind"
+              //value={hydrated ? sampleKind : "DEFAULT"}
               value={sampleKind}
               onChange={handleSampleKindChange}
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -191,139 +321,72 @@ export default function Form({
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               aria-describedby="sample-kind-error"
             >
-              <option value="DEFAULT" disabled>--Select procedure--</option>
-              <option value="GENOME">GENOME</option>
-              <option value="WHOLE_EXOME">WHOLE EXOME</option>
-              <option value="CLINICAL_EXOME">CLINICAL EXOME</option>
-              <option value="PANEL">PANEL</option>
+              <option value="0" disabled>--Select procedure--</option>
+              {formDictionary?.procedure_type_entries?.map(element => {
+                return <option key={element.id} value={element.id}>{element.name}</option>;
+              })}
             </select>
             <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
         </div>
 
-        {/**PANEL VERSION (ONLY FOR PANEL) */}
-        {procedure === "PANEL" &&
-          (
-            <div>
-              <label htmlFor="panel_version" className="mb-2 block text-sm font-medium">
-                Panel version
-              </label>
-              <div className="relative mt-2 rounded-md mb-4">
-                <div className="relative">
-                  <select
-                    id="panel_version"
-                    name="panel_version"
-                    value={panelVersion}
-                    onChange={handlePanelVersionChange}
-                    className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    aria-describedby="sample-kind-error"
-                  >
-                    <option value="DEFAULT" disabled>--Select panel version--</option>
-                    <option value="VERSION X1">VERSION X1</option>
-                    <option value="VERSION X2">VERSION X2</option>
-                    <option value="VERSION X3">VERSION X3</option>
-                  </select>
-                  {/* <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
-                </div>
-              </div>
-            </div>
-          )
-        }
+        {/**PHYSICAL CAPTURE */}
+        <label htmlFor="physical_capture" className="mb-2 block text-sm font-medium">
+          Physical capture
+        </label>
+        <div className="relative mt-2 rounded-md mb-4">
+          <div className="relative">
+            <select
+              id="physical_capture"
+              name="physical_capture"
+              value={physicalCapture}
+              onChange={handlePhysicalCaptureChange}
+              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              aria-describedby="sample-kind-error"
+            >
+              <option value="0" disabled>--Select physical capture--</option>
+              {formDictionary?.procedure_physical_capture_entries?.map(element => {
+                if (element.procedure == procedure)
+                return <option key={element.id} value={element.id}>{element.name}</option>;
+              })}
+            </select>
+            <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+        </div>
 
-
-        {/**EXOME CAPTURE (ONLY FOR WHOLE EXOME AND CLINICAL EXOME) */}
-        {(procedure === "WHOLE_EXOME" || procedure === "CLINICAL_EXOME") &&
-          (
-            <div>
-              <label htmlFor="exome_capture" className="mb-2 block text-sm font-medium">
-                Exome capture
-              </label>
-              <div className="relative mt-2 rounded-md mb-4">
-                <div className="relative">
-                  <select
-                    id="exome_capture"
-                    name="exome_capture"
-                    value={exomeCapture}
-                    onChange={handleExomeCaptureChange}
-                    className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                    aria-describedby="sample-kind-error"
-                  >
-                    <option value="DEFAULT" disabled>--Select procedure--</option>
-                    <option value="OPT1">OPT1</option>
-                    <option value="OPT2">OPT2</option>
-                    <option value="OPT3">OPT3</option>
-                  </select>
-                  {/* <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
-                </div>
-              </div>
-            </div>
-          )
-        }
-
-        {/* CSV GENE LIST FILE (ONLY FOR CLINICAL EXOME AND PANEL) */}
-        {(procedure === "CLINICAL_EXOME" || procedure === "PANEL") &&
-          (
-            <div>
-              <div className="mb-4">
-                <label htmlFor="file" className="mb-2 block text-sm font-medium">
-                  .csv gene list file
-                </label>
-                <div className="flex items-center space-x-2">
-                  <div className="relative w-full">
-                    <input
-                      id="gene_list_file_name"
-                      name="gene_list_file_name"
-                      type="text"
-                      placeholder="Upload file"
-                      className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                      aria-describedby="file-error"
-                      readOnly
-                      ref={geneFileNameRef}
-                      value={geneFileName}
-
-                    />
-
-                    <input
-                      type="file"
-                      name="gene_list_file"
-                      accept=".csv"
-                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
-                      ref={geneFileInputRef}
-                      onChange={handleGeneFileChange}
-                    />
-
-                    <DocumentArrowUpIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                  </div>
-                  <div className="relative">
-                    <button
-                      type="button"
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center"
-                      onClick={handleGENEFileButton}
-                    >
-                      <FolderIcon className="h-5" />
-                      <span className="mr-2">
-                      </span> Browse...
-                    </button>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          )
-        }
-
+        {/**VIRTUAL CAPTURE */}
+        <label htmlFor="virtual_capture" className="mb-2 block text-sm font-medium">
+          Virtual capture
+        </label>
+        <div className="relative mt-2 rounded-md mb-4">
+          <div className="relative">
+            <select
+              id="virtual_capture"
+              name="virtual_capture"
+              value={virtualCapture}
+              onChange={handleVirtualCaptureChange}
+              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              aria-describedby="sample-kind-error"
+            >
+              <option value="0" disabled>--Select virtual capture--</option>
+              {formDictionary?.procedure_virtual_capture_entries?.map(element => {
+                if (element.physical_capture == physicalCapture)
+                return <option key={element.id} value={element.id}>{element.name}</option>;
+              })}
+            </select>
+            <FunnelIcon className="pointer-events-none absolute left-3 top-5 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+          </div>
+        </div>
 
         {/* VCF file */}
         <div className="mb-4">
-          <label htmlFor="file" className="mb-2 block text-sm font-medium">
+          <label htmlFor="file_name" className="mb-2 block text-sm font-medium">
             .vcf variants file
           </label>
           <div className="flex items-center space-x-2">
             <div className="relative w-full">
               <input
                 id="file_name"
-                name="file_name"
                 type="text"
                 placeholder="Upload file"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
@@ -336,7 +399,6 @@ export default function Form({
 
               <input
                 type="file"
-                name="file_vcf"
                 accept=".vcf"
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full hidden"
                 ref={fileInputRef}

@@ -3,28 +3,32 @@
     "model": "mmpc.studyProcedureType",
     "pk": 1,
     "fields": {
-      "type": "GENOME"
+      "type": "GENOME",
+      "name": "GENOME"
     }
   },
   {
     "model": "mmpc.studyProcedureType",
     "pk": 2,
     "fields": {
-      "type": "WHOLE_EXOME"
+      "type": "WHOLE_EXOME",
+      "name": "WHOLE EXOME"
     }
   },
   {
     "model": "mmpc.studyProcedureType",
     "pk": 3,
     "fields": {
-      "type": "CLINICAL_EXOME"
+      "type": "CLINICAL_EXOME",
+      "name": "CLINICAL EXOME"
     }
   },
   {
     "model": "mmpc.studyProcedureType",
-    "pk": 3,
+    "pk": 4,
     "fields": {
-      "type": "PANEL"
+      "type": "PANEL",
+      "name": "PANEL"
     }
   }
 ]

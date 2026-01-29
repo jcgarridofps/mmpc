@@ -8,6 +8,7 @@ import { auth } from '@/auth';
 import { signOut } from '@/auth';
 import { Result } from 'postcss';
 import { json } from 'stream/consumers';
+import { StudyProcedureDictionary } from './definitions';
 
 const CreateAnnotationSchema = z.object({
   id: z.string(),
@@ -33,35 +34,20 @@ const CreateStudySchema = z.object({
     .string({ invalid_type_error: 'Please insert a description.' })
     .max(200, { message: "Description must be at most 200 characters long." }),
   sample_kind: z
-    .string({ invalid_type_error: 'Please select sample kind.' })
+    .string().min(1,'Please select sample kind.' )
     .max(30, { message: "Sample kind must be at most 30 characters long." }),
   procedure: z
-    .string({ invalid_type_error: 'Please select procedure.' })
-    .max(30, { message: "Procedure must be at most 30 characters long." }),
-  panel_version: z
-    .string({ invalid_type_error: 'Please select panel_version.' })
-    .max(30, { message: "Panel version must be at most 30 characters long." })
-    .optional(),
-  exome_capture: z
-    .string({ invalid_type_error: 'Please select exome capture.' })
-    .max(30, { message: "Exome capture version must be at most 30 characters long." })
-    .optional(),
-  gene_list_file: z.custom<File>((file) => {
-    if (!(file instanceof File)) return false;
-    return file.name.endsWith(".csv");
-  }, { message: "Only -csv files are allowed" })
-  .optional(),
-  file_vcf: z.custom<File>((file) => {
-    if (!(file instanceof File)) return false;
-    return file.name.endsWith(".vcf");
-  }, { message: "Only -vcf files are allowed" }),
-  // file_name: z
-  //   .string({ invalid_type_error: 'Please insert a description.' })
-  //   .max(200, { message: "File name must be at most 200 characters long." }),
-  // gene_list_file_name: z
-  //   .string({ invalid_type_error: 'Please insert a description.' })
-  //   .max(200, { message: "Gene list file name must be at most 200 characters long." })
-  // .optional(),
+    .string().min(1, 'Please select procedure.' )
+    .max(64, { message: "Procedure must be at most 30 characters long." }),
+  physical_capture: z
+    .string({ invalid_type_error: 'Please select physical capture.' })
+    .max(64, { message: "Physical capture must be at most 30 characters long." }),
+  virtual_capture: z
+    .string({ invalid_type_error: 'Please select virtual capture.' })
+    .max(64, { message: "Virtual capture version must be at most 30 characters long." }),
+  file_vcf: z
+    .string().min(1, 'Missing file ID.' )
+    .max(128, { message: "File ID too long." }),
 });
 
 const CreateAnalysisSchema = z.object({
@@ -146,13 +132,16 @@ export type StudyState = {
     description?: string[];
     sample_kind?: string[];
     procedure?: string[];
-    panel_version?: string[];
-    exome_capture?: string[];
-    gene_list_file?: string[];
-    file?: string[];
+    physical_capture?: string[];
+    virtual_capture?: string[];
+    file?: string[]; //Only the file ID
   };
   message?: string | null;
   history_id: string;
+  sample: string;
+  procedure: string;
+  physical_capture: string;
+  virtual_capture: string;
 }
 
 export type State = {
@@ -250,62 +239,34 @@ export async function createAnnotation(prevState: State, formData: FormData) {
 
 }
 
+
 export async function createStudy(prevState: StudyState, formData: FormData) {
+
+  console.warn("ACTION CALLED");
 
   console.log(">>> FormData entries:");
 for (const [key, value] of formData.entries()) {
-  if (value instanceof File) {
-    console.log(key, "=> FILE:", value.name, value.type, value.size);
-  } else {
-    console.log(key, "=>", value);
-  }
+  console.log(key, "=>", value);
 }
 
   //console.log("Received FormData:", Object.fromEntries(formData.entries()));
-  let vcf_file = formData.get("file_vcf"); //This data is loaded as a Blob, not a File instance
-  let file_gene = formData.get("gene_list_file"); //This data is loaded as a Blob, not a File instance
+  let vcf_file = formData.get("file_vcf"); //The file UUID
 
-  console.log("--------------1--------------");
-
-  let filename_vcf = "uploaded.vcf"; // Default name
-  let filename_gene = "uploaded.csv"; // Default name
-
-  for (const [key, value] of formData.entries()) {
-    if (key === "file_vcf" && value instanceof File) {
-      filename_vcf = value.name; // Extract correct filename
-    }
-    if (key === "gene_list_file" && value instanceof File) {
-      filename_gene = value.name; // Extract correct filename
-    }
-  }
-
-  console.log("--------------3--------------");
-
-  // Convert Blob to File if needed
-  if (vcf_file instanceof Blob) {
-    vcf_file = new File([vcf_file], filename_vcf, { type: vcf_file.type });
-  }
-
-  console.log("--------------4--------------");
-
-  // Convert Blob to File if needed
-  if (file_gene instanceof Blob) {
-    file_gene = new File([file_gene], filename_gene, { type: file_gene.type });
-  }
-
-  console.log("--------------5--------------");
-
-  const validatedFields = CreateStudy.safeParse({
+  const data2validate = {
     description: formData.get('description'),
     sample_kind: formData.get('sample_kind'),
     procedure: formData.get('procedure'),
-    panel_version: formData.get('panel_version') ?? undefined,
-    exome_capture: formData.get('exome_capture') ?? undefined,
-    gene_list_file: file_gene ?? undefined,
+    physical_capture: formData.get('physical_capture'),
+    virtual_capture: formData.get('virtual_capture'),
     file_vcf: vcf_file,
-  });
+  }
 
-  console.log("--------------6--------------");
+  //console.log(JSON.stringify(data2validate));
+
+  const validatedFields = CreateStudy.safeParse(data2validate);
+
+
+  console.warn("VALIDATION SUCCESS:", validatedFields.success);
 
   if (!validatedFields.success) {
     console.error("Zod validation failed:", validatedFields.error.format());
@@ -313,19 +274,20 @@ for (const [key, value] of formData.entries()) {
       ...prevState,
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing fields. Failed to create Study'
+      message: 'Missing fields. Failed to create Study',
+      sample: formData.get("sample_kind") as string ?? prevState.sample,
+      procedure: formData.get("procedure") as string ?? prevState.procedure,
+      physical_capture: formData.get("physical_capture") as string ?? prevState.sample,
+      virtual_capture: formData.get("virtual_capture") as string ?? prevState.sample,
     };
   }
-
-  console.log("--------------7--------------");
 
   const {
     description,
     sample_kind,
     procedure,
-    panel_version,
-    exome_capture,
-    gene_list_file,
+    physical_capture,
+    virtual_capture,
     file_vcf,
   } = validatedFields.data;
 
@@ -334,25 +296,18 @@ for (const [key, value] of formData.entries()) {
   const session = await auth();
 
 
-  console.log("--------------8--------------");
-
   const newFormData = new FormData();
   newFormData.append("description", description);
   newFormData.append("sample_kind", sample_kind);
   newFormData.append("procedure", procedure);
-  newFormData.append("panel_version", panel_version? panel_version : '');
-  newFormData.append("exome_capture", exome_capture? exome_capture : '');
-  newFormData.append("gene_list_file", gene_list_file? gene_list_file : '');
-  newFormData.append("file", file_vcf, filename_vcf);
+  newFormData.append("physical_capture", physical_capture);
+  newFormData.append("virtual_capture", virtual_capture);
+  newFormData.append("sample", file_vcf); //File UUID
   newFormData.append("history_id", prevState.history_id);
-  newFormData.append("file_name", filename_vcf);
-  newFormData.append("gene_list_file_name", filename_gene);
 
   const urlSafeDescription = encodeURIComponent(description);
 
   let result: Response;
-
-  console.log("--------------9--------------");
 
   try {
     result = await fetch(process.env.API_BASE_URL +
@@ -366,15 +321,17 @@ for (const [key, value] of formData.entries()) {
         body: newFormData
       });
   } catch (error) {
-    console.error('Create study error:', error);
+    //console.error('Create study error:', error);
     return {
       ...prevState,
       success: false,
-      message: 'Error creating variant analysis'
+      message: 'Error creating variant analysis',
+      sample: prevState.sample,
+      procedure: prevState.procedure,
+      physical_capture: prevState.physical_capture,
+      virtual_capture: prevState.virtual_capture
     };
   }
-
-  console.log("--------------10--------------");
 
   if (!result.ok) {
     const errorMessage = await result.text();
@@ -382,13 +339,16 @@ for (const [key, value] of formData.entries()) {
     return {
       ...prevState,
       success: false,
-      message: errorMessage
+      message: errorMessage,
+      sample: prevState.sample,
+      procedure: prevState.procedure,
+      physical_capture: prevState.physical_capture,
+      virtual_capture: prevState.virtual_capture
     };
   }
-
-  console.log("--------------11--------------");
   
   const study_id: string = (await result.json()).study_id;
+  console.warn("REDIRECTING NOW");
   revalidatePath(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/anotations/`);
   redirect(`/dashboard/histories/${prevState.history_id}/studies/${study_id}/annotations/`);
 
@@ -397,8 +357,6 @@ for (const [key, value] of formData.entries()) {
 }
 
 export async function createAnalysis(prevState: AnalysisState, formData: FormData) {
-console.log("ALADIN SOBRE HIELO");
-console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG " + formData.get('annotation_id'));
 
   const history_id = formData.get('history_id');
   const study_id = formData.get('study_id');

@@ -5,8 +5,8 @@ import os
 import urllib
 from django.conf import settings
 from uuid import UUID
-from mmpc.models import annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
-from mmpc.serializers import reportSerializer, studySerializer
+from mmpc.models import uploadedFile, annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, studyPhysicalCapture, studyVirtualCapture, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
+from mmpc.serializers import reportSerializer, studySerializer, studyProcedureTypeSerializer, studyPhysicalCaptureSerializer, studyProcedureVirtualCaptureSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
 from mmpc.views.analysis import CreateAnalysis
@@ -20,6 +20,11 @@ from django.db import models
 import json
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from mmpc.views import new_variant_analysis
+
+def getStudyProcedureTypeEntries():return studyProcedureType.objects.all()
+def getStudyPhysicalCaptureEntries():return studyPhysicalCapture.objects.all()
+def getStudyVirtualCaptureEntries():return studyVirtualCapture.objects.all()
     
 class Study(APIView):
     """
@@ -76,17 +81,12 @@ class Study(APIView):
         #CHECK ALL NEEDED INFO IS PROVIDED
 
         description = request.POST.get('description', '')
-        gene_list = request.POST.get('gene_list_file', '')
-        exome_capture = request.POST.get('exome_capture', '')
-        panel_version = request.POST.get('panel_version', '')
         procedure_type = request.POST.get('procedure', '')
+        physical_capture = request.POST.get('physical_capture', '')
+        virtual_capture = request.POST.get('virtual_capture', '')
         sample_kind = request.POST.get('sample_kind', '')
-        vcf_file = request.FILES.get('file')
-        gene_list_file = request.FILES.get('gene_list_file')
+        vcf_file = request.POST.get('sample')
         history_id = request.POST.get('history_id', '')
-        file_name = request.POST.get('file_name', '')
-        gene_list_file_name = request.POST.get('gene_list_file_name', '')
-        file_name_name = vcf_file.name
 
         if(history_id == ''):
             return Response({"message":"Please identify history ID"},\
@@ -98,32 +98,11 @@ class Study(APIView):
             return Response({"message":"Please add vcf file"},\
                             status=status.HTTP_400_BAD_REQUEST)
         
-        # --- Save VCF file on disk ---
-        file_path = ''
 
-        try:
-            # Ensure target folder exists
-            save_dir = os.path.join(settings.BASE_DIR, "files")
-            os.makedirs(save_dir, exist_ok=True)
-
-            # Use provided file name or fall back to original
-            safe_name = file_name or vcf_file.name
-
-            file_path = os.path.join(save_dir, safe_name)
-
-            # Write file to disk
-            with default_storage.open(file_path, 'wb+') as destination:
-                for chunk in vcf_file.chunks():
-                    destination.write(chunk)
-
-        except Exception as e:
-            return Response({"message": f"Error saving VCF file: {e}"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
         # Ask for a new pandrugs variant analysis
-        new_analysis_view = pandrugs.NewVariantAnalysis.as_view() #pandrugs variant analysis
-        new_analysis_response = new_analysis_view(request._request)
+        new_analysis_response = new_variant_analysis(sample_file_id=vcf_file)
 
 
         # CREATE STUDY
@@ -137,11 +116,13 @@ class Study(APIView):
 
                 # exome_capture = studyExomeCapture.objects.get()
                 # panel_version
-                procedure_type = studyProcedureType.objects.get(type = procedure_type)
+                #procedure_type = studyProcedureType.objects.get(type = procedure_type)
                 #sample_kind = studySample.objects.get()
 
                 new_study_procedure = studyProcedure.objects.create(
-                    procedureType = procedure_type
+                    procedureType_id = procedure_type,
+                    physicalCapture_id = physical_capture,
+                    virtualCapture_id = virtual_capture
                 )
                 new_study_procedure.save()
 
@@ -157,7 +138,7 @@ class Study(APIView):
                     history_id = history_id,\
                     uploader = uploader,\
                     studyProcedure = new_study_procedure,\
-                    variantsFileRoute = file_path,\
+                    sampleFile_id = vcf_file,\
                     )
                 
                 new_study_entry.save()
@@ -274,3 +255,34 @@ class StudiesCount(APIView):
         r_data = {'entry_count':db_entry_count}
         return Response(data = r_data, status = status.HTTP_200_OK)
         #endregion
+
+class StudyProcedureDictionary(APIView):
+    """
+    Get procedure type, physical capture and virtual capture entries
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        GET function to retrieve data from DDBB
+        """
+        #Fetch DDBB entries
+        
+        try:
+            procedure_type_entries = getStudyProcedureTypeEntries()
+            procedure_physical_capture_entries = getStudyPhysicalCaptureEntries()
+            procedure_virtual_capture_entries = getStudyVirtualCaptureEntries()
+        except:
+            return Response(data = {"message":"Internal server error"}, status = status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        #format response object
+        response = {
+            "procedure_type_entries": studyProcedureTypeSerializer(procedure_type_entries, many=True).data,
+            "procedure_physical_capture_entries": studyPhysicalCaptureSerializer(procedure_physical_capture_entries, many=True).data,
+            "procedure_virtual_capture_entries": studyProcedureVirtualCaptureSerializer(procedure_virtual_capture_entries, many=True).data
+        }
+
+        print(response)
+
+        return Response(data = response, status = status.HTTP_200_OK)
+        

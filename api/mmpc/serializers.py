@@ -69,3 +69,19 @@ class studySerializer(serializers.ModelSerializer):
         model = study
         fields = ['id', 'appId', 'description', 'date', 'studyProcedure']
 
+class studyProcedureTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = studyProcedureType
+        fields = '__all__'
+
+class studyPhysicalCaptureSerializer(serializers.ModelSerializer):
+    procedure = studyProcedureTypeSerializer
+    class Meta:
+        model = studyPhysicalCapture
+        fields = '__all__'
+
+class studyProcedureVirtualCaptureSerializer(serializers.ModelSerializer):
+    physicalCapture = studyPhysicalCaptureSerializer
+    class Meta:
+        model = studyVirtualCapture
+        fields = '__all__'

@@ -2,6 +2,7 @@
 
 import postgres from 'postgres';
 import { auth } from '@/auth';
+import { StudyProcedureDictionary } from './definitions';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -14,7 +15,7 @@ export async function newAnnotation(studyId: string) {
   try {
 
     const res = await fetch(process.env.API_BASE_URL +
-      "/api/annotation/", {
+      "/api/annotation/new/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
@@ -26,15 +27,15 @@ export async function newAnnotation(studyId: string) {
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch external data`);
+      throw new Error(`Failed to fetch external data. study_id:${studyId}`);
     }
 
     const data = await res.json();
     return data;
 
   } catch (error) {
-    console.error('Annotation could not be created: ', error);
-    throw new Error('Annotation could not be created.');
+    console.error('Annotation could not be created. study_id:${studyId}.  ', error);
+    throw new Error('Annotation could not be created.study_id:${studyId}');
   }
 
 
@@ -77,6 +78,9 @@ export async function fetchHistory(query: string) {
    * Fetch history by given history_appId or patient_appId
    */
   // await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  console.log("FETCH HISTORY");
+
   const session = await auth();
 
   try {
@@ -692,6 +696,27 @@ export async function fetchAnalysisByAnalysisId(analysis_id: string) {
   }
 }
 
+export async function fetchAnalysisObjectByAnalysisId(analysis_id: string) {
+  const session = await auth();
+  try {
+    const analysis = await fetch(process.env.API_BASE_URL +
+      `/api/analysis/?analysis_id=${analysis_id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`,
+          "Content-Type": "Application/json",
+        },
+      });
+
+    let res = await analysis.json();
+    return res;
+  } catch (error) {
+    console.error('Fetch analysis by analysis id error:', error);
+    throw new Error('Failed to fetch analysis by analysis id.');
+  }
+}
+
 export async function fetchPatientByHistoryAppId(history_appId: string) {
   const session = await auth();
   try {
@@ -711,4 +736,30 @@ export async function fetchPatientByHistoryAppId(history_appId: string) {
     console.error('Fetch patient by history appId error:', error);
     throw new Error('Failed to fetch patient by history appId.');
   }
+}
+
+export async function fetchStudyProcedureDictionary() {
+  console.log("GET_STUDY_PROCEDURE_DICTIONARY");
+
+  const session = await auth();
+
+  let data_dictionary: StudyProcedureDictionary = {} as StudyProcedureDictionary;
+  try {
+    const result = await fetch(process.env.API_BASE_URL +
+      "/api/study/procedure/dictionary/",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${session?.accessToken}`
+        }
+      });
+    
+      data_dictionary = await result.json();
+
+  } catch (error) {
+    console.error('Get study procedure dictionary error:', error);
+  }
+
+  console.log("STUDY_PROCEDURE_DICTIONARY: " + JSON.stringify(data_dictionary));
+  return data_dictionary;
 }

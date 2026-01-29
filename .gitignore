@@ -21,6 +21,7 @@
 /api/entrypoint.dev.sh
 /api/api/maintenance_mode_state.txt
 /api/gunicorn.pid
+/api/files
 
 # APP
 /app/.env
@@ -45,6 +46,9 @@
 
 #POS JOBS PANDRUGS
 /pos_jobs_pandrugs/.env
+
+#FILE_UPLOADER
+/file_uploader/.env
 
 # GENERAL
 .vscode/*

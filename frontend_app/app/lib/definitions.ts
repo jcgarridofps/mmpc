@@ -8,3 +8,30 @@ export type User = {
   email: string;
   password: string;
 };
+
+export type StudyProcedureType = {
+  id: number;
+  type: string;
+  name: string;
+}
+
+export type StudyPhysicalCapture = {
+  id: number;
+  type: string;
+  name: string;
+  procedure: string; // id
+}
+
+export type StudyVirtualCapture = {
+  id: number;
+  type: string;
+  name: string;
+  physical_capture: string; // id
+  geneList: string;
+}
+
+export type StudyProcedureDictionary = {
+  procedure_type_entries: StudyProcedureType[];
+  procedure_physical_capture_entries: StudyPhysicalCapture[];
+  procedure_virtual_capture_entries: StudyVirtualCapture[];
+}

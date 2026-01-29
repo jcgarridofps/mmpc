@@ -60,8 +60,8 @@ export default async function DataTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(annotation.date)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3 text-red-700">
-                    OUTDATED
+                  <td className="whitespace-nowrap px-3 py-3 text-green-700">
+                    UPDATED
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {annotation.status}

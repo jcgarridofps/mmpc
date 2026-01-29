@@ -99,7 +99,19 @@ class computationStatus(models.Model):
     computationStatus = models.CharField(max_length=20, unique=True)
 
 class studyProcedureType(models.Model):
-    type = models.CharField(max_length=25, unique=True)
+    type = models.CharField(max_length=64, unique=True, null=True)
+    name = models.CharField(max_length=64, unique=True, null=True)
+
+class studyPhysicalCapture(models.Model):
+    type = models.CharField(max_length=64, unique=True, null=True)
+    name = models.CharField(max_length=64, unique=True, null=True)
+    procedure = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE, null=True)
+
+class studyVirtualCapture(models.Model):
+    type = models.CharField(max_length=64, unique=True, null=True)
+    name = models.CharField(max_length=64, unique=True, null=True)
+    physical_capture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE, null=True)
+    geneList = models.JSONField(default=dict)
 
 class studySample(models.Model):
     sample = models.CharField(max_length=20, unique=True)
@@ -128,11 +140,19 @@ class history(models.Model):
 
 class studyProcedure(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE)
     sampleKind = models.ForeignKey(studySample, on_delete=models.CASCADE, null=True)
-    panelVersion = models.ForeignKey(studyPanelVersion, on_delete=models.CASCADE, null=True),
-    exomeCapture = models.ForeignKey(studyExomeCapture, on_delete=models.CASCADE, null=True)
-    geneList = models.JSONField(default = dict)
+    procedureType = models.ForeignKey(studyProcedureType, on_delete=models.CASCADE, null=True)
+    physicalCapture = models.ForeignKey(studyPhysicalCapture, on_delete=models.CASCADE, null=True)
+    virtualCapture = models.ForeignKey(studyVirtualCapture, on_delete=models.CASCADE, null=True)
+    
+
+class uploadedFile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    file_name = models.CharField(max_length=256)
+    original_file_name = models.CharField(max_length=256)
+    checksum = models.CharField(max_length=256)
+    handled = models.BooleanField(default=False, help_text="For detecting orphan files")
+    date = models.DateTimeField(auto_now=True)
 
 class study(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -140,10 +160,10 @@ class study(models.Model):
     description = models.CharField(max_length=200)
     studyProcedure = models.ForeignKey(studyProcedure, on_delete=models.CASCADE, null=True)
     date = models.DateField(auto_now=True)
-    variantsFileRoute = models.CharField(max_length=200)
     history = models.ForeignKey(history, on_delete=models.CASCADE, null=True)
     uploader = models.ForeignKey(customUser, null=True, on_delete=models.DO_NOTHING)
     sampleId = models.CharField(max_length=60, null=True)
+    sampleFile = models.ForeignKey(uploadedFile, on_delete=models.DO_NOTHING, null=True)
 
 class annotation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -205,3 +225,4 @@ class drugQuery(models.Model):
     variant_analysis = models.ForeignKey(variantAnalysis, on_delete=models.DO_NOTHING)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     document_id = models.CharField(max_length=60, default="")
+

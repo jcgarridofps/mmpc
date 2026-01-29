@@ -170,76 +170,53 @@ class Annotations(APIView):
         POST function to generate new variant analysis DDBB entries
         This endpoint makes use of pandrugs.py endpoints
         """
-
-        raw_description = request.GET.get('name', '')
-        description = urllib.parse.unquote(raw_description)
-        if(len(description) > 30):
-            return Response({"Description must be at most 30 characters long."},\
+        
+        study_id = request.data.get('study_id', '')
+        if(study_id == ''):
+            return Response({"message":"No study id provided"},\
                             status=status.HTTP_400_BAD_REQUEST)
         
-        patient_identifier = request.POST.get('patient_identifier', '')
-        if(patient_identifier == ''):
-            return Response({"message":"A patient identifier is needed"},\
-                            status=status.HTTP_400_BAD_REQUEST)
+        parent_study = study.objects.get(id= study_id)
 
-        cancer_types = request.POST.get('cancer_types', '') # The user string filter //TODO: get cancer types from body
-        if(len(cancer_types) < 3):
-            return Response({"message":"At least one cancer type must be selected"},\
-                            status=status.HTTP_400_BAD_REQUEST)
+        if not parent_study:
+            return Response({"message": "Provided study not found"},\
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        new_analysis_view = pandrugs.NewVariantAnalysis.as_view()
-        new_analysis_response = new_analysis_view(request._request)
+        computation_version = computationVersion.objects.get(id = 1) #N/A
+        computation_status = computationStatus.objects.get(computationStatus = 'PENDING')
+
+        # Ask for a new pandrugs variant analysis
+        new_analysis_response = pandrugs.new_variant_analysis(sample_file_id=parent_study.sampleFile.id)
 
         # If the new analysis has been created (in pandrugs)
         if new_analysis_response.status_code == 201:
             try:
                 new_analysis_comp_id = new_analysis_response.data['analysis_id']
-                uploader = customUser.objects.get(email=request.user.email)
-                uploader_group = uploader.entityGroup
 
-                #Create or get patient
-                patient_ref = None
-                
-                try:
-                    patient_ref = get_patient(patient_identifier)
-                    if patient_ref is None:
-                        patient_ref = create_patient(patient_identifier)
-                except Exception as e:
-                    print("Error getting or creating patient")
-                    return Response({"message":"Error creating variant analysis"},\
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
                 #Create the new DDBB entry for the new variant analysis
 
+                #TODO: check correct computation version. This may need only a string and confirm version some other way
                 new_annotation_entry = annotation.objects.create(\
-                    description=description,\
-                    computation_id=new_analysis_comp_id,\
-                    uploader = uploader,\
-                    uploaderGroup = uploader_group,\
-                    status = 'PENDING',\
-                    patient = patient_ref)
+                    pdComputationId = new_analysis_comp_id,\
+                    version = computation_version,\
+                    status = computation_status,\
+                    study = parent_study)
+
                 new_annotation_entry.save()
 
-
-
-                analysis_create_result = CreateAnalysis(\
-                    cancer_types=cancer_types,\
-                    parent_analysis_id=new_annotation_entry.id\
-                )
-
-                if analysis_create_result:
-                    return Response(None, status=status.HTTP_201_CREATED)
-                else:
-                    return Response({"message":"Variant analysis registered, but couldn't create drug query"},\
-                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                if not new_annotation_entry:
+                    return Response({"message":"Error creating annotation"},\
+                                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
             except Exception as e:
                 return Response({"message":"New entry could not be generated into DDBB: "},\
                                  status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        #region response and status
-        return Response(new_analysis_response.data, status=new_analysis_response.status_code)
-        #endregion
+        data = {
+            "annotation_id": new_annotation_entry.id,
+        }
+        return Response(data, status=new_analysis_response.status_code)
 
 class AnnotationResult(APIView):
     """
