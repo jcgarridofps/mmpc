@@ -72,28 +72,28 @@ export default function Form({
     (async () => {
       const dictionary: StudyProcedureDictionary = await fetchStudyProcedureDictionary() as StudyProcedureDictionary;
       setFormDictionary(dictionary);
-      console.log("DICTIONARY: " + JSON.stringify(dictionary));
+      //console.log("DICTIONARY: " + JSON.stringify(dictionary));
     })();
   }, []);
 
     useEffect(() => {
     (async () => {
-      console.log("DICTIONARY: " + JSON.stringify(formDictionary));
+      //console.log("DICTIONARY: " + JSON.stringify(formDictionary));
     })();
   }, [formDictionary]);
 
   //console.log(file?.name);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handle file change");
+    //console.log("handle file change");
     if (event.target.files && event.target.files.length > 0) {
       setFileName(event.target.files[0].name);
       setFile(event.target.files[0]);
-      console.log("file selected");
+      //console.log("file selected");
     } else {// Reset if no file is selected
       setFileName("");
       setFile(null);
-      console.log("file not selected");
+      //console.log("file not selected");
     }
   }
 
