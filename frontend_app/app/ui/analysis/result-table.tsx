@@ -500,7 +500,7 @@ export default function DrugQueryResultTable(
                   </div>
 
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex items-center break-all line-clamp-3 text-center'>
+                    <div className='flex-row items-center break-all line-clamp-1 text-center'>
                       <p
                         title={
                           drug.therapy?.includes('TARGETED') ? 'TARGETED' :
@@ -666,7 +666,7 @@ export default function DrugQueryResultTable(
                   </div>
 
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
-                    <div className='flex items-center break-all line-clamp-3 text-center'>
+                    <div className='flex-row items-center break-all line-clamp-1 text-center'>
                       <p
                         title={
                           drug.therapy?.includes('TARGETED') ? 'TARGETED' :
@@ -684,7 +684,11 @@ export default function DrugQueryResultTable(
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center break-all text-center'>
                       {drug.gene.map((gene: any) => (
-                        <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
+                        <div className='flex-row items-center' key={'symbol' + gene.geneSymbol}>
+                          <span>{gene.geneSymbol}</span>
+                          {
+                          (drug.geneDrugInfo.some((info: any) => info.sensitivity.includes("RESISTANCE") && info.gene[0].geneSymbol == gene.geneSymbol) ? <span title='RESISTANT'>&#10071;</span> : "")
+                          }</div>
                       ))}
                     </div>
                   </div>
