@@ -7,22 +7,23 @@ import { useState } from 'react';
 
 
 export default function DrugQueryResultGenesPanel(
-  { affected_genes, presence, n_variants }: { affected_genes: string[], presence: any, n_variants: Number }) {
+  { sequenced_genes, affected_genes, presence, n_variants }: { sequenced_genes: string[], affected_genes: string[], presence: any, n_variants: Number }) {
 
   const [enableGenesExcluded, setEnableGenesExcluded] = useState<boolean>(false);
   const [enableGenesAnalyzed, setEnableGenesAnalyzed] = useState<boolean>(false);
   const [enableAffectedGenes, setEnableAffectedGenes] = useState<boolean>(false);
+  const [enableSequencedGenes, setEnableSequencedGenes] = useState<boolean>(false);
 
   return (
     <div className="flex-row w-full align-middle">
       <div className="p-4 pt-0 pb-0 pl-4 w-full h-14 bg-gray-50 rounded-xl mb-4 flex justify-between items-center">
         <div className='flex-1 h-full justify-center flex items-center'>
-          <p className="text-left ml-4">Sequenced genes:.</p>
+          <p className="text-left ml-4">Sequenced genes:{sequenced_genes.length}</p>
           <button
             type="button"
             className="ml-4 w-7 h-7 aspect-square border-2 border-gray-300 bg-gray-50 text-black rounded-lg hover:bg-gray-300 flex items-center justify-center"
             title='Clinical reports'
-          //onClick={}
+            onClick={()=>setEnableSequencedGenes(!enableSequencedGenes)}
           >
             <EyeIcon className="h-5 w-5" />
           </button>
@@ -78,6 +79,13 @@ export default function DrugQueryResultGenesPanel(
           </button>
         </div>
       </div>
+
+      {enableSequencedGenes &&
+        <div className="p-4 pl-4 w-full bg-gray-50 rounded-xl mb-4 flex-row justify-between items-center">
+          <p className="font-medium mb-[1rem]">Sequenced genes</p>
+          <p className="text-left w-full">{sequenced_genes.toString().replaceAll(',', ', ')}</p>
+        </div>
+      }
 
       {enableAffectedGenes &&
         <div className="p-4 pl-4 w-full bg-gray-50 rounded-xl mb-4 flex-row justify-between items-center">

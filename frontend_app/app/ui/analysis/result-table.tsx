@@ -22,7 +22,7 @@ import { list } from 'postcss';
   */}
 
 export default function DrugQueryResultTable(
-  { query_result, cancer_types }: { query_result: any, cancer_types: string[] }) {
+  { sequenced_genes, query_result, cancer_types }: { sequenced_genes: string[], query_result: any, cancer_types: string[] }) {
 
   const [enableFiltersView, setEnableFiltersView] = useState<boolean>(false);
 
@@ -49,8 +49,11 @@ export default function DrugQueryResultTable(
   }
 
   const mustBeVisible = (gene_drug_group: any) => {
+    if (gene_drug_group.gene.every((gene:any)=>!sequenced_genes.includes(gene.geneSymbol))) return false;
+
     if (gene_drug_group.status === "CLINICAL_TRIALS" || gene_drug_group.status === "EXPERIMENTAL") return true;
     if (gene_drug_group.status === "APPROVED" && cancer_types.some(cancer => (gene_drug_group.cancer as string[]).includes(cancer))) return true;
+    
     return false;
   }
 
@@ -67,7 +70,7 @@ export default function DrugQueryResultTable(
           if (drug.status) drug_status.add(drug.status);
           if (drug.therapy) type_of_therapy.add(drug.therapy);
           if (drug.gene) drug.gene.map((gene: any) => {
-            if (gene.geneSymbol) gene_list.add(gene.geneSymbol);
+            if (gene.geneSymbol && sequenced_genes.includes(gene.geneSymbol)) gene_list.add(gene.geneSymbol);
           });
           //if(drug.dScore > 0.5 && drug.gScore > 0.4) clinical_trials = ++clinical_trials;
           //if(drug.status == "CLINICAL_TRIALS" || drug.status == "EXPERIMENTAL") clinical_trials = ++clinical_trials;
@@ -80,7 +83,6 @@ export default function DrugQueryResultTable(
     setTypeOfTherapyList(type_of_therapy);
     setGeneList(gene_list);
 
-    console.log("DRUG_COUNT: " + drug_families.size);
   }, []);
 
   
@@ -151,7 +153,7 @@ export default function DrugQueryResultTable(
           </div>
         </div>
 
-        {/*TODO: DO FILTERS HERE*/}
+        {/*FILTERS*/}
 
         {enableFiltersView &&
           <div className="p-[1rem] pt-[1rem] pb-[1rem] h-[20rem] bg-gray-50 rounded-xl mb-4 ml-[1rem] mr-[1rem] flex items-center justify-center">
@@ -452,7 +454,7 @@ export default function DrugQueryResultTable(
           </div>
         }
 
-        {/*END TODO FILTERS*/}
+        {/*END FILTERS*/}
 
 
         <div id='sensitivity' className="h-full w-full flex-row rounded-lg bg-green-100 p-[1rem]  mb-4 ">
@@ -518,7 +520,8 @@ export default function DrugQueryResultTable(
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center break-all text-center'>
                       {drug.gene.map((gene: any) => (
-                        <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
+                          sequenced_genes.includes(gene.geneSymbol) && 
+                          <p key={'symbol' + gene.geneSymbol}>{gene.geneSymbol}</p>
                       ))}
                     </div>
                   </div>
@@ -526,6 +529,7 @@ export default function DrugQueryResultTable(
                     <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) &&
                         <p
                           className='truncate'
                           key={'HGVS' + gene.geneSymbol}
@@ -547,6 +551,7 @@ export default function DrugQueryResultTable(
                   <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center truncate text-center'>
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) &&
                         <p
                           className='truncate'
                           key={'consequence_' + gene.geneSymbol}
@@ -562,6 +567,7 @@ export default function DrugQueryResultTable(
                     <div className='flex-row items-center'>
 
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) &&
                         <p key={'frequency_' + gene.geneSymbol}>{
                           '0.1 (1/10)'
                         }</p>
@@ -573,6 +579,7 @@ export default function DrugQueryResultTable(
                     <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) &&
                         <p
                           className='truncate'
                           title={
@@ -598,7 +605,7 @@ export default function DrugQueryResultTable(
 
 
                       {drug.geneDrugInfo.map((info: any, index: number) => (
-
+                        sequenced_genes.includes(info.gene[0].geneSymbol) &&
                         < p className='truncate' key={'info_' + index} >
                           {info.drugStatusInfo?.includes('FDA') ? 'FDA'
                             : info.drugStatusInfo?.includes('Clinical Trials') ? 'Clinical Trials'

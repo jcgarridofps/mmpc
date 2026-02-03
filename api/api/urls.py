@@ -54,7 +54,7 @@ urlpatterns = [
     path('api/studies/', Studies.as_view(), name='studies'),
     path('api/studies/count/', StudiesCount.as_view(), name='studies'),
 
-    path('api/capture_manager/virtual_capture/', CaptureManager.as_view(), name='capture_manager'),
+    #path('api/capture_manager/virtual_capture/', CaptureManager.as_view(), name='capture_manager'),
 
     path('api/files/new/', RegisterFile.as_view(), name='files_new'),
 ]
