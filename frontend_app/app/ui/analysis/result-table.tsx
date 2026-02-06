@@ -691,6 +691,7 @@ export default function DrugQueryResultTable(
                   <div className='w-[10rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center break-all text-center'>
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) && 
                         <div className='flex-row items-center' key={'symbol' + gene.geneSymbol}>
                           <span>{gene.geneSymbol}</span>
                           {
@@ -703,6 +704,7 @@ export default function DrugQueryResultTable(
                     <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) && 
                         <p
                           className='truncate'
                           key={'HGVS' + gene.geneSymbol}
@@ -724,6 +726,7 @@ export default function DrugQueryResultTable(
                   <div className='w-[12rem] h-full border-l-[2px] border-white flex items-center justify-center p-[1rem]'>
                     <div className='flex-row items-center truncate text-center'>
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) && 
                         <p
                           className='truncate'
                           key={'consequence_' + gene.geneSymbol}
@@ -739,6 +742,7 @@ export default function DrugQueryResultTable(
                     <div className='flex-row items-center'>
 
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) && 
                         <p key={'frequency_' + gene.geneSymbol}>{
                           '0.1 (1/10)'
                         }</p>
@@ -750,6 +754,7 @@ export default function DrugQueryResultTable(
                     <div className='flex-row items-center truncate text-center'>
 
                       {drug.gene.map((gene: any) => (
+                        sequenced_genes.includes(gene.geneSymbol) && 
                         <p
                           className='truncate'
                           title={
@@ -775,7 +780,7 @@ export default function DrugQueryResultTable(
 
 
                       {drug.geneDrugInfo.map((info: any, index: number) => (
-
+                        sequenced_genes.includes(info.gene[0].geneSymbol) &&
                         < p className='truncate' key={'info_' + index} >
                           {info.drugStatusInfo?.includes('FDA') ? 'FDA'
                             : info.drugStatusInfo?.includes('Clinical Trials') ? 'Clinical Trials'
