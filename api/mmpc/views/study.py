@@ -6,7 +6,7 @@ import urllib
 from django.conf import settings
 from uuid import UUID
 from mmpc.models import uploadedFile, annotation, customUser, drugQuery, report, entityGroup, patient, history, study, studyProcedure, studyPhysicalCapture, studyVirtualCapture, computationVersion, computationStatus, studyExomeCapture, studyPanelVersion, studyProcedureType, studySample
-from mmpc.serializers import reportSerializer, studySerializer, studyProcedureTypeSerializer, studyPhysicalCaptureSerializer, studyProcedureVirtualCaptureSerializer
+from mmpc.serializers import reportSerializer, studySerializer, studyProcedureTypeSerializer, studyPhysicalCaptureSerializer, studyVirtualCaptureSerializer
 from mmpc.views import pandrugs
 from mmpc.views.patient import get_patient, create_patient
 from mmpc.views.analysis import CreateAnalysis
@@ -279,7 +279,7 @@ class StudyProcedureDictionary(APIView):
         response = {
             "procedure_type_entries": studyProcedureTypeSerializer(procedure_type_entries, many=True).data,
             "procedure_physical_capture_entries": studyPhysicalCaptureSerializer(procedure_physical_capture_entries, many=True).data,
-            "procedure_virtual_capture_entries": studyProcedureVirtualCaptureSerializer(procedure_virtual_capture_entries, many=True).data
+            "procedure_virtual_capture_entries": studyVirtualCaptureSerializer(procedure_virtual_capture_entries, many=True).data
         }
 
         print(response)

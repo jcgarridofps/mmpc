@@ -15,6 +15,8 @@ export default async function DrugQueryResult(
   const n_variants: Number = annotation_result.variantsInInput;
   const presence = await fetchPresence(affected_genes);
   const cancer_types: string[] = analysis_object.cancerTypes;
+  const sequenced_genes: string[] = analysis_object.annotation.study.studyProcedure.virtualCapture.geneList;
+  
 
   return (
 
@@ -22,13 +24,13 @@ export default async function DrugQueryResult(
 
     <div className="mt-6 flow-root">
 
-      <DrugQueryResultGenesPanel affected_genes={affected_genes} presence={presence} n_variants={n_variants} />
+      <DrugQueryResultGenesPanel sequenced_genes = {sequenced_genes} affected_genes={affected_genes} presence={presence} n_variants={n_variants} />
 
       <div className="p-4 pl-4 w-full h-14 bg-gray-50 rounded-xl mb-4 flex justify-between items-center">
         <p className="text-left w-full">{`Selected cancer types: ${cancer_types}`}.</p>
       </div>
 
-      <DrugQueryResultTable query_result={{ "drug_query_result": analysis_result, "variant_analysis_result": annotation_result, "presence": presence }} cancer_types={cancer_types}/>
+      <DrugQueryResultTable sequenced_genes = {sequenced_genes} query_result={{ "drug_query_result": analysis_result, "variant_analysis_result": annotation_result, "presence": presence }} cancer_types={cancer_types}/>
 
 {/*       <div className='mt-16'>
         <pre>

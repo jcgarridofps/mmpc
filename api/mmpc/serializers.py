@@ -21,6 +21,57 @@ class locationSerializer(serializers.ModelSerializer):
         model = location
         fields = ['id', 'name', 'latitude', 'longitude']
 
+
+
+
+class reportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = report
+        fields = ['id', 'date']
+
+class historySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = history
+        fields = ['id', 'appId']
+
+class studySampleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = studySample
+        fields = '__all__'
+
+class studyProcedureTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = studyProcedureType
+        fields = '__all__'
+
+class studyPhysicalCaptureSerializer(serializers.ModelSerializer):
+    procedure = studyProcedureTypeSerializer()
+    class Meta:
+        model = studyPhysicalCapture
+        fields = '__all__'
+
+class studyVirtualCaptureSerializer(serializers.ModelSerializer):
+    physical_capture = studyPhysicalCaptureSerializer()
+    class Meta:
+        model = studyVirtualCapture
+        fields = '__all__'
+
+class studyProcedureSerializer(serializers.ModelSerializer):
+    sampleKind = studySampleSerializer()
+    procedureType = studyProcedureTypeSerializer()
+    physicalCapture = studyPhysicalCaptureSerializer()
+    virtualCapture = studyVirtualCaptureSerializer()
+    class Meta:
+        model = studyProcedure
+        fields = '__all__'
+
+class studySerializer(serializers.ModelSerializer):
+    studyProcedure = studyProcedureSerializer()
+    class Meta:
+        model = study
+        fields = ['id', 'appId', 'description', 'date', 'studyProcedure']
+
 class annotationSerializer(serializers.ModelSerializer):
     status = serializers.SlugRelatedField(
         read_only=True,
@@ -30,9 +81,10 @@ class annotationSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='state'
     )
+    study = studySerializer()
     class Meta:
         model = annotation
-        fields = ['id', 'appId', 'date', 'status', 'version']
+        fields = ['id', 'appId', 'date', 'status', 'version', 'study']
 
 class analysisSerializer(serializers.ModelSerializer):
     type = serializers.SlugRelatedField(
@@ -47,41 +99,7 @@ class analysisSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='state'
     )
+    annotation = annotationSerializer()
     class Meta:
         model = analysis
-        fields = ['id', 'appId', 'type', 'version', 'status', 'date', 'cancerTypes']
-
-
-class reportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = report
-        fields = ['id', 'date']
-
-class historySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = history
-        fields = ['id', 'appId']
-
-class studySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = study
-        fields = ['id', 'appId', 'description', 'date', 'studyProcedure']
-
-class studyProcedureTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = studyProcedureType
-        fields = '__all__'
-
-class studyPhysicalCaptureSerializer(serializers.ModelSerializer):
-    procedure = studyProcedureTypeSerializer
-    class Meta:
-        model = studyPhysicalCapture
-        fields = '__all__'
-
-class studyProcedureVirtualCaptureSerializer(serializers.ModelSerializer):
-    physicalCapture = studyPhysicalCaptureSerializer
-    class Meta:
-        model = studyVirtualCapture
-        fields = '__all__'
+        fields = ['id', 'appId', 'type', 'version', 'status', 'date', 'cancerTypes', 'annotation']
