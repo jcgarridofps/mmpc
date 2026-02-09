@@ -62,10 +62,10 @@ export default async function Page(props: {
         <InformationCircleIcon className="h-[30] w-[30] text-gray-500" />
         <p className="text-left w-full ml-4">Select one analysis to review or request a new one.</p>
         <div className="h-full inline-block flex items-center ">
-          <CreateClinicalReport variant_analysis_uuid={params.annotation_id} drug_query_uuid={params.analysis_id} />
+          <CreateClinicalReport redirection={`/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/${params.analysis_id}/clinical-reports/create`} />
         </div>
         <div className=" ml-2 h-full inline-block flex items-center ">
-          <ClinicalReports variant_analysis_uuid={params.annotation_id} drug_query_uuid={params.analysis_id} />
+          <ClinicalReports redirection={`/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/${params.analysis_id}/clinical-reports/`} />
         </div>
       </div>
       

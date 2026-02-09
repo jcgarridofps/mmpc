@@ -8,7 +8,7 @@ import { createReport, ReportState } from '@/app/lib/actions';
 import { useActionState } from 'react';
 
 export default function Form(
-  {variant_analysis_id, drug_query_id}:{variant_analysis_id:string, drug_query_id:string},
+  {history_id, study_id, annotation_id, analysis_id}:{history_id:string, study_id:string, annotation_id:string, analysis_id:string},
 ) {
   const initialState: ReportState = { success: false, message: null, errors: {}};
   const [state, formAction] = useActionState<ReportState, FormData>(createReport, initialState);
@@ -44,15 +44,27 @@ export default function Form(
           </div>
           <input
                   type="hidden"
-                  id="variant_analysis_id"
-                  name="variant_analysis_id"
-                  value={variant_analysis_id}               
+                  id="history_id"
+                  name="history_id"
+                  value={history_id}               
                 />
           <input
                   type="hidden"
-                  id="drug_query_id"
-                  name="drug_query_id"
-                  value={drug_query_id}               
+                  id="study_id"
+                  name="study_id"
+                  value={study_id}               
+                />
+          <input
+                  type="hidden"
+                  id="annotation_id"
+                  name="annotation_id"
+                  value={annotation_id}               
+                />
+          <input
+                  type="hidden"
+                  id="analysis_id"
+                  name="analysis_id"
+                  value={analysis_id}               
                 />
           <div id="clinical-report-error" aria-live="polite" aria-atomic="true">
             {state.errors?.clinical_report &&

@@ -5,7 +5,7 @@ import { CreateClinicalReport } from '@/app/ui/analysis/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchFilteredReportPages } from '@/app/lib/data';
+import { fetchAnalysisByAnalysisId, fetchAnnotationByAnnotationId, fetchFilteredReportPages, fetchPatientByHistoryId, fetchStudyByStudyId } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/ui/annotations/breadcrumbs';
 import Table from '@/app/ui/report/table';
@@ -16,7 +16,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page(props: {
-  params: Promise<{ id: string, query_id: string }>;
+  params: Promise<{ 
+    history_id: string,
+    study_id: string,
+    annotation_id: string, 
+    analysis_id: string 
+  }>;
   searchParams?: Promise<{
     query?: string;
     page?: string;
@@ -25,28 +30,30 @@ export default async function Page(props: {
 
   const searchParams = await props.searchParams;
   const params = await props.params;
+  const patient_appId = await fetchPatientByHistoryId(params.history_id);
+  const study_appId = await fetchStudyByStudyId(params.study_id);
+  const annotation_appId = await fetchAnnotationByAnnotationId(params.annotation_id);
+  const analysis_appId = await fetchAnalysisByAnalysisId(params.analysis_id);
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const variantAnalysisId = params.id;
-  const drugQueryId = params.query_id;
-  const totalPages = await fetchFilteredReportPages(query, drugQueryId);
+  const totalPages = await fetchFilteredReportPages(query, params.analysis_id);
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Patient: ENXXXXXXXXX', href: '/dashboard/' },
+          { label: `Patient: ${patient_appId}`, href: `/dashboard/histories/${params.history_id}/studies/` },
           {
-            label: 'Study: SXXXXXXXXX', href: `/dashboard2/`
+            label: `Study: ${study_appId}`, href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/`
           },
           {
-            label: 'Annotation: AXXXXXXXXX', href: `/dashboard3/`
+            label: `Annotation: ${annotation_appId}`, href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/`
           },
           {
-            label: 'Analysis: DXXXXXXXXX', href: `/dashboard4/`
+            label: `Analysis: ${analysis_appId}`, href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/${params.analysis_id}/review`
           },
           {
-            label: 'Reports', href: `/dashboard5/`, active: true
+            label: 'Reports', href: `/dashboard/histories/${params.history_id}/studies/${params.study_id}/annotations/${params.annotation_id}/analyses/${params.analysis_id}/clinical-reports`, active: true
           },
         ]}
       />
@@ -62,7 +69,7 @@ export default async function Page(props: {
 
       <div className="w-full">
         <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-          <Table variant_analysis_id={variantAnalysisId} drug_query_id={drugQueryId} currentPage={currentPage} />
+          <Table annotation_id={params.annotation_id} analysis_id={params.analysis_id} currentPage={currentPage} />
         </Suspense>
         <div className="mt-5 flex w-full justify-center">
           <Pagination totalPages={totalPages} />

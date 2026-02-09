@@ -8,15 +8,15 @@ export type Report = {
 };
 
 export default async function Table({
-  variant_analysis_id,
-  drug_query_id,
+  annotation_id,
+  analysis_id,
   currentPage,
 }: {
-  variant_analysis_id: string;
-  drug_query_id: string;
+  annotation_id: string;
+  analysis_id: string;
   currentPage: number;
 }) {
-  const reports:Report[] = await fetchFilteredReports(drug_query_id, currentPage);
+  const reports:Report[] = await fetchFilteredReports(analysis_id, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -50,7 +50,7 @@ export default async function Table({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <ReviewReport variant_analysis_id={variant_analysis_id} drug_query_id={drug_query_id} report_id={report.id} />
+                      <ReviewReport variant_analysis_id={annotation_id} drug_query_id={analysis_id} report_id={report.id} />
                     </div>
                   </td>
                 </tr>
