@@ -17,12 +17,12 @@ export function CreateAnalysis({ history_id, study_id, annotation_id }: { histor
   );
 }
 
-export function CreateClinicalReport({ variant_analysis_uuid, drug_query_uuid }: { variant_analysis_uuid: string, drug_query_uuid: string }) {
+export function CreateClinicalReport({ redirection }: { redirection: string }) {
 
   const router = useRouter();
 
   const handleRedirect = () => {
-    router.push(`/dashboard/variant-analysis/${variant_analysis_uuid}/drug-queries/${drug_query_uuid}/clinical-reports/create`);
+    router.push(redirection);
   }
 
   return (
@@ -40,12 +40,12 @@ export function CreateClinicalReport({ variant_analysis_uuid, drug_query_uuid }:
   );
 }
 
-export function ClinicalReports({ variant_analysis_uuid, drug_query_uuid }: { variant_analysis_uuid: string, drug_query_uuid: string }) {
+export function ClinicalReports({ redirection }: { redirection: string, }) {
 
   const router = useRouter();
 
   const handleRedirect = () => {
-    router.push(`/dashboard/variant-analysis/${variant_analysis_uuid}/drug-queries/${drug_query_uuid}/clinical-reports`);
+    router.push(redirection);
   }
 
   return (

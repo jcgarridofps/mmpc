@@ -59,7 +59,7 @@ class Report(APIView):
         #region Incoming params checking
         page = int(request.GET.get('page', '1'))
         elements = int(request.GET.get('elements', '6')) #Number of elements to be returned
-        drug_query_id = request.GET.get('drug_query_id', '')
+        analysis_id = request.GET.get('analysis_id', '')
         #endregion
 
         #region fetch data from DDBB
@@ -68,7 +68,7 @@ class Report(APIView):
         last_requested_element = first_requested_element + elements
         try:
             db_objects = report.objects\
-                .filter(drug_query = drug_query_id)\
+                .filter(analysis = analysis_id)\
                 .order_by('-date')\
                 .all()[first_requested_element : last_requested_element]
         except:
@@ -86,9 +86,9 @@ class Report(APIView):
         POST function to generate new report DDBB entries
         """
         
-        drug_query = request.POST.get('drug_query', '')
-        if(drug_query == ''):
-            return Response({"message":"No linked drug_query"},\
+        analysis_id = request.POST.get('analysis_id', '')
+        if(analysis_id == ''):
+            return Response({"message":"No linked analysis"},\
                             status=status.HTTP_400_BAD_REQUEST)
 
         clinical_prescription = request.POST.get('clinical_prescription', '')
@@ -117,7 +117,7 @@ class Report(APIView):
         try:
             new_report_entry = report.objects.create(\
                 document_id = inserted_document.inserted_id,\
-                drug_query_id = drug_query)
+                analysis_id = analysis_id)
             new_report_entry.save()
         except:
             return Response({"message":"report document has been saved, \

@@ -63,10 +63,16 @@ const CreateAnalysisSchema = z.object({
 
 const CreateReportSchema = z.object({
   id: z.string(),
-  variant_analysis_id: z.string({
+  history_id: z.string({
+    invalid_type_error: 'Incorrect type for history id.'
+  }),
+  study_id: z.string({
+    invalid_type_error: 'Incorrect type for study id.'
+  }),
+  annotation_id: z.string({
     invalid_type_error: 'Incorrect type for variant analysis id.'
   }),
-  drug_query_id: z.string({
+  analysis_id: z.string({
     invalid_type_error: 'Incorrect type for drug query id.'
   }),
   clinical_report: z.string({
@@ -417,8 +423,10 @@ export async function createAnalysis(prevState: AnalysisState, formData: FormDat
 export async function createReport(prevState: ReportState, formData: FormData) {
 
   const validatedFields = CreateReport.safeParse({
-    variant_analysis_id: formData.get('variant_analysis_id'),
-    drug_query_id: formData.get('drug_query_id'),
+    history_id: formData.get('history_id'),
+    study_id: formData.get('study_id'),
+    annotation_id: formData.get('annotation_id'),
+    analysis_id: formData.get('analysis_id'),
     clinical_report: formData.get('clinical_report'),
   });
 
@@ -431,7 +439,7 @@ export async function createReport(prevState: ReportState, formData: FormData) {
     };
   }
 
-  const { drug_query_id, clinical_report, variant_analysis_id } = validatedFields.data;
+  const { history_id, study_id, annotation_id, analysis_id, clinical_report  } = validatedFields.data;
 
   //------------------------------------------------------------------------------------
 
@@ -439,7 +447,7 @@ export async function createReport(prevState: ReportState, formData: FormData) {
   try {
 
     const formData = new FormData();
-    formData.append("drug_query", drug_query_id);
+    formData.append("analysis", analysis_id);
     formData.append("clinical_prescription", clinical_report);
     formData.append("clinical_report", clinical_report);
 
@@ -453,6 +461,8 @@ export async function createReport(prevState: ReportState, formData: FormData) {
         body: formData
       });
 
+    console.log(result.text());
+
   } catch (error) {
     console.error('Create report error:', error);
     return {
@@ -462,7 +472,7 @@ export async function createReport(prevState: ReportState, formData: FormData) {
     };
   }
 
-  const newPath: string = `/dashboard/variant-analysis/${variant_analysis_id}/drug-queries/${drug_query_id}/clinical-reports`;
+  const newPath: string = `/dashboard/histories/${history_id}/studies/${study_id}/annotations/${annotation_id}/analyses/${analysis_id}/clinical-reports/`;
   revalidatePath(newPath);
   redirect(newPath);
 

@@ -315,7 +315,7 @@ export async function fetchFilteredStudies(
 }
 
 export async function fetchFilteredReports(
-  drug_query_id: string,
+  analysis_id: string,
   currentPage: number,
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -324,15 +324,13 @@ export async function fetchFilteredReports(
     const uri: string = process.env.API_BASE_URL +
       "/api/report/?" +
       "page=" + currentPage + "&" +
-      "drug_query_id=" + drug_query_id + "&" +
+      "analysis_id=" + analysis_id + "&" +
       "elements=" + ITEMS_PER_PAGE;
-
-    console.log("MACARENO ECHA EL FRENO:" + uri);
 
     const reports = await fetch(process.env.API_BASE_URL +
       "/api/report/?" +
       "page=" + currentPage + "&" +
-      "drug_query_id=" + drug_query_id + "&" +
+      "analysis_id=" + analysis_id + "&" +
       "elements=" + ITEMS_PER_PAGE,
       {
         method: "GET",
@@ -343,6 +341,7 @@ export async function fetchFilteredReports(
       });
 
     let res = await reports.json();
+    console.log("FETCH FILTERED REPORTS: " + res)
     return res;
   } catch (error) {
     console.error('Fetch filtered reports error:', error);
