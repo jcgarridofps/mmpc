@@ -461,6 +461,8 @@ export async function createReport(prevState: ReportState, formData: FormData) {
         body: formData
       });
 
+    console.log(result.text());
+
   } catch (error) {
     console.error('Create report error:', error);
     return {

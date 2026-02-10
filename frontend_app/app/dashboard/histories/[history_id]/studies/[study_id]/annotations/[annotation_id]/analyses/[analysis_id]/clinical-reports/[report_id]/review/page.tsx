@@ -26,7 +26,7 @@ export default async function Page(props: {
   const params = await props.params;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchFilteredAnnotationsPages(query);
+  //const totalPages = await fetchFilteredAnnotationsPages(query);
   const variantAnalysisId = params.id;
   const drugQueryId = params.query_id;
   const reportId = params.report_id;

@@ -86,8 +86,8 @@ class Report(APIView):
         POST function to generate new report DDBB entries
         """
         
-        analysis = request.POST.get('analysis', '')
-        if(analysis == ''):
+        analysis_id = request.POST.get('analysis_id', '')
+        if(analysis_id == ''):
             return Response({"message":"No linked analysis"},\
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -117,7 +117,7 @@ class Report(APIView):
         try:
             new_report_entry = report.objects.create(\
                 document_id = inserted_document.inserted_id,\
-                analysis_id = analysis)
+                analysis_id = analysis_id)
             new_report_entry.save()
         except:
             return Response({"message":"report document has been saved, \
